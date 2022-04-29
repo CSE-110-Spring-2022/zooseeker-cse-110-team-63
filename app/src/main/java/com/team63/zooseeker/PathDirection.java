@@ -5,6 +5,8 @@ import android.content.Context;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -13,14 +15,24 @@ import java.util.Objects;
  * PlanGenerator.getPath in the constructor, and uses it to construct the path
  */
 public class PathDirection implements IDirection {
-    public static final String STEP_TEMPLATE = "%d. %s on %s %d ft towards %s";
-    public static final String FIRST_LAST_VERB = "Proceed";
-    public static final String DEFAULT_VERB = "Continue";
+    public static final String STEP_TEMPLATE = "%d. Proceed on %s %d ft towards %s";
     String name; // name of destination
     Double distance;
     Map<String, ZooData.VertexInfo> vInfo;
     Map<String, ZooData.EdgeInfo> eInfo;
     GraphPath<String, IdentifiedWeightedEdge> path;
+    Graph<String, IdentifiedWeightedEdge> G;
+
+    public static class Step { // a single step, a single direction is composed of these
+        public Step() {
+            this.distance = 0;
+            this.street = null;
+            this.destination = null;
+        }
+        public double distance;
+        String street;
+        String destination;
+    }
 
     // path is the path from one exhibit to another.
     // vInfoFile is a String of the filename for the node_info JSON file in the assets directory
@@ -30,6 +42,7 @@ public class PathDirection implements IDirection {
         vInfo = ZooData.loadVertexInfoJSON(context, vInfoFile);
         eInfo = ZooData.loadEdgeInfoJSON(context, eInfoFile);
         this.path = path;
+        this.G = path.getGraph();
         this.name = Objects.requireNonNull(vInfo.get(path.getStartVertex())).name;
         this.distance = path.getWeight();
     }
@@ -46,36 +59,42 @@ public class PathDirection implements IDirection {
 
     @Override
     public String getTextDirection() {
-        Graph<String, IdentifiedWeightedEdge> G = path.getGraph();
         StringBuilder textDirectionBuilder = new StringBuilder();
-        int i = 1;
-        for (IdentifiedWeightedEdge e : path.getEdgeList()) {
-            //
-            String verb =
-                    (i == 1 || i == path.getEdgeList().size()) ? FIRST_LAST_VERB : DEFAULT_VERB;
-            // if it's an intersection, make nextTarget the street name
-            String whereTo;
-            if (Objects.requireNonNull(vInfo.get(G.getEdgeTarget(e))).kind ==
-                    ZooData.VertexInfo.Kind.INTERSECTION) {
-                IdentifiedWeightedEdge nextEdge = path.getEdgeList().get(i); // next step's edge
-                whereTo = Objects.requireNonNull(eInfo.get(nextEdge.getId())).street;
-                // the street we "arrive" at
-            }
-            else {
-                whereTo = Objects.requireNonNull(vInfo.get(G.getEdgeTarget(e))).name;
-            }
-            String step = String.format(Locale.US, STEP_TEMPLATE,
+        int i = 0;
+        for (Step step : breakIntoSteps()) {
+            String stepString = String.format(Locale.US, STEP_TEMPLATE,
                     i,
-                    verb,
-                    Objects.requireNonNull(eInfo.get(e.getId())).street,
-                    roundDistance(G.getEdgeWeight(e)),
-                    whereTo
+                    step.street,
+                    roundDistance(step.distance),
+                    step.destination
                     );
-            textDirectionBuilder = textDirectionBuilder.append(step);
+            textDirectionBuilder.append(stepString);
             textDirectionBuilder.append('\n');
             i++;
         }
         return textDirectionBuilder.toString();
+    }
+
+    public List<Step> breakIntoSteps() {
+        ArrayList<Step> stepList = new ArrayList<>();
+        Step step = new Step();
+        List<IdentifiedWeightedEdge> pathEdges = path.getEdgeList();
+        for (int i = 0; i < pathEdges.size(); i++) {
+            IdentifiedWeightedEdge currEdge = pathEdges.get(i);
+            if (step.street == null) { // if step is fresh, we provide a street for it
+                step.street = eInfo.get(currEdge.getId()).street;
+            }
+            step.distance += G.getEdgeWeight(currEdge); // add edge distance to total step dist
+            // if we reach the end of the GraphPath
+            if (i == pathEdges.size() - 1
+            // or if the edge ahead of us changes street
+                    || (!step.street.equals(eInfo.get(pathEdges.get(i+1).getId()).street))) {
+                step.destination = G.getEdgeTarget(currEdge);// we mark the end destination of the step
+                stepList.add(step); // we "cut off" the step and put it in the list
+                step = new Step(); // make step point to a new Step object
+            }
+        }
+        return stepList;
     }
 
     // helper method that rounds distance to 1 sig fig
@@ -86,7 +105,7 @@ public class PathDirection implements IDirection {
             d /= 10;
         }
         int roundedD = (int) d;
-        for (int i = 0; i < d; i++) {
+        for (int i = 0; i < exponent; i++) {
             roundedD *= 10;
         }
         return roundedD;
