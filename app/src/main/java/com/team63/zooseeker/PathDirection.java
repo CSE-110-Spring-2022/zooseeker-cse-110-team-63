@@ -34,13 +34,16 @@ public class PathDirection implements IDirection {
         String destination;
     }
 
-    // path is the path from one exhibit to another.
-    // vInfoFile is a String of the filename for the node_info JSON file in the assets directory
-    // eInfoFile is same as vInfoFile, but for the edge_info JSON file instead
-    public PathDirection(GraphPath<String, IdentifiedWeightedEdge> path, Context context, String vInfoFile, String eInfoFile) {
+    /* path is the path from one exhibit to another.
+     * vInfo is a Map of strings to ZooData.VertexInfo objects, that can be obtained by calling
+     * the static ZooData.loadVertexInfoJSON method
+     * eInfo is a Map of strings to ZooData.VertexInfo objects, that can be obtained by calling
+     * the static ZooData.loadEdgeInfoJSON method
+     */
+    public PathDirection(GraphPath<String, IdentifiedWeightedEdge> path, Map<String, ZooData.VertexInfo> vInfo, Map<String, ZooData.EdgeInfo> eInfo) {
         // code for setting fields adapted from App.java in the ZooSeeker assets
-        vInfo = ZooData.loadVertexInfoJSON(context, vInfoFile);
-        eInfo = ZooData.loadEdgeInfoJSON(context, eInfoFile);
+        this.vInfo = vInfo;
+        this.eInfo = eInfo;
         this.path = path;
         this.G = path.getGraph();
         this.name = Objects.requireNonNull(vInfo.get(path.getStartVertex())).name;
