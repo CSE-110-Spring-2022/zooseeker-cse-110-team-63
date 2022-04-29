@@ -85,7 +85,16 @@ public class PathDirection implements IDirection {
             if (i == pathEdges.size() - 1
             // or if the edge ahead of us changes street
                     || (!step.street.equals(eInfo.get(pathEdges.get(i+1).getId()).street))) {
-                step.destination = G.getEdgeTarget(currEdge);// we mark the end destination of the step
+                if (i < pathEdges.size() - 1 &&
+                        vInfo.get(G.getEdgeTarget(currEdge)).kind == ZooData.VertexInfo.Kind.INTERSECTION) {
+                    // set the destination to the next street if there is a next street
+                    // AND only if the destination is an intersection
+                    step.destination = eInfo.get(pathEdges.get(i+1).getId()).street;
+                }
+                else {
+                    // we mark the end destination of the step
+                    step.destination = G.getEdgeTarget(currEdge);
+                }
                 stepList.add(step); // we "cut off" the step and put it in the list
                 step = new Step(); // make step point to a new Step object
             }
