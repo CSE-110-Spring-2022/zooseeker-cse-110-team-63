@@ -10,6 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ZooSeeker">
         <activity
+            android:name=".nav_menu"
+            android:exported="false" />
+        <activity
+            android:name=".StartButton"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
