@@ -16,7 +16,7 @@ import java.util.Set;
 // TODO: WRITE UNIT TESTS FOR THIS CLASS
 public class NNPlanGenerator extends PlanGenerator {
     public NNPlanGenerator(Graph<String, IdentifiedWeightedEdge> G) {
-        this.G = G;
+        super(G);
     }
 
     @Override
