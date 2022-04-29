@@ -96,7 +96,7 @@ public class PathDirection implements IDirection {
                 }
                 else {
                     // we mark the end destination of the step
-                    step.destination = G.getEdgeTarget(currEdge);
+                    step.destination = vInfo.get(G.getEdgeTarget(currEdge)).name;
                 }
                 stepList.add(step); // we "cut off" the step and put it in the list
                 step = new Step(); // make step point to a new Step object
