@@ -15,7 +15,7 @@ import java.util.Objects;
  * PlanGenerator.getPath in the constructor, and uses it to construct the path
  */
 public class PathDirection implements IDirection {
-    public static final String STEP_TEMPLATE = "%d. Proceed on %s %d ft towards %s";
+    public static final String STEP_TEMPLATE = "Proceed on %s %d ft towards %s";
     String name; // name of destination
     Double distance;
     Map<String, ZooData.VertexInfo> vInfo;
@@ -58,21 +58,17 @@ public class PathDirection implements IDirection {
     }
 
     @Override
-    public String getTextDirection() {
-        StringBuilder textDirectionBuilder = new StringBuilder();
-        int i = 0;
+    public List<String> getTextDirection() {
+        ArrayList<String> textDirectionList = new ArrayList<>();
         for (Step step : breakIntoSteps()) {
             String stepString = String.format(Locale.US, STEP_TEMPLATE,
-                    i,
                     step.street,
                     roundDistance(step.distance),
                     step.destination
                     );
-            textDirectionBuilder.append(stepString);
-            textDirectionBuilder.append('\n');
-            i++;
+            textDirectionList.add(stepString);
         }
-        return textDirectionBuilder.toString();
+        return textDirectionList;
     }
 
     public List<Step> breakIntoSteps() {
