@@ -39,15 +39,23 @@ public class NNPlanGenerator extends PlanGenerator {
         return plan;
     }
 
+    /* pathToClosestExhibit is a helper method that, given a source vertex and a list of targets,
+     * returns the path to the target closest to the source vertex.
+     */
     private GraphPath<String, IdentifiedWeightedEdge> pathToClosestExhibit(String source, Set<String> targets) {
         DijkstraManyToManyShortestPaths<String, IdentifiedWeightedEdge> shortestPathFinder =
                 new DijkstraManyToManyShortestPaths<>(G);
+
+        // to use the getManyToManyPaths method, we have to put the source string into a set
         HashSet<String> sourceSet = new HashSet<>();
         sourceSet.add(source);
+
         ManyToManyShortestPathsAlgorithm.ManyToManyShortestPaths<String, IdentifiedWeightedEdge>
                 paths = shortestPathFinder.getManyToManyPaths(sourceSet, targets);
+
         double minDistance = Double.MAX_VALUE;
         GraphPath<String, IdentifiedWeightedEdge> minPath = null;
+        // we loop over all targets, and find the one that is closest
         for (String target : targets) {
             GraphPath<String, IdentifiedWeightedEdge> path = paths.getPath(source, target);
             if (path.getWeight() < minDistance) {
