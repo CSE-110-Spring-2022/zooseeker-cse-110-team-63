@@ -17,7 +17,7 @@ public abstract class PlanGenerator {
         this.G = G;
     }
 
-    abstract public List<GraphPath<String, IdentifiedWeightedEdge>> getPlan(String entrance, Collection<String> exhibits, String exit);
     // each String in ids is an ID referring to a planned exhibit, NOT INCLUDING ENTRANCE AND EXIT
     // each GraphPath in the List represents a path from one exhibit to another exhibit on plan
+    abstract public List<GraphPath<String, IdentifiedWeightedEdge>> getPlan(String entranceExit, Collection<String> exhibits);
 }

@@ -20,14 +20,11 @@ public class NNPlanGenerator extends PlanGenerator {
     }
 
     @Override
-    public List<GraphPath<String, IdentifiedWeightedEdge>> getPlan(String entrance, Collection<String> exhibits, String exit) {
-        if (exhibits.size() == 0) {
-            return new ArrayList<>();
-        }
+    public List<GraphPath<String, IdentifiedWeightedEdge>> getPlan(String entranceExit, Collection<String> exhibits) {
         HashSet<String> exhibitSet = new HashSet<>(exhibits);
         ArrayList<GraphPath<String, IdentifiedWeightedEdge>> plan =
                 new ArrayList<>();
-        String v = entrance;
+        String v = entranceExit;
         // from entrance to last exhibit
         while (true) { // we keep repeating until we break (which happens when set is empty_
             exhibitSet.remove(v);
@@ -38,7 +35,7 @@ public class NNPlanGenerator extends PlanGenerator {
             plan.add(nextPath);
             v = nextPath.getEndVertex(); // move to next vertex
         }
-        plan.add(DijkstraShortestPath.findPathBetween(G, v, exit)); // from last exhibit to exit
+        plan.add(DijkstraShortestPath.findPathBetween(G, v, entranceExit)); // from last exhibit to exit
         return plan;
     }
 
