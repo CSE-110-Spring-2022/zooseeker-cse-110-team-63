@@ -78,6 +78,7 @@ public class PathDirection implements IDirection {
         ArrayList<Step> stepList = new ArrayList<>();
         Step step = new Step();
         List<IdentifiedWeightedEdge> pathEdges = path.getEdgeList();
+        List<String> pathVertices = path.getVertexList();
         for (int i = 0; i < pathEdges.size(); i++) {
             IdentifiedWeightedEdge currEdge = pathEdges.get(i);
             if (step.street == null) { // if step is fresh, we provide a street for it
@@ -86,17 +87,18 @@ public class PathDirection implements IDirection {
             step.distance += G.getEdgeWeight(currEdge); // add edge distance to total step dist
             // if we reach the end of the GraphPath
             if (i == pathEdges.size() - 1
-            // or if the edge ahead of us changes street
+            // or if the edge ahead of us changes street, we end the step.
                     || (!step.street.equals(eInfo.get(pathEdges.get(i+1).getId()).street))) {
+                // if we ended the step because we have to change street next
                 if (i < pathEdges.size() - 1 &&
                         vInfo.get(G.getEdgeTarget(currEdge)).kind == ZooData.VertexInfo.Kind.INTERSECTION) {
-                    // set the destination to the next street if there is a next street
-                    // AND only if the destination is an intersection
+                    // set the destination to the next street
                     step.destination = eInfo.get(pathEdges.get(i+1).getId()).street;
                 }
+                // if we ended the step because we reached the end of the GraphPath
                 else {
                     // we mark the end destination of the step
-                    step.destination = vInfo.get(G.getEdgeTarget(currEdge)).name;
+                    step.destination = vInfo.get(path.getEndVertex()).name;
                 }
                 stepList.add(step); // we "cut off" the step and put it in the list
                 step = new Step(); // make step point to a new Step object
