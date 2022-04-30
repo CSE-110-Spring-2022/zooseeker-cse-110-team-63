@@ -14,7 +14,6 @@ import java.util.List;
 
 public class NavActivity extends AppCompatActivity {
     ListView listView;
-    String[] animals = {"Steve","Bob"};
 
     ArrayAdapter<String> arrayAdapter;
 
@@ -23,13 +22,12 @@ public class NavActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nav_menu);
 
-        // log
-        List<NodeInfo> node = NodeInfo.loadJSON(this, "sample_node_info.json");
-        Log.d("NodeStuff", node.toString());
-
         listView = findViewById(R.id.listView);
 
-        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,animals);
+        NodeInfoDao nodeInfoDao = NodeDatabase.getSingleton(this).nodeInfoDao();
+        String[] exhibits = nodeInfoDao.getExhibit();
+
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,exhibits);
         listView.setAdapter(arrayAdapter);
     }
 
@@ -39,7 +37,7 @@ public class NavActivity extends AppCompatActivity {
 
         MenuItem menuItem = menu.findItem(R.id.nav_search);
         SearchView searchView = (SearchView) menuItem.getActionView();
-        searchView.setQueryHint("Search for animals");
+        searchView.setQueryHint("Search for exhibits");
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

@@ -2,8 +2,11 @@ package com.team63.zooseeker;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverter;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
@@ -14,27 +17,35 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-@Entity(tableName = "node_info")
+// Used to load json file, but cannot be loaded to DB because of string array
+@Entity (tableName = "node_info")
 public class NodeInfo {
     // Public fields
-
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
+    @NonNull
     public String id;
 
     public String kind;
     public String name;
+    public String concatTags;
+
+    @Ignore
     public String[] tags;
 
-    // Constructor matching fields above
+    NodeInfo() {}
+
+    @Ignore
     NodeInfo(String id, String kind, String name, String[] tags) {
         this.id = id;
         this.kind = kind;
         this.name = name;
         System.arraycopy(tags, 0, this.tags, 0, tags.length);
+        this.concatTags = String.join(", ", tags);
     }
 
     // Factory method for loading our JSON
