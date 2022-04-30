@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ZooSeeker">
         <activity
-            android:name=".nav_menu"
+            android:name=".NavActivity"
             android:exported="false" />
         <activity
             android:name=".StartButton"
