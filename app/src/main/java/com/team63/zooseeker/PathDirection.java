@@ -16,12 +16,12 @@ import java.util.Objects;
  */
 public class PathDirection implements IDirection {
     public static final String STEP_TEMPLATE = "Proceed on %s %d ft towards %s";
-    String name; // name of destination
-    Double distance;
-    Map<String, ZooData.VertexInfo> vInfo;
-    Map<String, ZooData.EdgeInfo> eInfo;
-    GraphPath<String, IdentifiedWeightedEdge> path;
-    Graph<String, IdentifiedWeightedEdge> G;
+    private String name; // name of destination
+    private Double distance;
+    private Map<String, ZooData.VertexInfo> vInfo;
+    private Map<String, ZooData.EdgeInfo> eInfo;
+    private GraphPath<String, IdentifiedWeightedEdge> path;
+    private Graph<String, IdentifiedWeightedEdge> G;
 
     /* path is the path from one exhibit to another.
      * vInfo is a Map of strings to ZooData.VertexInfo objects, that can be obtained by calling
