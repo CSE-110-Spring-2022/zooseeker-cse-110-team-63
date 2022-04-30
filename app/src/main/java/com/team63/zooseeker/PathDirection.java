@@ -23,17 +23,6 @@ public class PathDirection implements IDirection {
     GraphPath<String, IdentifiedWeightedEdge> path;
     Graph<String, IdentifiedWeightedEdge> G;
 
-    public static class Step { // a single step, a single direction is composed of these
-        public Step() {
-            this.distance = 0;
-            this.street = null;
-            this.destination = null;
-        }
-        public double distance;
-        String street;
-        String destination;
-    }
-
     /* path is the path from one exhibit to another.
      * vInfo is a Map of strings to ZooData.VertexInfo objects, that can be obtained by calling
      * the static ZooData.loadVertexInfoJSON method

@@ -46,7 +46,7 @@ public class PathDirectionTest {
                 new GraphWalk<>
                         (G, Arrays.asList("entrance_exit_gate", "entrance_plaza", "gorillas", "lions"), 410);
         PathDirection testPD = new PathDirection(path, vInfo, eInfo);
-        List<PathDirection.Step> stepList = testPD.breakIntoSteps();
+        List<Step> stepList = testPD.breakIntoSteps();
         assertEquals(2, stepList.size());
         assertEquals(10, stepList.get(0).distance,doubleDelta);
         assertEquals("Africa Rocks Street", stepList.get(0).destination);
@@ -67,7 +67,7 @@ public class PathDirectionTest {
                 new GraphWalk<>
                         (G, Arrays.asList("elephant_odyssey", "lions", "gorillas"), 400);
         PathDirection testPD = new PathDirection(path, vInfo, eInfo);
-        List<PathDirection.Step> stepList = testPD.breakIntoSteps();
+        List<Step> stepList = testPD.breakIntoSteps();
         assertEquals(1, stepList.size());
         assertEquals(400, stepList.get(0).distance,doubleDelta);
         assertEquals("Gorillas", stepList.get(0).destination);
