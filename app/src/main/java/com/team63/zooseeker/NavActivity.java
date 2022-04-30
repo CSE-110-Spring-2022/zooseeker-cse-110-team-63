@@ -4,10 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import java.util.List;
 
 public class NavActivity extends AppCompatActivity {
     ListView listView;
@@ -19,6 +22,10 @@ public class NavActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nav_menu);
+
+        // log
+        List<NodeInfo> node = NodeInfo.loadJSON(this, "sample_node_info.json");
+        Log.d("NodeStuff", node.toString());
 
         listView = findViewById(R.id.listView);
 
