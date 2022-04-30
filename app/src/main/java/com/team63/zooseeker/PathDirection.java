@@ -1,5 +1,7 @@
 package com.team63.zooseeker;
 
+import static com.team63.zooseeker.Step.roundDistance;
+
 import android.content.Context;
 
 import org.jgrapht.Graph;
@@ -15,13 +17,13 @@ import java.util.Objects;
  * PlanGenerator.getPath in the constructor, and uses it to construct the path
  */
 public class PathDirection implements IDirection {
-    public static final String STEP_TEMPLATE = "Proceed on %s %d ft towards %s";
-    private String name; // name of destination
-    private Double distance;
-    private Map<String, ZooData.VertexInfo> vInfo;
-    private Map<String, ZooData.EdgeInfo> eInfo;
-    private GraphPath<String, IdentifiedWeightedEdge> path;
-    private Graph<String, IdentifiedWeightedEdge> G;
+    private final String name; // name of destination
+    private final Double distance;
+    private final Map<String, ZooData.VertexInfo> vInfo;
+    private final Map<String, ZooData.EdgeInfo> eInfo;
+    private final GraphPath<String, IdentifiedWeightedEdge> path;
+    private final Graph<String, IdentifiedWeightedEdge> G;
+    private List<Step> steps;
 
     /* path is the path from one exhibit to another.
      * vInfo is a Map of strings to ZooData.VertexInfo objects, that can be obtained by calling
@@ -37,6 +39,7 @@ public class PathDirection implements IDirection {
         this.G = path.getGraph();
         this.name = Objects.requireNonNull(vInfo.get(path.getStartVertex())).name;
         this.distance = path.getWeight();
+        this.steps = computeSteps();
     }
 
     @Override
@@ -52,18 +55,17 @@ public class PathDirection implements IDirection {
     @Override
     public List<String> getTextDirection() {
         ArrayList<String> textDirectionList = new ArrayList<>();
-        for (Step step : breakIntoSteps()) {
-            String stepString = String.format(Locale.US, STEP_TEMPLATE,
-                    step.street,
-                    roundDistance(step.distance),
-                    step.destination
-                    );
-            textDirectionList.add(stepString);
+        for (Step step : getSteps()) {
+            textDirectionList.add(step.getText());
         }
         return textDirectionList;
     }
 
-    public List<Step> breakIntoSteps() {
+    public List<Step> getSteps() {
+        return steps;
+    }
+
+    private List<Step> computeSteps() {
         ArrayList<Step> stepList = new ArrayList<>();
         Step step = new Step();
         List<IdentifiedWeightedEdge> pathEdges = path.getEdgeList();
@@ -94,19 +96,5 @@ public class PathDirection implements IDirection {
             }
         }
         return stepList;
-    }
-
-    // helper method that rounds distance to 1 sig fig
-    private int roundDistance(double d) {
-        int exponent = 0;
-        while (d >= 10) {
-            exponent++;
-            d /= 10;
-        }
-        int roundedD = (int) d;
-        for (int i = 0; i < exponent; i++) {
-            roundedD *= 10;
-        }
-        return roundedD;
     }
 }
