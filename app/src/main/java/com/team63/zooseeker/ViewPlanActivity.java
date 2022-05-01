@@ -5,7 +5,9 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import org.jgrapht.Graph;
@@ -55,7 +57,11 @@ public class ViewPlanActivity extends AppCompatActivity {
         adapter.setPlanItems(planWithoutExit);
         TextView planCount = findViewById(R.id.plan_count);
         planCount.setText(String.format(Locale.US, "Plan (%d)", adapter.getItemCount()));
+    }
 
 
+    public void onGetDirectionsClicked(View view) {
+        Intent intent = new Intent(this, DirectionActivity.class);
+        startActivity(intent);
     }
 }
