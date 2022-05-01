@@ -2,23 +2,11 @@ package com.team63.zooseeker;
 
 import static com.team63.zooseeker.Step.roundDistance;
 
-import android.content.Context;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -29,7 +17,8 @@ public class Direction {
     public long id = 0;
     public String name; // name of destination
     public Double distance;
-    public List<String> stepStrings;
+    // public List<String> stepStrings;
+    public List<Step> steps;
     public int order;
 
 
@@ -37,12 +26,12 @@ public class Direction {
     private Map<String, ZooData.EdgeInfo> eInfo;
     private GraphPath<String, IdentifiedWeightedEdge> path;
     private Graph<String, IdentifiedWeightedEdge> G;
-    private List<Step> steps;
 
-    public Direction(String name, Double distance, List<String> stepStrings, int order) {
+
+    public Direction(String name, Double distance, /*, List<String> stepStrings*/ int order) {
         this.name = name;
         this.distance = distance;
-        this.stepStrings = stepStrings;
+        // this.stepStrings = stepStrings;
         this.order = order;
     }
 
@@ -61,13 +50,14 @@ public class Direction {
         this.name = Objects.requireNonNull(vInfo.get(path.getEndVertex())).name;
         this.distance = path.getWeight();
         this.steps = computeSteps();
-        this.stepStrings = getTextDirection();
+        // this.stepStrings = getTextDirection();
     }
 
     public int getDistance() {
         return roundDistance(distance);
     }
 
+    /*
     private List<String> getTextDirection() {
         ArrayList<String> textDirectionList = new ArrayList<>();
         for (Step step : getSteps()) {
@@ -75,10 +65,7 @@ public class Direction {
         }
         return textDirectionList;
     }
-
-    public List<Step> getSteps() {
-        return steps;
-    }
+    */
 
     private List<Step> computeSteps() {
         ArrayList<Step> stepList = new ArrayList<>();

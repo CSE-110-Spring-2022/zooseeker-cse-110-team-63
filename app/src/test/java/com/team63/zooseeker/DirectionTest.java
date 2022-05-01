@@ -47,7 +47,7 @@ public class DirectionTest {
                         (G, Arrays.asList("entrance_exit_gate", "entrance_plaza", "gorillas", "lions"), 410);
         Direction testPD = new Direction(path, vInfo, eInfo);
         assertEquals("Lions", testPD.name);
-        List<Step> stepList = testPD.getSteps();
+        List<Step> stepList = testPD.steps;
         assertEquals(2, stepList.size());
         assertEquals(10, stepList.get(0).distance,doubleDelta);
         assertEquals("Africa Rocks Street", stepList.get(0).destination);
@@ -55,10 +55,6 @@ public class DirectionTest {
         assertEquals(400, stepList.get(1).distance, doubleDelta);
         assertEquals("Lions", stepList.get(1).destination);
         assertEquals("Africa Rocks Street", stepList.get(1).street);
-
-        List<String> directions = testPD.stepStrings;
-        assertEquals("Proceed on Entrance Way 10 ft towards Africa Rocks Street", directions.get(0));
-        assertEquals("Proceed on Africa Rocks Street 400 ft towards Lions", directions.get(1));
     }
 
     // Test case: The street does not change at any point along the path, going "backwards"
@@ -69,13 +65,10 @@ public class DirectionTest {
                         (G, Arrays.asList("elephant_odyssey", "lions", "gorillas"), 400);
         Direction testPD = new Direction(path, vInfo, eInfo);
         assertEquals("Gorillas", testPD.name);
-        List<Step> stepList = testPD.getSteps();
+        List<Step> stepList = testPD.steps;
         assertEquals(1, stepList.size());
         assertEquals(400, stepList.get(0).distance,doubleDelta);
         assertEquals("Gorillas", stepList.get(0).destination);
         assertEquals("Africa Rocks Street", stepList.get(0).street);
-
-        List<String> directions = testPD.stepStrings;
-        assertEquals("Proceed on Africa Rocks Street 400 ft towards Gorillas", directions.get(0));
     }
 }
