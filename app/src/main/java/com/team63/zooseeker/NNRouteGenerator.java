@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-// TODO: WRITE UNIT TESTS FOR THIS CLASS
 public class NNRouteGenerator extends RouteGenerator {
     public NNRouteGenerator(Graph<String, IdentifiedWeightedEdge> G) {
         super(G);

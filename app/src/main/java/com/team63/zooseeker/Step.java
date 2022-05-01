@@ -22,7 +22,8 @@ public class Step { // a single step, a single direction is composed of these
         this.destination = destination;
     }
 
-    public String getText() {
+    @Override
+    public String toString() {
         return String.format(Locale.US, STEP_TEMPLATE,
                 this.street,
                 roundDistance(this.distance),
