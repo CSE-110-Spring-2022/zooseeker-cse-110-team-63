@@ -5,7 +5,6 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ManyToManyShortestPathsAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraManyToManyShortestPaths;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.traverse.ClosestFirstIterator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,13 +13,13 @@ import java.util.List;
 import java.util.Set;
 
 // TODO: WRITE UNIT TESTS FOR THIS CLASS
-public class NNPlanGenerator extends PlanGenerator {
-    public NNPlanGenerator(Graph<String, IdentifiedWeightedEdge> G) {
+public class NNRouteGenerator extends RouteGenerator {
+    public NNRouteGenerator(Graph<String, IdentifiedWeightedEdge> G) {
         super(G);
     }
 
     @Override
-    public List<GraphPath<String, IdentifiedWeightedEdge>> getPlan(String entranceExit, Collection<String> exhibits) {
+    public List<GraphPath<String, IdentifiedWeightedEdge>> getRoute(String entranceExit, Collection<String> exhibits) {
         HashSet<String> exhibitSet = new HashSet<>(exhibits);
         ArrayList<GraphPath<String, IdentifiedWeightedEdge>> plan =
                 new ArrayList<>();

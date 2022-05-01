@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @RunWith(AndroidJUnit4.class)
-public class PathDirectionTest {
+public class DirectionTest {
     static final Double doubleDelta = 0.001; // tolerance for Double precision error
     static final String testGraphFile = "sample_zoo_graph.json";
     static final String testVInfoFile = "sample_node_info.json";
@@ -45,7 +45,8 @@ public class PathDirectionTest {
         GraphPath<String, IdentifiedWeightedEdge> path =
                 new GraphWalk<>
                         (G, Arrays.asList("entrance_exit_gate", "entrance_plaza", "gorillas", "lions"), 410);
-        PathDirection testPD = new PathDirection(path, vInfo, eInfo);
+        Direction testPD = new Direction(path, vInfo, eInfo);
+        assertEquals("Lions", testPD.name);
         List<Step> stepList = testPD.getSteps();
         assertEquals(2, stepList.size());
         assertEquals(10, stepList.get(0).distance,doubleDelta);
@@ -55,7 +56,7 @@ public class PathDirectionTest {
         assertEquals("Lions", stepList.get(1).destination);
         assertEquals("Africa Rocks Street", stepList.get(1).street);
 
-        List<String> directions = testPD.getTextDirection();
+        List<String> directions = testPD.stepStrings;
         assertEquals("Proceed on Entrance Way 10 ft towards Africa Rocks Street", directions.get(0));
         assertEquals("Proceed on Africa Rocks Street 400 ft towards Lions", directions.get(1));
     }
@@ -66,14 +67,15 @@ public class PathDirectionTest {
         GraphPath<String, IdentifiedWeightedEdge> path =
                 new GraphWalk<>
                         (G, Arrays.asList("elephant_odyssey", "lions", "gorillas"), 400);
-        PathDirection testPD = new PathDirection(path, vInfo, eInfo);
+        Direction testPD = new Direction(path, vInfo, eInfo);
+        assertEquals("Gorillas", testPD.name);
         List<Step> stepList = testPD.getSteps();
         assertEquals(1, stepList.size());
         assertEquals(400, stepList.get(0).distance,doubleDelta);
         assertEquals("Gorillas", stepList.get(0).destination);
         assertEquals("Africa Rocks Street", stepList.get(0).street);
 
-        List<String> directions = testPD.getTextDirection();
+        List<String> directions = testPD.stepStrings;
         assertEquals("Proceed on Africa Rocks Street 400 ft towards Gorillas", directions.get(0));
     }
 }

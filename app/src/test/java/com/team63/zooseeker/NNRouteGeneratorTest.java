@@ -17,23 +17,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
-public class NNPlanGeneratorTest {
+public class NNRouteGeneratorTest {
     static final String entranceExit = "entrance_exit_gate"; // string ID of entrance/exit gate
     static final Double doubleDelta = 0.001; // tolerance for Double precision error
     Graph<String, IdentifiedWeightedEdge> G;
-    NNPlanGenerator testPlanGenerator;
+    NNRouteGenerator testPlanGenerator;
     @Before
     public void initializeFields() {
         Context context = ApplicationProvider.getApplicationContext();
         G = ZooData.loadZooGraphJSON(context,"sample_zoo_graph.json");
-        testPlanGenerator = new NNPlanGenerator(G);
+        testPlanGenerator = new NNRouteGenerator(G);
     }
 
     @Test
     public void testNoExhibits() {
         ArrayList<String> exhibits = new ArrayList<>();
         List<GraphPath<String, IdentifiedWeightedEdge>> plan =
-                testPlanGenerator.getPlan(entranceExit, exhibits);
+                testPlanGenerator.getRoute(entranceExit, exhibits);
 
         assertEquals(plan.size(), 1);
         assertEquals(plan.get(0).getStartVertex(), entranceExit);
@@ -47,7 +47,7 @@ public class NNPlanGeneratorTest {
         ArrayList<String> exhibits = new ArrayList<>();
         exhibits.add(exhibit);
         List<GraphPath<String, IdentifiedWeightedEdge>> plan =
-                testPlanGenerator.getPlan(entranceExit, exhibits);
+                testPlanGenerator.getRoute(entranceExit, exhibits);
 
         assertEquals(plan.size(), 2);
         assertEquals(plan.get(0).getStartVertex(), entranceExit);
@@ -67,7 +67,7 @@ public class NNPlanGeneratorTest {
         exhibits.add("gators");
 
         List<GraphPath<String, IdentifiedWeightedEdge>> plan =
-                testPlanGenerator.getPlan(entranceExit, exhibits);
+                testPlanGenerator.getRoute(entranceExit, exhibits);
 
         assertEquals(plan.size(), exhibits.size() + 1);
 
