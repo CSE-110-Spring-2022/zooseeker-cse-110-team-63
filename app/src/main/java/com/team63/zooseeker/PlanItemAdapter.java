@@ -9,8 +9,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHolder> {
+    private static final String ITEM_TEMPLATE = "%s (%d ft)";
     private List<Direction> planItems = Collections.emptyList();
 
     public void setPlanItems(List<Direction> newPlanItems) {
@@ -53,7 +55,9 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
 
         public void setPlanItem(Direction planItem) {
             this.planItem = planItem;
-            this.textView.setText(planItem.name);
+            this.textView.setText(String.format(Locale.US, ITEM_TEMPLATE,
+                    planItem.name,
+                    Step.roundDistance(planItem.distance)));
         }
     }
 }
