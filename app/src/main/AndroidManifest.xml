@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ZooSeeker">
         <activity
-            android:name=".DirectionActivity"
+            android:name=".ViewPlanActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
