@@ -12,9 +12,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/add_more_exhibits"
         android:textAllCaps="false"
         app:icon="@android:drawable/ic_menu_revert"
+        app:layout_constraintBottom_toTopOf="@+id/plan_items"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
