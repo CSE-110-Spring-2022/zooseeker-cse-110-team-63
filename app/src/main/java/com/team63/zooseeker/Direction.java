@@ -2,6 +2,13 @@ package com.team63.zooseeker;
 
 import static com.team63.zooseeker.Step.roundDistance;
 
+import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 
@@ -13,7 +20,7 @@ import java.util.Objects;
 /* this implementation of IDirection takes in a GraphPath in the List returned by
  * PlanGenerator.getPath in the constructor, and uses it to construct the path
  */
-public class Direction {
+public class Direction implements Parcelable{
     public long id = 0;
     public String name; // name of destination
     public Double distance;
@@ -53,19 +60,46 @@ public class Direction {
         // this.stepStrings = getTextDirection();
     }
 
+    protected Direction(Parcel in) {
+        id = in.readLong();
+        name = in.readString();
+        if (in.readByte() == 0) {
+            distance = null;
+        } else {
+            distance = in.readDouble();
+        }
+        order = in.readInt();
+    }
+
+    public static final Creator<Direction> CREATOR = new Creator<Direction>() {
+        @Override
+        public Direction createFromParcel(Parcel in) {
+            return new Direction(in);
+        }
+
+        @Override
+        public Direction[] newArray(int size) {
+            return new Direction[size];
+        }
+    };
+
     public int getDistance() {
         return roundDistance(distance);
     }
 
-    /*
-    private List<String> getTextDirection() {
+
+    public List<String> getTextDirection() {
         ArrayList<String> textDirectionList = new ArrayList<>();
-        for (Step step : getSteps()) {
-            textDirectionList.add(step.getText());
+        for (Step step : steps) {
+            textDirectionList.add(step.toString());
         }
         return textDirectionList;
     }
-    */
+
+//    private List<Step> getSteps() {
+//        return steps;
+//    }
+
 
     private List<Step> computeSteps() {
         ArrayList<Step> stepList = new ArrayList<>();
@@ -80,7 +114,7 @@ public class Direction {
             step.distance += G.getEdgeWeight(currEdge); // add edge distance to total step dist
             // if we reach the end of the GraphPath
             if (i == pathEdges.size() - 1
-            // or if the edge ahead of us changes street, we end the step.
+                    // or if the edge ahead of us changes street, we end the step.
                     || (!step.street.equals(eInfo.get(pathEdges.get(i+1).getId()).street))) {
                 // if we ended the step because we have to change street next
                 if (i < pathEdges.size() - 1 &&
@@ -98,5 +132,23 @@ public class Direction {
             }
         }
         return stepList;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeLong(id);
+        parcel.writeString(name);
+        if (distance == null) {
+            parcel.writeByte((byte) 0);
+        } else {
+            parcel.writeByte((byte) 1);
+            parcel.writeDouble(distance);
+        }
+        parcel.writeInt(order);
     }
 }

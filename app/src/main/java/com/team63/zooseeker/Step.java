@@ -1,10 +1,14 @@
 package com.team63.zooseeker;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
 import java.util.Locale;
 
 // TODO: Turn this into a database thing
-public class Step { // a single step, a single direction is composed of these
+public class Step implements Serializable { // a single step, a single direction is composed of these
     public static final String STEP_TEMPLATE = "Proceed on %s %d ft towards %s";
     public double distance;
     public String street;
@@ -20,6 +24,12 @@ public class Step { // a single step, a single direction is composed of these
         this.distance = distance;
         this.street = street;
         this.destination = destination;
+    }
+
+    protected Step(Parcel in) {
+        distance = in.readDouble();
+        street = in.readString();
+        destination = in.readString();
     }
 
     @Override

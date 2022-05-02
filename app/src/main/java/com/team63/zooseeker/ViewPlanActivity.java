@@ -7,12 +7,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 
+import java.io.Console;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +24,7 @@ import java.util.Map;
 
 public class ViewPlanActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
+    private List<Direction> plan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +53,7 @@ public class ViewPlanActivity extends AppCompatActivity {
         for (GraphPath<String, IdentifiedWeightedEdge> path : demoRouteGen.getRoute("entrance_exit_gate", targets)) {
             demoPlan.add(new Direction(path, vInfo, eInfo));
         }
-        List<Direction> plan = demoPlan;
+        plan = demoPlan;
         // end of demo code
 
         List<Direction> planWithoutExit = new ArrayList<>(plan);
@@ -62,6 +66,10 @@ public class ViewPlanActivity extends AppCompatActivity {
 
     public void onGetDirectionsClicked(View view) {
         Intent intent = new Intent(this, DirectionActivity.class);
+//        Log.d("tag", plan.get(0).steps.toString());
+        Direction direction = plan.get(0);
+        intent.putExtra("direction", direction);
+        intent.putExtra("steps", (Serializable) direction.steps);
         startActivity(intent);
     }
 }
