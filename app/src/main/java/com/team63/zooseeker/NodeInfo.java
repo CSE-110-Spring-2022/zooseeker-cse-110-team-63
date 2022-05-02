@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 // Used to load json file, but cannot be loaded to DB because of string array
 @Entity (tableName = "node_info")
@@ -33,6 +34,7 @@ public class NodeInfo {
     public String kind;
     public String name;
     public String concatTags;
+    public boolean selected = false;
 
     @Ignore
     public String[] tags;
