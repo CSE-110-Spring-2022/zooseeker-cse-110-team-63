@@ -24,15 +24,15 @@ public class PrePlanViewModel extends AndroidViewModel {
         return nodeInfoDao.getSelectedExhibits();
     }
 
-    public List<NodeInfo> getItems() {
+    public List<NodeInfo> getExhibits() {
         return nodeInfoDao.getExhibits();
     }
 
-    public LiveData<List<NodeInfo>> getItemsLive() {
+    public LiveData<List<NodeInfo>> getExhibitsLive() {
         return nodeInfoDao.getExhibitsLive();
     }
 
-    public LiveData<List<NodeInfo>> getSelectedItemsLive() {
+    public LiveData<List<NodeInfo>> getSelectedExhibitsLive() {
         return nodeInfoDao.getSelectedExhibitsLive();
     }
 

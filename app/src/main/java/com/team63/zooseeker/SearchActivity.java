@@ -39,8 +39,8 @@ public class SearchActivity extends AppCompatActivity {
 
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickedHandler(viewModel::toggleSelectItem);
-        adapter.setSearchItems(viewModel.getItems());
-        viewModel.getItemsLive().observe(this, adapter::setSearchItems);
+        adapter.setSearchItems(viewModel.getExhibits());
+        viewModel.getExhibitsLive().observe(this, adapter::setSearchItems);
 
         SearchView searchView = (SearchView) findViewById(R.id.nav_search);
 

@@ -1,8 +1,6 @@
 package com.team63.zooseeker;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(divider);
         recyclerView.setAdapter(adapter);
 
-        viewModel.getSelectedItemsLive().observe(this, adapter::setPrePlanItems);
+        viewModel.getSelectedExhibitsLive().observe(this, adapter::setPrePlanItems);
     }
 
     public void onPlanBtnClick(View view) {

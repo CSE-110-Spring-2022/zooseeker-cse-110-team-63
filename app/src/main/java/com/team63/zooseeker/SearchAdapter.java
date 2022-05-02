@@ -20,12 +20,12 @@ import java.util.regex.Pattern;
 
 // https://www.youtube.com/watch?v=sJ-Z9G0SDhc
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
-    private List<NodeInfo> searchItems;
-    private List<NodeInfo> searchResults;
+    private List<NodeInfo> searchItems = new ArrayList<>();
+    private List<NodeInfo> searchResults = new ArrayList<>();
     private Consumer<NodeInfo> onItemClicked;
     public void setSearchItems(List<NodeInfo> newSearchItems) {
-        this.searchItems = new ArrayList<>();
-        this.searchItems.addAll(newSearchItems);
+        searchItems.clear();
+        searchItems.addAll(newSearchItems);
         updateSearchResults();
         notifyDataSetChanged();
     }
@@ -34,10 +34,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     // or else after updating te data we will see all results despite having
     // a search query
     private void updateSearchResults() {
-        if (searchResults == null) {
-            searchResults = new ArrayList<>(searchItems);
-            return;
-        }
         HashMap<String, NodeInfo> searchItemsMap = new HashMap<>();
         for (NodeInfo item : searchItems) {
             searchItemsMap.put(item.id, item);
@@ -117,6 +113,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             this.checkBox = itemView.findViewById(R.id.search_item_checkbox);
             this.textView = itemView.findViewById(R.id.search_item_text);
             this.area.setOnClickListener(view -> {
+                checkBox.performClick();
+            });
+            this.checkBox.setOnClickListener(view -> {
                 if (onItemClicked == null) return;
                 onItemClicked.accept(searchItem);
             });

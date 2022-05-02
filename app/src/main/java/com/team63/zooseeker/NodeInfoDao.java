@@ -14,16 +14,16 @@ public interface NodeInfoDao {
     @Insert
     List<Long> insertAll(List<NodeInfo> nodeInfo);
 
-    @Query("SELECT * FROM `node_info` ORDER BY `name`")
+    @Query("SELECT * FROM `node_info` WHERE `kind`='exhibit' ORDER BY `name`")
     List<NodeInfo> getExhibits();
 
-    @Query("SELECT * FROM `node_info` WHERE `selected`")
+    @Query("SELECT * FROM `node_info` WHERE `kind`='exhibit' AND `selected`")
     List<NodeInfo> getSelectedExhibits();
 
-    @Query("SELECT * FROM `node_info`")
+    @Query("SELECT * FROM `node_info` WHERE `kind`='exhibit'")
     LiveData<List<NodeInfo>> getExhibitsLive();
 
-    @Query("SELECT * FROM `node_info` WHERE `selected`")
+    @Query("SELECT * FROM `node_info` WHERE `kind`='exhibit' AND `selected`")
     LiveData<List<NodeInfo>> getSelectedExhibitsLive();
 
     @Update
