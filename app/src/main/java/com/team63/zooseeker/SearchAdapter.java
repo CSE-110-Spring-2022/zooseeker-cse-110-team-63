@@ -1,6 +1,5 @@
 package com.team63.zooseeker;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
@@ -22,14 +20,34 @@ import java.util.regex.Pattern;
 
 // https://www.youtube.com/watch?v=sJ-Z9G0SDhc
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
-    private List<NodeInfo> searchItems = Collections.emptyList();
-    private List<NodeInfo> searchResults = new ArrayList<>();
+    private List<NodeInfo> searchItems;
+    private List<NodeInfo> searchResults;
     private Consumer<NodeInfo> onItemClicked;
     public void setSearchItems(List<NodeInfo> newSearchItems) {
-        this.searchItems.clear();
-        this.searchItems = newSearchItems;
-        this.searchResults.addAll(newSearchItems); // have to do this to prevent shallow copy
+        this.searchItems = new ArrayList<>();
+        this.searchItems.addAll(newSearchItems);
+        updateSearchResults();
         notifyDataSetChanged();
+    }
+
+    // don't forget, we have to update the search results too,
+    // or else after updating te data we will see all results despite having
+    // a search query
+    private void updateSearchResults() {
+        if (searchResults == null) {
+            searchResults = new ArrayList<>(searchItems);
+            return;
+        }
+        HashMap<String, NodeInfo> searchItemsMap = new HashMap<>();
+        for (NodeInfo item : searchItems) {
+            searchItemsMap.put(item.id, item);
+        }
+        List<NodeInfo> newSearchResults = new ArrayList<>();
+        for (NodeInfo oldResult : searchResults) {
+            newSearchResults.add(searchItemsMap.get(oldResult.id));
+        }
+        searchResults.clear();
+        searchResults.addAll(newSearchResults);
     }
 
     public void setOnItemClickedHandler(Consumer<NodeInfo> onItemClicked) {
@@ -61,7 +79,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults results = new FilterResults();
-                List<NodeInfo> filteredExhibits = new ArrayList<NodeInfo>();
+                List<NodeInfo> filteredExhibits = new ArrayList<>();
                 if (constraint == null || constraint.length() == 0) {
                     filteredExhibits.addAll(searchItems);
                 }
