@@ -23,12 +23,12 @@ import java.util.regex.Pattern;
 // https://www.youtube.com/watch?v=sJ-Z9G0SDhc
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
     private List<NodeInfo> searchItems = Collections.emptyList();
-    private List<NodeInfo> searchResults = new ArrayList<NodeInfo>();
+    private List<NodeInfo> searchResults = new ArrayList<>();
     private Consumer<NodeInfo> onItemClicked;
     public void setSearchItems(List<NodeInfo> newSearchItems) {
         this.searchItems.clear();
         this.searchItems = newSearchItems;
-        this.searchResults = newSearchItems;
+        this.searchResults.addAll(newSearchItems); // have to do this to prevent shallow copy
         notifyDataSetChanged();
     }
 
