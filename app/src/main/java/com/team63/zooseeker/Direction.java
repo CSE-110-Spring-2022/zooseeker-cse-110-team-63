@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /* this implementation of IDirection takes in a GraphPath in the List returned by
- * PlanGenerator.getPath in the constructor, and uses it to construct the path
+ * PlanGenerator.getPath in the constructor, and uses it to construct the pathVie
  */
 public class Direction implements Parcelable{
     public long id = 0;
