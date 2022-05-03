@@ -26,6 +26,7 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
             sum += newPlanItems.get(i).directionInfo.distance;
         }
         this.planItems.addAll(newPlanItems);
+        this.planItems.remove(newPlanItems.size() - 1); // remove the gate item
         notifyDataSetChanged();
     }
 

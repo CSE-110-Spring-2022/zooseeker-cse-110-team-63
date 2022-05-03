@@ -1,5 +1,6 @@
 package com.team63.zooseeker;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -23,6 +25,7 @@ import java.util.Map;
 public class ViewPlanActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
     public PlanViewModel viewModel;
+    public PlanItemAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +34,9 @@ public class ViewPlanActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this)
                 .get(PlanViewModel.class);
 
-        PlanItemAdapter adapter = new PlanItemAdapter();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        adapter = new PlanItemAdapter();
         adapter.setHasStableIds(true);
 
         recyclerView = findViewById(R.id.plan_items);
@@ -48,10 +53,16 @@ public class ViewPlanActivity extends AppCompatActivity {
 
     public void setDirectionCount(List<Direction> directions) {
         TextView planCount = findViewById(R.id.plan_count);
-        planCount.setText(String.format(Locale.US, "Plan (%d)", directions.size()));
+        planCount.setText(String.format(Locale.US, "Plan (%d)", adapter.getItemCount()));
     }
 
-    public void goBack(View view) {
-        this.finish();
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

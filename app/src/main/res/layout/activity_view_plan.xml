@@ -6,34 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".ViewPlanActivity">
 
-    <Button
-        android:id="@+id/add_more_exhibits_btn"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/add_more_exhibits"
-        android:onClick="goBack"
-        android:textAllCaps="false"
-        app:icon="@android:drawable/ic_menu_revert"
-        app:layout_constraintBottom_toTopOf="@+id/plan_items"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/plan_count"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="10dp"
         android:gravity="center_vertical"
         android:text="@string/plan_default"
         android:textSize="25sp"
-        app:layout_constraintBottom_toBottomOf="@+id/add_more_exhibits_btn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/add_more_exhibits_btn"
-        app:layout_constraintTop_toTopOf="@+id/add_more_exhibits_btn" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/plan_items"
@@ -42,7 +26,7 @@
         app:layout_constraintBottom_toTopOf="@+id/get_directions_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_more_exhibits_btn" />
+        app:layout_constraintTop_toBottomOf="@+id/plan_count" />
 
     <Button
         android:id="@+id/get_directions_btn"
