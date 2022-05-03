@@ -12,16 +12,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import org.jgrapht.Graph;
+
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
-    private PrePlanViewModel viewModel;
+    private PlanViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         viewModel = new ViewModelProvider(this)
-                .get(PrePlanViewModel.class);
+                .get(PlanViewModel.class);
 
         MainAdapter adapter = new MainAdapter();
         // adapter.setHasStableIds(true); do this later;
@@ -39,7 +43,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onPlanBtnClick(View view) {
+        Map<String, ZooData.VertexInfo> vInfoMap =
+                ZooData.loadVertexInfoJSON(this, ZooData.VERTEX_INFO_FILE);
+        Map<String, ZooData.EdgeInfo> eInfoMap =
+                ZooData.loadEdgeInfoJSON(this, ZooData.EDGE_INFO_FILE);
+        Graph<String, IdentifiedWeightedEdge> G =
+                ZooData.loadZooGraphJSON(this, ZooData.GRAPH_INFO_FILE);
+        viewModel.generateDirections(G, vInfoMap, eInfoMap);
 
+        Intent intent = new Intent(this, ViewPlanActivity.class);
+        startActivity(intent);
     }
 
     @Override

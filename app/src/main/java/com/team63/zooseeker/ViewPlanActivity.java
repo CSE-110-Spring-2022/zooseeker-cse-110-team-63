@@ -1,11 +1,14 @@
 package com.team63.zooseeker;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import org.jgrapht.Graph;
@@ -19,11 +22,14 @@ import java.util.Map;
 
 public class ViewPlanActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
+    public PlanViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_plan);
+        viewModel = new ViewModelProvider(this)
+                .get(PlanViewModel.class);
 
         PlanItemAdapter adapter = new PlanItemAdapter();
         adapter.setHasStableIds(true);
@@ -36,26 +42,16 @@ public class ViewPlanActivity extends AppCompatActivity {
                 layoutManager.getOrientation());
         recyclerView.addItemDecoration(divider);
         recyclerView.setAdapter(adapter);
+        viewModel.getDirectionsLive().observe(this, adapter::setPlanItems);
+        viewModel.getDirectionsLive().observe(this, this::setDirectionCount);
+    }
 
-        // demo code - delete later
-        Graph<String, IdentifiedWeightedEdge> G = ZooData.loadZooGraphJSON(this, "sample_zoo_graph.json");
-        List<String> targets = Arrays.asList("elephant_odyssey", "arctic_foxes", "gators", "gorillas");
-        RouteGenerator demoRouteGen = new NNRouteGenerator(G);
-        ArrayList<Direction> demoPlan = new ArrayList<>();
-        Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this, "sample_node_info.json");
-        Map<String, ZooData.EdgeInfo> eInfo = ZooData.loadEdgeInfoJSON(this, "sample_edge_info.json");
-        for (GraphPath<String, IdentifiedWeightedEdge> path : demoRouteGen.getRoute("entrance_exit_gate", targets)) {
-            demoPlan.add(new Direction(path, vInfo, eInfo));
-        }
-        List<Direction> plan = demoPlan;
-        // end of demo code
-
-        List<Direction> planWithoutExit = new ArrayList<>(plan);
-        planWithoutExit.remove(planWithoutExit.size() - 1);
-        adapter.setPlanItems(planWithoutExit);
+    public void setDirectionCount(List<Direction> directions) {
         TextView planCount = findViewById(R.id.plan_count);
-        planCount.setText(String.format(Locale.US, "Plan (%d)", adapter.getItemCount()));
+        planCount.setText(String.format(Locale.US, "Plan (%d)", directions.size()));
+    }
 
-
+    public void goBack(View view) {
+        this.finish();
     }
 }

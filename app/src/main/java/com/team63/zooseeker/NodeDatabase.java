@@ -17,11 +17,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-@Database(entities = {NodeInfo.class}, version = 1)
+@Database(entities = {NodeInfo.class, DirectionInfo.class, Step.class}, version = 2)
 public abstract class NodeDatabase extends RoomDatabase {
     private static NodeDatabase singleton = null;
 
     public abstract NodeInfoDao nodeInfoDao();
+
+    public abstract DirectionDao directionDao();
 
     public synchronized static NodeDatabase getSingleton(Context context) {
         if (singleton == null) {

@@ -14,6 +14,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/add_more_exhibits"
+        android:onClick="goBack"
         android:textAllCaps="false"
         app:icon="@android:drawable/ic_menu_revert"
         app:layout_constraintBottom_toTopOf="@+id/plan_items"

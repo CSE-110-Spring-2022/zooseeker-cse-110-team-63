@@ -20,6 +20,9 @@ public interface NodeInfoDao {
     @Query("SELECT * FROM `node_info` WHERE `kind`='exhibit' AND `selected`")
     List<NodeInfo> getSelectedExhibits();
 
+    @Query("SELECT `id` FROM `node_info` WHERE `kind`='exhibit' AND `selected`")
+    List<String> getSelectedExhibitIds();
+
     @Query("SELECT * FROM `node_info` WHERE `kind`='exhibit'")
     LiveData<List<NodeInfo>> getExhibitsLive();
 

@@ -1,6 +1,8 @@
 package com.team63.zooseeker;
 
-import static com.team63.zooseeker.Step.roundDistance;
+import androidx.room.Embedded;
+import androidx.room.Ignore;
+import androidx.room.Relation;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
@@ -14,26 +16,27 @@ import java.util.Objects;
  * PlanGenerator.getPath in the constructor, and uses it to construct the path
  */
 public class Direction {
-    public long id = 0;
-    public String name; // name of destination
-    public Double distance;
+    @Embedded DirectionInfo directionInfo;
     // public List<String> stepStrings;
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "directionId"
+    )
     public List<Step> steps;
-    public int order;
 
-
+    @Ignore
     private Map<String, ZooData.VertexInfo> vInfo;
+
+    @Ignore
     private Map<String, ZooData.EdgeInfo> eInfo;
+
+    @Ignore
     private GraphPath<String, IdentifiedWeightedEdge> path;
+
+    @Ignore
     private Graph<String, IdentifiedWeightedEdge> G;
 
-
-    public Direction(String name, Double distance, /*, List<String> stepStrings*/ int order) {
-        this.name = name;
-        this.distance = distance;
-        // this.stepStrings = stepStrings;
-        this.order = order;
-    }
+    public Direction() {}
 
     /* path is the path from one exhibit to another.
      * vInfo is a Map of strings to ZooData.VertexInfo objects, that can be obtained by calling
@@ -47,14 +50,12 @@ public class Direction {
         this.eInfo = eInfo;
         this.path = path;
         this.G = path.getGraph();
-        this.name = Objects.requireNonNull(vInfo.get(path.getEndVertex())).name;
-        this.distance = path.getWeight();
+        this.directionInfo = new DirectionInfo(
+                Objects.requireNonNull(vInfo.get(path.getEndVertex())).name,
+                path.getWeight()
+                );
         this.steps = computeSteps();
         // this.stepStrings = getTextDirection();
-    }
-
-    public int getDistance() {
-        return roundDistance(distance);
     }
 
     /*
@@ -72,9 +73,10 @@ public class Direction {
         Step step = new Step();
         List<IdentifiedWeightedEdge> pathEdges = path.getEdgeList();
         List<String> pathVertices = path.getVertexList();
+        int stepCount = 0;
         for (int i = 0; i < pathEdges.size(); i++) {
             IdentifiedWeightedEdge currEdge = pathEdges.get(i);
-            if (step.street == null) { // if step is fresh, we provide a street for it
+            if (step.street.equals("")) { // if step is fresh, we provide a street for it
                 step.street = eInfo.get(currEdge.getId()).street;
             }
             step.distance += G.getEdgeWeight(currEdge); // add edge distance to total step dist
@@ -95,8 +97,23 @@ public class Direction {
                 }
                 stepList.add(step); // we "cut off" the step and put it in the list
                 step = new Step(); // make step point to a new Step object
+                stepCount++;
             }
         }
         return stepList;
+    }
+
+    // helper method that rounds distance to 1 sig fig
+    static int roundDistance(double d) {
+        int exponent = 0;
+        while (d >= 10) {
+            exponent++;
+            d /= 10;
+        }
+        int roundedD = (int) d;
+        for (int i = 0; i < exponent; i++) {
+            roundedD *= 10;
+        }
+        return roundedD;
     }
 }

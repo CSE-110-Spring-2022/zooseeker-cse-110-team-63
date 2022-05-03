@@ -13,7 +13,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 public class SearchActivity extends AppCompatActivity {
-    PrePlanViewModel viewModel;
+    PlanViewModel viewModel;
     SearchAdapter adapter;
 
     @Override
@@ -21,7 +21,7 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         viewModel = new ViewModelProvider(this)
-                .get(PrePlanViewModel.class);
+                .get(PlanViewModel.class);
 
         Toolbar toolbar = findViewById(R.id.navi_toolbar);
 
