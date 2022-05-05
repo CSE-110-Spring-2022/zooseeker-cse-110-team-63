@@ -57,7 +57,12 @@ public class NodeInfo {
             Reader reader = new InputStreamReader(input);
             Gson gson = new Gson();
             Type type = new TypeToken<List<NodeInfo>>(){}.getType();
-            return gson.fromJson(reader, type);
+            List<NodeInfo> fromJsonList = gson.fromJson(reader, type);
+            // use for loop to populate concatTags field given auto-populated tags list
+            for (int i = 0; i < fromJsonList.size(); i++) {
+                fromJsonList.get(i).populateConcatTags();
+            }
+            return fromJsonList;
         } catch (IOException e) {
             e.printStackTrace();
             return Collections.emptyList();
@@ -71,5 +76,9 @@ public class NodeInfo {
                 ", name='" + name + '\'' +
                 ", tags=" + Arrays.toString(tags) +
                 '}';
+    }
+
+    private void populateConcatTags() {
+        this.concatTags = String.join(",", this.tags);
     }
 }

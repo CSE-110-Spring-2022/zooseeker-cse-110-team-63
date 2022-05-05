@@ -3,4 +3,5 @@
     <string name="add_more_exhibits">Add more exhibits</string>
     <string name="get_directions">Get directions</string>
     <string name="plan_default">Plan (0)</string>
+    <string name="default_exhibit_count">(0)</string>
 </resources>

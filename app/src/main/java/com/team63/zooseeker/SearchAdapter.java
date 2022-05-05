@@ -1,5 +1,6 @@
 package com.team63.zooseeker;
 
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +19,12 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// credit to
 // https://www.youtube.com/watch?v=sJ-Z9G0SDhc
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
     private List<NodeInfo> searchItems = new ArrayList<>();
-    private List<NodeInfo> searchResults = new ArrayList<>();
+    private List<NodeInfo> searchResults = searchItems; // make it point to searchItems by default
+
     private Consumer<NodeInfo> onItemClicked;
     public void setSearchItems(List<NodeInfo> newSearchItems) {
         searchItems.clear();
@@ -31,7 +34,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     }
 
     // don't forget, we have to update the search results too,
-    // or else after updating te data we will see all results despite having
+    // or else after updating the data we will see all results despite having
     // a search query
     private void updateSearchResults() {
         HashMap<String, NodeInfo> searchItemsMap = new HashMap<>();
@@ -83,8 +86,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                     for (NodeInfo exhibit : searchItems) {
                         Pattern pattern = Pattern.compile(constraint.toString(), Pattern.CASE_INSENSITIVE);
                         // https://www.w3schools.com/java/java_regex.asp
-                        Matcher matcher = pattern.matcher(exhibit.name);
-                        if (matcher.find()) {
+                        Matcher matcher1 = pattern.matcher(exhibit.name);
+                        Matcher matcher2 = pattern.matcher(exhibit.concatTags);
+                        if (matcher1.find() || matcher2.find()) {
                             filteredExhibits.add(exhibit);
                         }
                     }
@@ -104,20 +108,16 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
-        private final CheckBox checkBox;
         private final ConstraintLayout area;
         private NodeInfo searchItem;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             this.area = itemView.findViewById(R.id.search_item_area);
-            this.checkBox = itemView.findViewById(R.id.search_item_checkbox);
             this.textView = itemView.findViewById(R.id.search_item_text);
             this.area.setOnClickListener(view -> {
-                checkBox.performClick();
-            });
-            this.checkBox.setOnClickListener(view -> {
                 if (onItemClicked == null) return;
                 onItemClicked.accept(searchItem);
+                ((Activity)view.getContext()).finish();
             });
         }
 
@@ -125,7 +125,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
         public void setPrePlanItem(NodeInfo searchItem) {
             this.searchItem = searchItem;
-            this.checkBox.setChecked(searchItem.selected);
             this.textView.setText(searchItem.name);
         }
     }

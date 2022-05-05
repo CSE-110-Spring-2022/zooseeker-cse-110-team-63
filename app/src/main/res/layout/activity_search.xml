@@ -23,12 +23,14 @@
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/nav_search"
-            app:queryHint="Search for animals here..."
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="-16dp"
+            app:iconifiedByDefault="false"
+            app:queryHint="Search for animals here..."
             app:searchIcon="@null"
-            app:iconifiedByDefault="false">
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="4dp">
 
         </androidx.appcompat.widget.SearchView>
     </androidx.appcompat.widget.Toolbar>

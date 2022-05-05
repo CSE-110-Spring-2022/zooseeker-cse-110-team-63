@@ -2,7 +2,6 @@ package com.team63.zooseeker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,17 +9,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
-import org.jgrapht.Graph;
-import org.jgrapht.GraphPath;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class ViewPlanActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
@@ -41,14 +33,15 @@ public class ViewPlanActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.plan_items);
 
+        // see SearchActivity.java credits for divider
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         DividerItemDecoration divider = new DividerItemDecoration(recyclerView.getContext(),
                 layoutManager.getOrientation());
         recyclerView.addItemDecoration(divider);
         recyclerView.setAdapter(adapter);
-        viewModel.getDirectionsLive().observe(this, adapter::setPlanItems);
-        viewModel.getDirectionsLive().observe(this, this::setDirectionCount);
+        viewModel.getDirections().observe(this, adapter::setPlanItems);
+        viewModel.getDirections().observe(this, this::setDirectionCount);
     }
 
     public void setDirectionCount(List<Direction> directions) {
@@ -56,6 +49,7 @@ public class ViewPlanActivity extends AppCompatActivity {
         planCount.setText(String.format(Locale.US, "Plan (%d)", adapter.getItemCount()));
     }
 
+    // https://stackoverflow.com/questions/7479992/handling-a-menu-item-click-event-android
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {

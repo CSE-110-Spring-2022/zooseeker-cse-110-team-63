@@ -2,6 +2,7 @@ package com.team63.zooseeker;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -12,24 +13,21 @@ import java.util.List;
 @Dao
 public interface NodeInfoDao {
     @Insert
-    List<Long> insertAll(List<NodeInfo> nodeInfo);
+    void insertAll(List<NodeInfo> nodeInfo);
 
     @Query("SELECT * FROM `node_info` WHERE `kind`='exhibit' ORDER BY `name`")
-    List<NodeInfo> getExhibits();
-
-    @Query("SELECT * FROM `node_info` WHERE `kind`='exhibit' AND `selected`")
-    List<NodeInfo> getSelectedExhibits();
+    LiveData<List<NodeInfo>> getExhibits();
 
     @Query("SELECT `id` FROM `node_info` WHERE `kind`='exhibit' AND `selected`")
     List<String> getSelectedExhibitIds();
 
-    @Query("SELECT * FROM `node_info` WHERE `kind`='exhibit'")
-    LiveData<List<NodeInfo>> getExhibitsLive();
-
     @Query("SELECT * FROM `node_info` WHERE `kind`='exhibit' AND `selected`")
-    LiveData<List<NodeInfo>> getSelectedExhibitsLive();
+    LiveData<List<NodeInfo>> getSelectedExhibits();
 
     @Update
     int update(NodeInfo nodeInfo);
+
+    @Delete
+    void delete(NodeInfo nodeInfo);
 
 }

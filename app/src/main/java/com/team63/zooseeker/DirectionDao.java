@@ -7,7 +7,9 @@ import androidx.room.Query;
 
 import java.util.List;
 
-// https://stackoverflow.com/questions/44667160/android-room-insert-relation-entities-using-room
+// Credit to
+// https://stackoverflow.com/a/47112918
+// for teaching me how to insert relation entities in Dao
 @Dao
 public abstract class DirectionDao {
     @Insert

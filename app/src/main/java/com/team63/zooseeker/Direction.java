@@ -8,9 +8,12 @@ import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /* this implementation of IDirection takes in a GraphPath in the List returned by
  * PlanGenerator.getPath in the constructor, and uses it to construct the path
@@ -74,6 +77,7 @@ public class Direction {
         List<IdentifiedWeightedEdge> pathEdges = path.getEdgeList();
         List<String> pathVertices = path.getVertexList();
         int stepCount = 0;
+        // TODO: refactor the logic in here
         for (int i = 0; i < pathEdges.size(); i++) {
             IdentifiedWeightedEdge currEdge = pathEdges.get(i);
             if (step.street.equals("")) { // if step is fresh, we provide a street for it
@@ -84,17 +88,43 @@ public class Direction {
             if (i == pathEdges.size() - 1
             // or if the edge ahead of us changes street, we end the step.
                     || (!step.street.equals(eInfo.get(pathEdges.get(i+1).getId()).street))) {
-                // if we ended the step because we have to change street next
-                if (i < pathEdges.size() - 1 &&
-                        vInfo.get(G.getEdgeTarget(currEdge)).kind == ZooData.VertexInfo.Kind.INTERSECTION) {
-                    // set the destination to the next street
-                    step.destination = eInfo.get(pathEdges.get(i+1).getId()).street;
-                }
                 // if we ended the step because we reached the end of the GraphPath
-                else {
+                if (i == pathEdges.size() - 1) {
                     // we mark the end destination of the step
                     step.destination = vInfo.get(path.getEndVertex()).name;
                 }
+                else {
+                    // find the real target (necessary bc of how JGraphT stores unordered edges)
+                    String realTarget = "";
+                    Set<String> currEdgeEnds = new HashSet<>(Arrays.asList(
+                            G.getEdgeTarget(pathEdges.get(i)),
+                            G.getEdgeSource(pathEdges.get(i))
+                    ));
+                    Set<String> nextEdgeEnds = new HashSet<>(Arrays.asList(
+                            G.getEdgeTarget(pathEdges.get(i+1)),
+                            G.getEdgeSource(pathEdges.get(i+1))
+                    ));
+                    // find the vertex in common with the current edge and
+                    // next edge to find the "true" destination of this edge
+                    for (String currEdgeEnd : currEdgeEnds) {
+                        if (nextEdgeEnds.contains(currEdgeEnd)) {
+                            realTarget = currEdgeEnd;
+                            break;
+                        }
+                    }
+
+                    // if we ended the step because we have to change street next on an intersection
+                    if (vInfo.get(realTarget).kind == ZooData.VertexInfo.Kind.INTERSECTION) {
+                        // set the destination to the next street
+                        step.destination = eInfo.get(pathEdges.get(i+1).getId()).street;
+                    }
+                    // if we ended the step because we have to change street next on an exhibit
+                    else {
+                        // we set destination to the "real" target vertex of this edge
+                        step.destination = vInfo.get(realTarget).name;
+                    }
+                }
+
                 stepList.add(step); // we "cut off" the step and put it in the list
                 step = new Step(); // make step point to a new Step object
                 stepCount++;

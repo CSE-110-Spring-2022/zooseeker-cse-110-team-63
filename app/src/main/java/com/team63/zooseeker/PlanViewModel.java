@@ -2,7 +2,6 @@ package com.team63.zooseeker;
 
 import android.app.Application;
 import android.content.Context;
-import android.text.Layout;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -18,9 +17,10 @@ import java.util.Map;
 public class PlanViewModel extends AndroidViewModel {
     private final String ENTRANCE_EXIT = "entrance_exit_gate";
 
-    private LiveData<List<NodeInfo>> liveNodeInfos;
-    private LiveData<List<NodeInfo>> liveSelectedNodeInfos;
+    private LiveData<List<NodeInfo>> liveExhibits;
+    private LiveData<List<NodeInfo>> liveSelectedExhibits;
     private LiveData<List<Direction>> liveDirections;
+
     private final NodeInfoDao nodeInfoDao;
     private final DirectionDao directionDao;
 
@@ -32,29 +32,21 @@ public class PlanViewModel extends AndroidViewModel {
         directionDao = db.directionDao();
     }
 
-    public List<NodeInfo> getSelectedItems() {
-        return nodeInfoDao.getSelectedExhibits();
-    }
-
-    public List<NodeInfo> getExhibits() {
-        return nodeInfoDao.getExhibits();
-    }
-
-    public LiveData<List<NodeInfo>> getExhibitsLive() {
-        if (liveNodeInfos == null) {
-            liveNodeInfos = nodeInfoDao.getExhibitsLive();
+    public LiveData<List<NodeInfo>> getSelectedExhibits() {
+        if (liveSelectedExhibits == null) {
+            liveSelectedExhibits = nodeInfoDao.getSelectedExhibits();
         }
-        return liveNodeInfos;
+        return liveSelectedExhibits;
     }
 
-    public LiveData<List<NodeInfo>> getSelectedExhibitsLive() {
-        if (liveSelectedNodeInfos == null) {
-            liveSelectedNodeInfos = nodeInfoDao.getSelectedExhibitsLive();
+    public LiveData<List<NodeInfo>> getExhibits() {
+        if (liveExhibits == null) {
+            liveExhibits = nodeInfoDao.getExhibits();
         }
-        return liveSelectedNodeInfos;
+        return liveExhibits;
     }
 
-    public LiveData<List<Direction>> getDirectionsLive() {
+    public LiveData<List<Direction>> getDirections() {
         if (liveDirections == null) {
             liveDirections = directionDao.getDirectionsLive();
         }
@@ -79,8 +71,8 @@ public class PlanViewModel extends AndroidViewModel {
         directionDao.insertDirections(directions);
     }
 
-    public void toggleSelectItem(NodeInfo nodeInfo) {
-        nodeInfo.selected = !nodeInfo.selected;
+    public void selectItem(NodeInfo nodeInfo) {
+        nodeInfo.selected = true;
         nodeInfoDao.update(nodeInfo);
     }
 }
