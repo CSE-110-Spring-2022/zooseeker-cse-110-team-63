@@ -9,12 +9,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -59,34 +61,22 @@ public class MainActivity extends AppCompatActivity {
 
         SearchView fakeSearchView = findViewById(R.id.fake_search);
 
-        View.OnClickListener launchSearch = view -> {
-            Log.d("Test", "clicked");
+        // https://stackoverflow.com/a/31104529
+        // taught me that I have to get the EditText object inside the fakeSearchView
+        EditText editText = (EditText) fakeSearchView.findViewById(
+                // https://stackoverflow.com/a/62012217
+                androidx.appcompat.R.id.search_src_text
+        );
+
+        // https://www.trinea.cn/android/searchview-setonclicklistener-not-working/
+        // to know to setFocusable to fales
+        editText.setFocusable(false);
+        editText.setOnClickListener(view -> {
             Intent intent = new Intent(this, SearchActivity.class);
             startActivity(intent);
-        };
+        });
 
-        setSearchViewOnClickListener(fakeSearchView, launchSearch);
-    }
 
-    // credit to https://www.trinea.cn/android/searchview-setonclicklistener-not-working/
-    // for this whole helper method
-    private void setSearchViewOnClickListener(View v, View.OnClickListener listener) {
-        if (v instanceof ViewGroup) {
-            ViewGroup group = (ViewGroup)v;
-            int count = group.getChildCount();
-            for (int i = 0; i < count; i++) {
-                View child = group.getChildAt(i);
-                if (child instanceof LinearLayout || child instanceof RelativeLayout) {
-                    setSearchViewOnClickListener(child, listener);
-                }
-
-                if (child instanceof TextView) {
-                    TextView text = (TextView)child;
-                    text.setFocusable(false);
-                }
-                child.setOnClickListener(listener);
-            }
-        }
     }
 
     public void onPlanBtnClick(View view) {
