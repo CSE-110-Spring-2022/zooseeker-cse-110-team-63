@@ -1,6 +1,8 @@
 package com.team63.zooseeker;
 
-import static com.team63.zooseeker.Step.roundDistance;
+import androidx.room.Embedded;
+import androidx.room.Ignore;
+import androidx.room.Relation;
 
 import android.content.Context;
 import android.os.Parcel;
@@ -13,34 +15,38 @@ import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /* this implementation of IDirection takes in a GraphPath in the List returned by
  * PlanGenerator.getPath in the constructor, and uses it to construct the pathVie
  */
-public class Direction implements Parcelable{
-    public long id = 0;
-    public String name; // name of destination
-    public Double distance;
+public class Direction {
+    @Embedded DirectionInfo directionInfo;
     // public List<String> stepStrings;
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "directionId"
+    )
     public List<Step> steps;
-    public int order;
 
-
+    @Ignore
     private Map<String, ZooData.VertexInfo> vInfo;
+
+    @Ignore
     private Map<String, ZooData.EdgeInfo> eInfo;
+
+    @Ignore
     private GraphPath<String, IdentifiedWeightedEdge> path;
+
+    @Ignore
     private Graph<String, IdentifiedWeightedEdge> G;
 
-
-    public Direction(String name, Double distance, /*, List<String> stepStrings*/ int order) {
-        this.name = name;
-        this.distance = distance;
-        // this.stepStrings = stepStrings;
-        this.order = order;
-    }
+    public Direction() {}
 
     /* path is the path from one exhibit to another.
      * vInfo is a Map of strings to ZooData.VertexInfo objects, that can be obtained by calling
@@ -54,48 +60,23 @@ public class Direction implements Parcelable{
         this.eInfo = eInfo;
         this.path = path;
         this.G = path.getGraph();
-        this.name = Objects.requireNonNull(vInfo.get(path.getEndVertex())).name;
-        this.distance = path.getWeight();
+        this.directionInfo = new DirectionInfo(
+                Objects.requireNonNull(vInfo.get(path.getEndVertex())).name,
+                path.getWeight()
+                );
         this.steps = computeSteps();
         // this.stepStrings = getTextDirection();
     }
 
-    protected Direction(Parcel in) {
-        id = in.readLong();
-        name = in.readString();
-        if (in.readByte() == 0) {
-            distance = null;
-        } else {
-            distance = in.readDouble();
-        }
-        order = in.readInt();
-    }
-
-    public static final Creator<Direction> CREATOR = new Creator<Direction>() {
-        @Override
-        public Direction createFromParcel(Parcel in) {
-            return new Direction(in);
-        }
-
-        @Override
-        public Direction[] newArray(int size) {
-            return new Direction[size];
-        }
-    };
-
-    public int getDistance() {
-        return roundDistance(distance);
-    }
-
-
-    public List<String> getTextDirection() {
+    /*
+    private List<String> getTextDirection() {
         ArrayList<String> textDirectionList = new ArrayList<>();
         for (Step step : steps) {
             textDirectionList.add(step.toString());
         }
         return textDirectionList;
     }
-
+    */
 //    private List<Step> getSteps() {
 //        return steps;
 //    }
@@ -106,9 +87,11 @@ public class Direction implements Parcelable{
         Step step = new Step();
         List<IdentifiedWeightedEdge> pathEdges = path.getEdgeList();
         List<String> pathVertices = path.getVertexList();
+        int stepCount = 0;
+        // TODO: refactor the logic in here
         for (int i = 0; i < pathEdges.size(); i++) {
             IdentifiedWeightedEdge currEdge = pathEdges.get(i);
-            if (step.street == null) { // if step is fresh, we provide a street for it
+            if (step.street.equals("")) { // if step is fresh, we provide a street for it
                 step.street = eInfo.get(currEdge.getId()).street;
             }
             step.distance += G.getEdgeWeight(currEdge); // add edge distance to total step dist
@@ -116,39 +99,62 @@ public class Direction implements Parcelable{
             if (i == pathEdges.size() - 1
                     // or if the edge ahead of us changes street, we end the step.
                     || (!step.street.equals(eInfo.get(pathEdges.get(i+1).getId()).street))) {
-                // if we ended the step because we have to change street next
-                if (i < pathEdges.size() - 1 &&
-                        vInfo.get(G.getEdgeTarget(currEdge)).kind == ZooData.VertexInfo.Kind.INTERSECTION) {
-                    // set the destination to the next street
-                    step.destination = eInfo.get(pathEdges.get(i+1).getId()).street;
-                }
                 // if we ended the step because we reached the end of the GraphPath
-                else {
+                if (i == pathEdges.size() - 1) {
                     // we mark the end destination of the step
                     step.destination = vInfo.get(path.getEndVertex()).name;
                 }
+                else {
+                    // find the real target (necessary bc of how JGraphT stores unordered edges)
+                    String realTarget = "";
+                    Set<String> currEdgeEnds = new HashSet<>(Arrays.asList(
+                            G.getEdgeTarget(pathEdges.get(i)),
+                            G.getEdgeSource(pathEdges.get(i))
+                    ));
+                    Set<String> nextEdgeEnds = new HashSet<>(Arrays.asList(
+                            G.getEdgeTarget(pathEdges.get(i+1)),
+                            G.getEdgeSource(pathEdges.get(i+1))
+                    ));
+                    // find the vertex in common with the current edge and
+                    // next edge to find the "true" destination of this edge
+                    for (String currEdgeEnd : currEdgeEnds) {
+                        if (nextEdgeEnds.contains(currEdgeEnd)) {
+                            realTarget = currEdgeEnd;
+                            break;
+                        }
+                    }
+
+                    // if we ended the step because we have to change street next on an intersection
+                    if (vInfo.get(realTarget).kind == ZooData.VertexInfo.Kind.INTERSECTION) {
+                        // set the destination to the next street
+                        step.destination = eInfo.get(pathEdges.get(i+1).getId()).street;
+                    }
+                    // if we ended the step because we have to change street next on an exhibit
+                    else {
+                        // we set destination to the "real" target vertex of this edge
+                        step.destination = vInfo.get(realTarget).name;
+                    }
+                }
+
                 stepList.add(step); // we "cut off" the step and put it in the list
                 step = new Step(); // make step point to a new Step object
+                stepCount++;
             }
         }
         return stepList;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeLong(id);
-        parcel.writeString(name);
-        if (distance == null) {
-            parcel.writeByte((byte) 0);
-        } else {
-            parcel.writeByte((byte) 1);
-            parcel.writeDouble(distance);
+    // helper method that rounds distance to 1 sig fig
+    static int roundDistance(double d) {
+        int exponent = 0;
+        while (d >= 10) {
+            exponent++;
+            d /= 10;
         }
-        parcel.writeInt(order);
+        int roundedD = (int) d;
+        for (int i = 0; i < exponent; i++) {
+            roundedD *= 10;
+        }
+        return roundedD;
     }
 }

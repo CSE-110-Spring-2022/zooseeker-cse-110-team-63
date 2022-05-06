@@ -7,17 +7,26 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
 public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHolder> {
     private static final String ITEM_TEMPLATE = "%s (%d ft)";
-    private List<Direction> planItems = Collections.emptyList();
+    private List<Direction> planItems = new ArrayList<>();
 
     public void setPlanItems(List<Direction> newPlanItems) {
         this.planItems.clear();
-        this.planItems = newPlanItems;
+        double sum = 0;
+        for (int i = 0; i < newPlanItems.size(); i++) {
+            newPlanItems.get(i).directionInfo.cumDistance =
+                    Direction.roundDistance(sum)
+                    + Direction.roundDistance(newPlanItems.get(i).directionInfo.distance);
+            sum += newPlanItems.get(i).directionInfo.distance;
+        }
+        this.planItems.addAll(newPlanItems);
+        this.planItems.remove(newPlanItems.size() - 1); // remove the gate item
         notifyDataSetChanged();
     }
 
@@ -33,6 +42,7 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
         holder.setPlanItem(planItems.get(position));
     }
 
@@ -42,7 +52,7 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
     }
 
     @Override
-    public long getItemId(int position) { return planItems.get(position).id; }
+    public long getItemId(int position) { return planItems.get(position).directionInfo.id; }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
@@ -56,8 +66,9 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
         public void setPlanItem(Direction planItem) {
             this.planItem = planItem;
             this.textView.setText(String.format(Locale.US, ITEM_TEMPLATE,
-                    planItem.name,
-                    Step.roundDistance(planItem.distance)));
+                    planItem.directionInfo.name,
+                    planItem.directionInfo.cumDistance
+            ));
         }
     }
 }

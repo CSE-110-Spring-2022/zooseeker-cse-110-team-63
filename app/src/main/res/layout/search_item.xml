@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- https://rrtutors.com/tutorials/Android-Recyclerview-Item-Click-Event-with-Ripple-Effect-Add-Custom-Ripple-Color- -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/search_item_area"
     android:layout_width="match_parent"
+    android:background="?android:attr/selectableItemBackground"
     android:layout_height="64dp">
 
+
     <TextView
-        android:id="@+id/plan_item_text"
+        android:id="@+id/search_item_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:gravity="center_vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
