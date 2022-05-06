@@ -17,8 +17,8 @@ public class DirectionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_direction);
 
-        Direction direction = getIntent().getParcelableExtra("direction");
-        List<Step> steps = (List<Step>) getIntent().getSerializableExtra("steps");
+//        Direction direction = getIntent().getParcelableExtra("direction");
+//        List<Step> steps = (List<Step>) getIntent().getSerializableExtra("steps");
 
         TextView exhibitView = findViewById(R.id.exhibit_view);
         TextView directionsView = findViewById(R.id.directions_view);
@@ -27,10 +27,10 @@ public class DirectionActivity extends AppCompatActivity {
 //        Log.d("tag", "" + direction.getDistance());
 //        Log.d("tag", steps.get(0).toString());
         String directions = "";
-        for (Step step : steps) {
-            directions += step.toString();
-        }
+//        for (Step step : steps) {
+//            directions += step.toString();
+//        }
 //        String steps = direction.steps.get(0).toString();
-        directionsView.setText(directions);
+//        directionsView.setText(directions);
     }
 }

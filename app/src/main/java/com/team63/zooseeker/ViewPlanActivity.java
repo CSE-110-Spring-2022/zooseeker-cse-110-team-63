@@ -62,14 +62,14 @@ public class ViewPlanActivity extends AppCompatActivity {
     }
 
 
-//     public void onGetDirectionsClicked(View view) {
-//         Intent intent = new Intent(this, DirectionActivity.class);
-// //        Log.d("tag", plan.get(0).steps.toString());
+     public void onGetDirectionsClicked(View view) {
+         Intent intent = new Intent(this, DirectionActivity.class);
+ //        Log.d("tag", plan.get(0).steps.toString());
 //         Direction direction = plan.get(0);
 //         intent.putExtra("direction", direction);
 //         intent.putExtra("steps", (Serializable) direction.steps);
-//         startActivity(intent);
-//     }
+         startActivity(intent);
+     }
 
     // https://stackoverflow.com/questions/7479992/handling-a-menu-item-click-event-android
     @Override
