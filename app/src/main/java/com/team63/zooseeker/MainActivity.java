@@ -81,11 +81,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void onPlanBtnClick(View view) {
         Map<String, ZooData.VertexInfo> vInfoMap =
-                ZooData.loadVertexInfoJSON(this, ZooData.VERTEX_INFO_FILE);
+                ZooData.loadVertexInfoJSON(this, getString(R.string.vertex_info));
         Map<String, ZooData.EdgeInfo> eInfoMap =
-                ZooData.loadEdgeInfoJSON(this, ZooData.EDGE_INFO_FILE);
+                ZooData.loadEdgeInfoJSON(this, getString(R.string.edge_info));
         Graph<String, IdentifiedWeightedEdge> G =
-                ZooData.loadZooGraphJSON(this, ZooData.GRAPH_INFO_FILE);
+                ZooData.loadZooGraphJSON(this, getString(R.string.zoo_graph));
         viewModel.generateDirections(G, vInfoMap, eInfoMap);
 
         Intent intent = new Intent(this, ViewPlanActivity.class);

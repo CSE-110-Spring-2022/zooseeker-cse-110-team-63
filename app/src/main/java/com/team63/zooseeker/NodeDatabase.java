@@ -39,7 +39,8 @@ public abstract class NodeDatabase extends RoomDatabase {
                     @Override
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
                         super.onCreate(db);
-                        List<NodeInfo> nodeInfos = loadJSON(context, ZooData.VERTEX_INFO_FILE);
+                        List<NodeInfo> nodeInfos = loadJSON(context,
+                                context.getString(R.string.vertex_info));
                         Executors.newSingleThreadExecutor().execute(() -> {
                             getSingleton(context).nodeInfoDao().insertAll(nodeInfos);
                         });
