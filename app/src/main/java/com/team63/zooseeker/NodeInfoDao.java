@@ -30,4 +30,6 @@ public interface NodeInfoDao {
     @Delete
     void delete(NodeInfo nodeInfo);
 
+    @Query("DELETE FROM `node_info`")
+    void deleteAllNodeInfos();
 }
