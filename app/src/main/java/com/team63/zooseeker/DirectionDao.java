@@ -43,7 +43,7 @@ public abstract class DirectionDao {
     abstract LiveData<List<Direction>> getDirectionsLive();
 
     @Query("DELETE FROM `direction_info`")
-    abstract void deleteAllDirections();
+    abstract void deleteAllDirectionInfos();
 
     @Query("DELETE FROM `step`")
     abstract void deleteAllSteps();

@@ -57,7 +57,7 @@ public class PlanViewModel extends AndroidViewModel {
                                    Map<String, ZooData.VertexInfo> vInfoMap,
                                    Map<String, ZooData.EdgeInfo> eInfoMap)
     {
-        directionDao.deleteAllDirections();
+        directionDao.deleteAllDirectionInfos();
         directionDao.deleteAllSteps();
         RouteGenerator routeGen = new NNRouteGenerator(G);
 
