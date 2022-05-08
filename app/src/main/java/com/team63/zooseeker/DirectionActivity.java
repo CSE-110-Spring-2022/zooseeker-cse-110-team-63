@@ -40,16 +40,10 @@ public class DirectionActivity extends AppCompatActivity {
 
         directionInd = 0;
 
-//        Direction direction = getIntent().getParcelableExtra("direction");
-//        List<Step> steps = (List<Step>) getIntent().getSerializableExtra("steps");
         LiveData<List<Direction>> liveData = planViewModel.getDirections();
-//        List<Direction> directions = liveData.getValue();
         liveData.observe(this, this::updateDirections);
 
-//        Log.d("tag", direction.name);
-//        Log.d("tag", "" + direction.getDistance());
-//        Log.d("tag", steps.get(0).toString());
-
+        prevBtn.setVisibility(View.GONE);
     }
 
     public void updateDirections(List<Direction> directions){
@@ -74,12 +68,24 @@ public class DirectionActivity extends AppCompatActivity {
         if (directionInd + 1 >= directions.size()) return;
         directionInd++;
         updateDirections(directions);
+
+        if(directionInd == 0) prevBtn.setVisibility(View.GONE);
+        else prevBtn.setVisibility(View.VISIBLE);
+
+        if(directionInd == directions.size()-1) nextBtn.setVisibility(View.GONE);
+        else nextBtn.setVisibility(View.VISIBLE);
     }
 
     public void onPrevBtnClicked(View view) {
         if (directionInd - 1 < 0) return;
         directionInd--;
         updateDirections(directions);
+
+        if(directionInd == 0) prevBtn.setVisibility(View.GONE);
+        else prevBtn.setVisibility(View.VISIBLE);
+
+        if(directionInd == directions.size()-1) nextBtn.setVisibility(View.GONE);
+        else nextBtn.setVisibility(View.VISIBLE);
     }
 
     public void onPlanBtnClicked(View view) {
