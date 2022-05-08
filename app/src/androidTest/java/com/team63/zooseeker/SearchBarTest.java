@@ -15,21 +15,26 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
 
+import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.List;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -37,6 +42,17 @@ public class SearchBarTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+
+    @Before
+    public void resetDb() {
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
+        NodeDatabase db = NodeDatabase.getSingleton(context);
+        db.nodeInfoDao().deleteAllNodeInfos();
+        db.directionDao().deleteAllDirectionInfos();
+        db.directionDao().deleteAllSteps();
+        List<NodeInfo> nodeInfos = NodeInfo.loadJSON(context, context.getResources().getString(R.string.test_vertex_info));
+        db.nodeInfoDao().insertAll(nodeInfos);
+    }
 
     @Test
     public void searchBarTest() {
