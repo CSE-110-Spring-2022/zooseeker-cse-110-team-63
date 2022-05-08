@@ -48,7 +48,7 @@ public class PlanViewModel extends AndroidViewModel {
 
     public LiveData<List<Direction>> getDirections() {
         if (liveDirections == null) {
-            liveDirections = directionDao.getDirectionsLive();
+            liveDirections = directionDao.getDirections();
         }
         return liveDirections;
     }
