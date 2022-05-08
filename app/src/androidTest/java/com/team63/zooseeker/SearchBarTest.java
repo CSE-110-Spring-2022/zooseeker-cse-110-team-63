@@ -39,7 +39,7 @@ public class SearchBarTest {
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void searchBarTEst() {
+    public void searchBarTest() {
         ViewInteraction searchAutoComplete = onView(
                 allOf(withId(androidx.appcompat.R.id.search_src_text),
                         childAtPosition(
