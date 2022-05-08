@@ -67,7 +67,7 @@ public class DirectionActivity extends AppCompatActivity {
 //        String steps = direction.steps.get(0).toString();
         String destination = steps.get(steps.size() - 1).destination;
         directionsView.setText(dirStrings);
-        exhibitView.setText(destination + "(" + cumDist + " ft)");
+        exhibitView.setText(destination + "\n(" + cumDist + " ft)");
     }
 
     public void onNextBtnClicked(View view) {
