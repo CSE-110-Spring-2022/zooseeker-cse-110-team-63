@@ -1,5 +1,7 @@
 package com.team63.zooseeker;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
@@ -14,20 +16,21 @@ import java.util.List;
 @Dao
 public abstract class DirectionDao {
     @Insert
-    abstract void insertDirectionInfo(DirectionInfo directionInfo);
+    abstract Long insertDirectionInfo(DirectionInfo directionInfo);
 
     @Insert
     public abstract void insertSteps(List<Step> step);
 
     public void insertDirection(Direction direction) {
+        Long directionId = insertDirectionInfo(direction.directionInfo);
         List<Step> steps = direction.steps;
         for (int i = 0; i < steps.size(); i++) {
-            steps.get(i).directionId = direction.directionInfo.id;
+            steps.get(i).directionId = directionId;
             steps.get(i).order = i;
         }
         insertSteps(steps);
-        insertDirectionInfo(direction.directionInfo);
     }
+
 
     public void insertDirections(List<Direction> directions) {
         for (int i = 0; i < directions.size(); i++) {
@@ -37,15 +40,12 @@ public abstract class DirectionDao {
         }
     }
 
-    @Query("SELECT * from `direction_info` ORDER BY `order`")
-    abstract List<Direction> getDirections();
-
     @Transaction
     @Query("SELECT * from `direction_info` ORDER BY `order`")
-    abstract LiveData<List<Direction>> getDirectionsLive();
+    abstract LiveData<List<Direction>> getDirections();
 
     @Query("DELETE FROM `direction_info`")
-    abstract void deleteAllDirections();
+    abstract void deleteAllDirectionInfos();
 
     @Query("DELETE FROM `step`")
     abstract void deleteAllSteps();

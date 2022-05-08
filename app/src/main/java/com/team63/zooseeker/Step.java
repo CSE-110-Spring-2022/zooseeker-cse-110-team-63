@@ -3,6 +3,7 @@ package com.team63.zooseeker;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Locale;
@@ -25,14 +26,17 @@ public class Step { // a single step, a single direction is composed of these
     @NonNull
     public String destination;
 
+    @Ignore
     public Step() {
         this.distance = 0;
         this.street = "";
         this.destination = "";
     }
 
-    public Step(double distance, String street, String destination) {
+    public Step(long directionId, double distance, int order, String street, String destination) {
+        this.directionId= directionId;
         this.distance = distance;
+        this.order = order;
         this.street = street;
         this.destination = destination;
     }

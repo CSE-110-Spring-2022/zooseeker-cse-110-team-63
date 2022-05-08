@@ -24,9 +24,6 @@ import org.jgrapht.nio.json.JSONImporter;
  * Only small changes were added by the team, related to file I/O
  */
 public class ZooData {
-    public static final String VERTEX_INFO_FILE = "sample_node_info.json";
-    public static final String EDGE_INFO_FILE = "sample_edge_info.json";
-    public static final String GRAPH_INFO_FILE = "sample_zoo_graph.json";
 
     public static class VertexInfo {
         public static enum Kind {

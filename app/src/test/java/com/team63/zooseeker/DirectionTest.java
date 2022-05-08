@@ -24,9 +24,6 @@ import java.util.Map;
 @RunWith(AndroidJUnit4.class)
 public class DirectionTest {
     static final Double doubleDelta = 0.001; // tolerance for Double precision error
-    static final String testGraphFile = "sample_zoo_graph.json";
-    static final String testVInfoFile = "sample_node_info.json";
-    static final String testEInfoFile = "sample_edge_info.json";
     Context context;
     Graph<String, IdentifiedWeightedEdge> G;
     Map<String, ZooData.VertexInfo> vInfo;
@@ -35,9 +32,9 @@ public class DirectionTest {
     @Before
     public void initializeFields() {
         context = ApplicationProvider.getApplicationContext();
-        G = ZooData.loadZooGraphJSON(context, testGraphFile);
-        vInfo = ZooData.loadVertexInfoJSON(context, testVInfoFile);
-        eInfo = ZooData.loadEdgeInfoJSON(context, testEInfoFile);
+        G = ZooData.loadZooGraphJSON(context, context.getString(R.string.test_zoo_graph));
+        vInfo = ZooData.loadVertexInfoJSON(context, context.getString(R.string.test_vertex_info));
+        eInfo = ZooData.loadEdgeInfoJSON(context, context.getString(R.string.test_edge_info));
     }
 
     // Test case: The street changes at some point at intersection

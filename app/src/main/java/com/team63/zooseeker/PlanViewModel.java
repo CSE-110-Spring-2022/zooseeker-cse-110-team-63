@@ -48,7 +48,7 @@ public class PlanViewModel extends AndroidViewModel {
 
     public LiveData<List<Direction>> getDirections() {
         if (liveDirections == null) {
-            liveDirections = directionDao.getDirectionsLive();
+            liveDirections = directionDao.getDirections();
         }
         return liveDirections;
     }
@@ -57,7 +57,7 @@ public class PlanViewModel extends AndroidViewModel {
                                    Map<String, ZooData.VertexInfo> vInfoMap,
                                    Map<String, ZooData.EdgeInfo> eInfoMap)
     {
-        directionDao.deleteAllDirections();
+        directionDao.deleteAllDirectionInfos();
         directionDao.deleteAllSteps();
         RouteGenerator routeGen = new NNRouteGenerator(G);
 
