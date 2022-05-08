@@ -23,6 +23,7 @@ public class DirectionActivity extends AppCompatActivity {
     private TextView directionsView;
     private Button nextBtn;
     private Button prevBtn;
+    private Button planBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,7 @@ public class DirectionActivity extends AppCompatActivity {
         directionsView = findViewById(R.id.directions_view);
         nextBtn = findViewById(R.id.next_exhibit_btn);
         prevBtn = findViewById(R.id.previous_exhibit_btn);
+        planBtn = findViewById(R.id.plan_btn);
 
         planViewModel = new ViewModelProvider(this).get(PlanViewModel.class);
 
@@ -78,5 +80,9 @@ public class DirectionActivity extends AppCompatActivity {
         if (directionInd - 1 < 0) return;
         directionInd--;
         updateDirections(directions);
+    }
+
+    public void onPlanBtnClicked(View view) {
+        finish();
     }
 }
