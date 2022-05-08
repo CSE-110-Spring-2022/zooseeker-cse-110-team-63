@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,6 +21,8 @@ public class DirectionActivity extends AppCompatActivity {
 
     private TextView exhibitView;
     private TextView directionsView;
+    private Button nextBtn;
+    private Button prevBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +31,8 @@ public class DirectionActivity extends AppCompatActivity {
 
         exhibitView = findViewById(R.id.exhibit_view);
         directionsView = findViewById(R.id.directions_view);
+        nextBtn = findViewById(R.id.next_exhibit_btn);
+        prevBtn = findViewById(R.id.previous_exhibit_btn);
 
         planViewModel = new ViewModelProvider(this).get(PlanViewModel.class);
 
@@ -60,5 +66,17 @@ public class DirectionActivity extends AppCompatActivity {
         String destination = steps.get(steps.size() - 1).destination;
         directionsView.setText(dirStrings);
         exhibitView.setText(destination + "(" + cumDist + " ft)");
+    }
+
+    public void onNextBtnClicked(View view) {
+        if (directionInd + 1 >= directions.size()) return;
+        directionInd++;
+        updateDirections(directions);
+    }
+
+    public void onPrevBtnClicked(View view) {
+        if (directionInd - 1 < 0) return;
+        directionInd--;
+        updateDirections(directions);
     }
 }

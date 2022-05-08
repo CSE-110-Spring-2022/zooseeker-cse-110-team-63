@@ -13,6 +13,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="35dp"
         android:text="Next Exhibit"
+        android:onClick="onNextBtnClicked"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -23,39 +24,40 @@
         android:layout_marginStart="44dp"
         android:layout_marginBottom="35dp"
         android:text="Previous Exhibit"
+        android:onClick="onPrevBtnClicked"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/directions_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="92dp"
-        android:layout_marginEnd="41dp"
-        android:text="Directions"
-        android:textSize="32sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/plan_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="62dp"
-        android:layout_marginTop="92dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="72dp"
         android:text="Plan"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/directions_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="72dp"
+        android:layout_marginEnd="40dp"
+        android:text="Directions"
+        android:textSize="32sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/exhibit_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="168dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="172dp"
         android:text="Exhibit name and dist"
         android:textAlignment="center"
-        android:textSize="35sp"
+        android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
