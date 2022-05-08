@@ -1,8 +1,10 @@
 package com.team63.zooseeker;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.team63.zooseeker.NodeInfo.loadJSON;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -25,6 +27,14 @@ public abstract class NodeDatabase extends RoomDatabase {
 
     public abstract DirectionDao directionDao();
 
+    public static void resetDatabase(Context context) {
+        singleton.clearAllTables();
+        List<NodeInfo> nodeInfos = loadJSON(context,
+                context.getSharedPreferences("filenames", MODE_PRIVATE)
+                        .getString("vertex_info", "fail"));
+        singleton.nodeInfoDao().insertAll(nodeInfos);
+    }
+
     public synchronized static NodeDatabase getSingleton(Context context) {
         if (singleton == null) {
             singleton = NodeDatabase.makeDatabase(context);
@@ -40,7 +50,8 @@ public abstract class NodeDatabase extends RoomDatabase {
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
                         super.onCreate(db);
                         List<NodeInfo> nodeInfos = loadJSON(context,
-                                context.getString(R.string.vertex_info));
+                                context.getSharedPreferences("filenames", MODE_PRIVATE)
+                                        .getString("vertex_info", "fail"));
                         Executors.newSingleThreadExecutor().execute(() -> {
                             getSingleton(context).nodeInfoDao().insertAll(nodeInfos);
                         });

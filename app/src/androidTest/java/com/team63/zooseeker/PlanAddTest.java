@@ -1,6 +1,7 @@
 package com.team63.zooseeker;
 
 
+import static android.content.Context.MODE_PRIVATE;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -14,6 +15,7 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -27,6 +29,7 @@ import androidx.test.runner.AndroidJUnit4;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -44,12 +47,22 @@ public class PlanAddTest {
     @Before
     public void resetDb() {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        NodeDatabase db = NodeDatabase.getSingleton(context);
-        db.nodeInfoDao().deleteAllNodeInfos();
-        db.directionDao().deleteAllDirectionInfos();
-        db.directionDao().deleteAllSteps();
-        List<NodeInfo> nodeInfos = NodeInfo.loadJSON(context, context.getString(R.string.test_vertex_info));
-        db.nodeInfoDao().insertAll(nodeInfos);
+        SharedPreferences preferences = context.getSharedPreferences("filenames", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("vertex_info", context.getString(R.string.test_vertex_info));
+        editor.putString("edge_info", context.getString(R.string.test_edge_info));
+        editor.putString("zoo_graph", context.getString(R.string.test_zoo_graph));
+        editor.commit();
+        NodeDatabase.resetDatabase(context);
+    }
+
+    @After
+    public void resetSharedPreferences() {
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        SharedPreferences preferences = context.getSharedPreferences("filenames", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.commit();
     }
 
     @Test

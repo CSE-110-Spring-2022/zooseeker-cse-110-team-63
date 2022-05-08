@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,11 +32,31 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
     private PlanViewModel viewModel;
+    SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        preferences = getSharedPreferences("filenames", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        if (!preferences.contains("vertex_info")) {
+            editor.putString("vertex_info", getString(R.string.vertex_info));
+        }
+
+        if (!preferences.contains("edge_info")) {
+            editor.putString("edge_info", getString(R.string.edge_info));
+        }
+
+        if (!preferences.contains("zoo_graph")) {
+            editor.putString("zoo_graph", getString(R.string.zoo_graph));
+        }
+
+        editor.commit();
+
+        // important to set the sharedPref values before calling viewModel
+
         viewModel = new ViewModelProvider(this)
                 .get(PlanViewModel.class);
 
@@ -81,11 +102,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void onPlanBtnClick(View view) {
         Map<String, ZooData.VertexInfo> vInfoMap =
-                ZooData.loadVertexInfoJSON(this, getString(R.string.vertex_info));
+                ZooData.loadVertexInfoJSON(this,
+                        preferences.getString("vertex_info", "fail"));
+        Log.d("Test", preferences.getString("edge_info", "fail"));
         Map<String, ZooData.EdgeInfo> eInfoMap =
-                ZooData.loadEdgeInfoJSON(this, getString(R.string.edge_info));
+                ZooData.loadEdgeInfoJSON(this,
+                        preferences.getString("edge_info", "fail"));
         Graph<String, IdentifiedWeightedEdge> G =
-                ZooData.loadZooGraphJSON(this, getString(R.string.zoo_graph));
+                ZooData.loadZooGraphJSON(this,
+                        preferences.getString("zoo_graph", "fail"));
         viewModel.generateDirections(G, vInfoMap, eInfoMap);
 
         Intent intent = new Intent(this, ViewPlanActivity.class);
