@@ -45,8 +45,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         for (NodeInfo oldResult : searchResults) {
             newSearchResults.add(searchItemsMap.get(oldResult.id));
         }
-        searchResults.clear();
-        searchResults.addAll(newSearchResults);
+        searchResults = newSearchResults;
     }
 
     public void setOnItemClickedHandler(Consumer<NodeInfo> onItemClicked) {
