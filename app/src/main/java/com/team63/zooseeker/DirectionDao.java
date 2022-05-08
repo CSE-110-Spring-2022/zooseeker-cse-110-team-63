@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 
 import java.util.List;
 
@@ -39,6 +40,7 @@ public abstract class DirectionDao {
     @Query("SELECT * from `direction_info` ORDER BY `order`")
     abstract List<Direction> getDirections();
 
+    @Transaction
     @Query("SELECT * from `direction_info` ORDER BY `order`")
     abstract LiveData<List<Direction>> getDirectionsLive();
 

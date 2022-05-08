@@ -77,9 +77,9 @@ public class Direction {
         return textDirectionList;
     }
     */
-//    private List<Step> getSteps() {
-//        return steps;
-//    }
+    public List<Step> getSteps() {
+        return steps;
+    }
 
 
     private List<Step> computeSteps() {
