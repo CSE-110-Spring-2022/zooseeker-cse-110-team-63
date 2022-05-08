@@ -49,10 +49,16 @@ public class DirectionActivity extends AppCompatActivity {
         this.steps = directions.get(directionInd).getSteps();
 
         String dirStrings = "";
+        int count = 1;
+        double cumDist = 0;
         for (Step step : steps) {
-            dirStrings += step.toString();
+            dirStrings += count + ": " + step.toString() + ".\n\n";
+            cumDist += step.distance;
+            count++;
         }
 //        String steps = direction.steps.get(0).toString();
+        String destination = steps.get(steps.size() - 1).destination;
         directionsView.setText(dirStrings);
+        exhibitView.setText(destination + "(" + cumDist + " ft)");
     }
 }

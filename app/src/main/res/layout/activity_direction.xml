@@ -51,10 +51,11 @@
         android:id="@+id/exhibit_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="159dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="168dp"
         android:text="Exhibit name and dist"
-        android:textSize="40sp"
+        android:textAlignment="center"
+        android:textSize="35sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
