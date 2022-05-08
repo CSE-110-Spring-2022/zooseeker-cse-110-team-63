@@ -43,12 +43,12 @@ public class RouteButtonTest {
 
     @Before
     public void resetDb() {
-        Context context = InstrumentationRegistry.getInstrumentation().getContext();
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         NodeDatabase db = NodeDatabase.getSingleton(context);
         db.nodeInfoDao().deleteAllNodeInfos();
         db.directionDao().deleteAllDirectionInfos();
         db.directionDao().deleteAllSteps();
-        List<NodeInfo> nodeInfos = NodeInfo.loadJSON(context, context.getResources().getString(R.string.test_vertex_info));
+        List<NodeInfo> nodeInfos = NodeInfo.loadJSON(context, context.getString(R.string.test_vertex_info));
         db.nodeInfoDao().insertAll(nodeInfos);
     }
 
