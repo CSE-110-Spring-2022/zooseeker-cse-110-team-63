@@ -10,7 +10,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ZooSeeker">
         <activity
+            android:name=".ViewPlanActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DirectionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SearchActivity"
+            android:theme="@style/Theme.ZooSeeker.NoActionBar"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
+            android:theme="@style/Theme.ZooSeeker.NoActionBar"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

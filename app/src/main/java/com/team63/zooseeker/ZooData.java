@@ -24,6 +24,7 @@ import org.jgrapht.nio.json.JSONImporter;
  * Only small changes were added by the team, related to file I/O
  */
 public class ZooData {
+
     public static class VertexInfo {
         public static enum Kind {
             // The SerializedName annotation tells GSON how to convert
@@ -36,7 +37,7 @@ public class ZooData {
         public String id;
         public Kind kind;
         public String name;
-        public List<String> tags;
+        public List<String> tags;   
     }
 
     public static class EdgeInfo {
