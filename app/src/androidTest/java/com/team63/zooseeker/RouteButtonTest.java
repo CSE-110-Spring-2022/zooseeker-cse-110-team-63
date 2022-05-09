@@ -30,6 +30,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,6 +62,18 @@ public class RouteButtonTest {
         SharedPreferences.Editor editor = preferences.edit();
         editor.clear();
         editor.commit();
+    }
+
+    @AfterClass
+    public static void tearDownRouteButtonTest() {
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        SharedPreferences preferences = context.getSharedPreferences("filenames", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("vertex_info", context.getString(R.string.vertex_info));
+        editor.putString("edge_info", context.getString(R.string.edge_info));
+        editor.putString("zoo_graph", context.getString(R.string.zoo_graph));
+        editor.commit();
+        NodeDatabase.resetDatabase(context);
     }
 
     @Test
