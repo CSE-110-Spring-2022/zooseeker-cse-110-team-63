@@ -105,6 +105,44 @@ public class SearchBarTest {
         textView.check(matches(withText("Alligators")));
     }
 
+    @Test
+    public void tagsTest() {
+        ViewInteraction searchAutoComplete = onView(
+                allOf(withId(androidx.appcompat.R.id.search_src_text),
+                        childAtPosition(
+                                allOf(withId(androidx.appcompat.R.id.search_plate),
+                                        childAtPosition(
+                                                withId(androidx.appcompat.R.id.search_edit_frame),
+                                                1)),
+                                0),
+                        isDisplayed()));
+        searchAutoComplete.perform(click());
+
+        ViewInteraction searchAutoComplete2 = onView(
+                allOf(withId(androidx.appcompat.R.id.search_src_text),
+                        childAtPosition(
+                                allOf(withId(androidx.appcompat.R.id.search_plate),
+                                        childAtPosition(
+                                                withId(androidx.appcompat.R.id.search_edit_frame),
+                                                1)),
+                                0),
+                        isDisplayed()));
+        searchAutoComplete2.perform(replaceText("ape"), closeSoftKeyboard());
+
+        ViewInteraction recyclerView = onView(
+                allOf(withId(R.id.search_item),
+                        childAtPosition(
+                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
+                                1)));
+        recyclerView.perform(actionOnItemAtPosition(0, click()));
+
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.plan_item_text), withText("Gorillas"),
+                        withParent(withParent(withId(R.id.pre_plan_items))),
+                        isDisplayed()));
+        textView.check(matches(withText("Gorillas")));
+    }
+
     private static Matcher<View> childAtPosition(
             final Matcher<View> parentMatcher, final int position) {
 
