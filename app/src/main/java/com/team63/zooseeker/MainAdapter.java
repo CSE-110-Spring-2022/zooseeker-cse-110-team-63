@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Adapter used in MainActivity for the RecyclerView
+ */
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
     private List<NodeInfo> prePlanItems = Collections.emptyList();
     public void setPrePlanItems(List<NodeInfo> newPrePlanItems) {

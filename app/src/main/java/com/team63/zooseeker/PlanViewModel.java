@@ -14,6 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Responsible for preparing and managing the data for the UI (read: Activity)
+ * (here, MainActivity and ViewPlanActivity).
+ */
 public class PlanViewModel extends AndroidViewModel {
     private final String ENTRANCE_EXIT = "entrance_exit_gate";
 
