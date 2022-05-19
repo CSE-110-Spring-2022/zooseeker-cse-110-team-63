@@ -73,11 +73,15 @@ public class PlanViewModel extends AndroidViewModel {
     {
         directionDao.deleteAllDirectionInfos();
         directionDao.deleteAllSteps();
-        RouteGenerator routeGen = new NNRouteGenerator(G);
+        RouteGenerator routeGen = new NNRouteGenerator();
         String entranceExit = nodeInfoDao.getGates().get(0).id;
         Set<String> ids = new HashSet(nodeInfoDao.getSelectedExhibitIds());
-        List<GraphPath<String, IdentifiedWeightedEdge>> paths
-                = routeGen.getRoute(entranceExit, ids);
+        List<GraphPath<String, IdentifiedWeightedEdge>> paths = routeGen
+            .setG(G)
+            .setEntrance(entranceExit)
+            .setExit(entranceExit)
+            .addExhibits(ids)
+            .getRoute();
         ArrayList<Direction> directions = new ArrayList<>();
         for (GraphPath<String, IdentifiedWeightedEdge> path : paths) {
             Direction direction = new Direction(path, vInfoMap, eInfoMap);
@@ -86,14 +90,10 @@ public class PlanViewModel extends AndroidViewModel {
         directionDao.insertDirections(directions);
     }
 
-    // it recalculates the route, given the directionInd to skip.
+    // it recalculates the route, given the directionInd to SKIP, updates directions
+    // accordingly
     public void deselectAndRecalculate(int directionInd) {
-        List<NodeInfo> targets = nodeInfoDao.getNodeInfosByOrder(directionInd);
-        for (NodeInfo n : targets) {
-            n.selected = false; // deselect them
-            nodeInfoDao.update(n);
-        }
-        generateDirections();
+
     }
 
     public void selectItem(NodeInfo nodeInfo) {

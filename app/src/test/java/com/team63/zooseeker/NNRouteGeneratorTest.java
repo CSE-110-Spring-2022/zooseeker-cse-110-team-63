@@ -26,14 +26,17 @@ public class NNRouteGeneratorTest {
     public void initializeFields() {
         Context context = ApplicationProvider.getApplicationContext();
         G = ZooData.loadZooGraphJSON(context,context.getString(R.string.test_zoo_graph));
-        testPlanGenerator = new NNRouteGenerator(G);
+        testPlanGenerator = new NNRouteGenerator();
     }
 
     @Test
     public void testNoExhibits() {
         ArrayList<String> exhibits = new ArrayList<>();
-        List<GraphPath<String, IdentifiedWeightedEdge>> plan =
-                testPlanGenerator.getRoute(entranceExit, exhibits);
+        List<GraphPath<String, IdentifiedWeightedEdge>> plan = testPlanGenerator
+            .setEntrance(entranceExit)
+            .setExit(entranceExit)
+            .addExhibits(exhibits)
+            .getRoute();
 
         assertEquals(plan.size(), 1);
         assertEquals(plan.get(0).getStartVertex(), entranceExit);
@@ -46,8 +49,11 @@ public class NNRouteGeneratorTest {
         String exhibit = "arctic_foxes";
         ArrayList<String> exhibits = new ArrayList<>();
         exhibits.add(exhibit);
-        List<GraphPath<String, IdentifiedWeightedEdge>> plan =
-                testPlanGenerator.getRoute(entranceExit, exhibits);
+        List<GraphPath<String, IdentifiedWeightedEdge>> plan = testPlanGenerator
+                .setEntrance(entranceExit)
+                .setExit(entranceExit)
+                .addExhibits(exhibits)
+                .getRoute();
 
         assertEquals(plan.size(), 2);
         assertEquals(plan.get(0).getStartVertex(), entranceExit);
@@ -66,8 +72,11 @@ public class NNRouteGeneratorTest {
         exhibits.add("gorillas");
         exhibits.add("gators");
 
-        List<GraphPath<String, IdentifiedWeightedEdge>> plan =
-                testPlanGenerator.getRoute(entranceExit, exhibits);
+        List<GraphPath<String, IdentifiedWeightedEdge>> plan = testPlanGenerator
+                .setEntrance(entranceExit)
+                .setExit(entranceExit)
+                .addExhibits(exhibits)
+                .getRoute();
 
         assertEquals(plan.size(), exhibits.size() + 1);
 
