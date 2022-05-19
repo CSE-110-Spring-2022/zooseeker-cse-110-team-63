@@ -35,6 +35,7 @@ public class NodeInfo {
     public String name;
     public String concatTags;
     public boolean selected = false;
+    public int orderInPlan;
 
     @Ignore
     public String[] tags;
@@ -48,6 +49,7 @@ public class NodeInfo {
         this.name = name;
         System.arraycopy(tags, 0, this.tags, 0, tags.length);
         this.concatTags = String.join(", ", tags);
+        this.orderInPlan = -1;
     }
 
     // Factory method for loading our JSON

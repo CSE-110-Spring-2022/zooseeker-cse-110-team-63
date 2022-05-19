@@ -66,10 +66,6 @@ public class DirectionActivity extends AppCompatActivity {
     }
 
     public void onNextBtnClicked(View view) {
-        if (directionInd >= directions.size() - 1) {
-            Alert("You have reached the end of the plan.");
-            return;
-        }
         directionInd++;
         updateDirections(directions);
 
@@ -81,10 +77,6 @@ public class DirectionActivity extends AppCompatActivity {
     }
 
     public void onPrevBtnClicked(View view) {
-        if (directionInd <= 0) {
-            Alert("This is the beginning of the plan.");
-            return;
-        }
         directionInd--;
         updateDirections(directions);
 
@@ -97,20 +89,5 @@ public class DirectionActivity extends AppCompatActivity {
 
     public void onPlanBtnClicked(View view) {
         finish();
-    }
-
-    public void Alert(String msg) {
-        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-
-        alertBuilder
-                .setTitle("Alert!")
-                .setMessage(msg)
-                .setPositiveButton("OK", (dialog, id) -> {
-                    dialog.cancel();
-                })
-                .setCancelable(true);
-
-        AlertDialog alertDialog = alertBuilder.create();
-        alertDialog.show();
     }
 }

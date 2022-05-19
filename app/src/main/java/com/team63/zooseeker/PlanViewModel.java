@@ -69,6 +69,8 @@ public class PlanViewModel extends AndroidViewModel {
             directions.add(direction);
         }
         directionDao.insertDirections(directions);
+
+
     }
 
     public void selectItem(NodeInfo nodeInfo) {
