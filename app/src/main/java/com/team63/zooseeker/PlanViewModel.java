@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class PlanViewModel extends AndroidViewModel {
-    private final String GATE_KIND = "gate";
     private Graph<String, IdentifiedWeightedEdge> G;
     private Map<String, ZooData.VertexInfo> vInfoMap;
     private Map<String, ZooData.EdgeInfo> eInfoMap;
@@ -71,8 +70,6 @@ public class PlanViewModel extends AndroidViewModel {
 
     public void generateDirections()
     {
-        directionDao.deleteAllDirectionInfos();
-        directionDao.deleteAllSteps();
         RouteGenerator routeGen = new NNRouteGenerator();
         String entranceExit = nodeInfoDao.getGates().get(0).id;
         Set<String> ids = new HashSet(nodeInfoDao.getSelectedExhibitIds());
@@ -91,9 +88,28 @@ public class PlanViewModel extends AndroidViewModel {
     }
 
     // it recalculates the route, given the directionInd to SKIP, updates directions
-    // accordingly
-    public void deselectAndRecalculate(int directionInd) {
+    public void recalculate(int directionInd) {
+        RouteGenerator subRouteGen = new NNRouteGenerator();
+        List<String> vertexSubset = new ArrayList<>(); // remaining vertex ids after skip
+        List<Direction> currDirections = directionDao.getDirections().getValue();
+        for (Direction direction : currDirections) {
+            if (direction.directionInfo.order > directionInd) {
+                vertexSubset.add(direction.directionInfo.endVertexId);
+            }
+        }
+        List<GraphPath<String, IdentifiedWeightedEdge>> recalculatedRouteSection = subRouteGen
+                .setG(G)
+                .setEntrance(currDirections.get(directionInd).directionInfo.startVertexId)
+                .setExit(nodeInfoDao.getGates().get(0).id)
+                .addExhibits(vertexSubset)
+                .getRoute();
 
+        List<Direction> newDirections = currDirections.subList(0, directionInd);
+        for (GraphPath<String, IdentifiedWeightedEdge> path : recalculatedRouteSection) {
+            Direction direction = new Direction(path, vInfoMap, eInfoMap);
+            newDirections.add(direction);
+        }
+        directionDao.insertDirections(newDirections);
     }
 
     public void selectItem(NodeInfo nodeInfo) {
