@@ -27,7 +27,9 @@ import java.util.Map;
 @Entity (tableName = "node_info")
 public class NodeInfo {
     // Public fields
-    @PrimaryKey
+    @PrimaryKey (autoGenerate = true)
+    public long numId;
+
     @NonNull
     public String id;
 

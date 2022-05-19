@@ -32,14 +32,12 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
     private PlanViewModel viewModel;
-    SharedPreferences preferences;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        preferences = getSharedPreferences("filenames", MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences("filenames", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         if (!preferences.contains("vertex_info")) {
             editor.putString("vertex_info", getString(R.string.vertex_info));
@@ -101,17 +99,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onPlanBtnClick(View view) {
-        Map<String, ZooData.VertexInfo> vInfoMap =
-                ZooData.loadVertexInfoJSON(this,
-                        preferences.getString("vertex_info", "fail"));
-        Log.d("Test", preferences.getString("edge_info", "fail"));
-        Map<String, ZooData.EdgeInfo> eInfoMap =
-                ZooData.loadEdgeInfoJSON(this,
-                        preferences.getString("edge_info", "fail"));
-        Graph<String, IdentifiedWeightedEdge> G =
-                ZooData.loadZooGraphJSON(this,
-                        preferences.getString("zoo_graph", "fail"));
-        viewModel.generateDirections(G, vInfoMap, eInfoMap);
+        viewModel.generateDirections();
 
         Intent intent = new Intent(this, ViewPlanActivity.class);
         startActivity(intent);

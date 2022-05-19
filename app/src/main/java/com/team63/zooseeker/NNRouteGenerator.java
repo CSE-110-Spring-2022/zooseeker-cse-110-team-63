@@ -19,7 +19,6 @@ public class NNRouteGenerator implements RouteGenerator {
         this.G = G;
     }
 
-    @Override
     public List<GraphPath<String, IdentifiedWeightedEdge>> getRoute(String entrance, String exit, Collection<String> exhibits) {
         HashSet<String> exhibitSet = new HashSet<>(exhibits);
         ArrayList<GraphPath<String, IdentifiedWeightedEdge>> plan =

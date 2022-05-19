@@ -25,6 +25,7 @@ import java.util.Set;
 /* this implementation of IDirection takes in a GraphPath in the List returned by
  * PlanGenerator.getPath in the constructor, and uses it to construct the pathVie
  */
+// Todo: Refactor with DirectionBuilder class
 public class Direction {
     @Embedded DirectionInfo directionInfo;
     // public List<String> stepStrings;

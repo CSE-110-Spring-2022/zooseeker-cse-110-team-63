@@ -14,7 +14,5 @@ import java.util.List;
 public interface RouteGenerator {
     // each String in ids is an ID referring to a planned exhibit, NOT INCLUDING ENTRANCE AND EXIT
     // each GraphPath in the List represents a path from one exhibit to another exhibit on plan
-    public List<GraphPath<String, IdentifiedWeightedEdge>> getRoute(String entranceExit, Collection<String> exhibits);
-
-    public List<GraphPath<String, IdentifiedWeightedEdge>> getRoute(String entrance, String exit, Collection<String> exhibits);
+    List<GraphPath<String, IdentifiedWeightedEdge>> getRoute(String entranceExit, Collection<String> exhibits);
 }
