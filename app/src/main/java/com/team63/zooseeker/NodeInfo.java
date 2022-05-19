@@ -27,11 +27,10 @@ import java.util.Map;
 @Entity (tableName = "node_info")
 public class NodeInfo {
     // Public fields
-    @PrimaryKey (autoGenerate = true)
-    public long fakeId;
-
+    @PrimaryKey
     @NonNull
     public String id;
+
     public String kind;
     public String name;
     public String concatTags;

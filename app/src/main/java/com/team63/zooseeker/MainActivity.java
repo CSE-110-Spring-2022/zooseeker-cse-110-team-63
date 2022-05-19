@@ -10,10 +10,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.jgrapht.Graph;
@@ -104,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         Graph<String, IdentifiedWeightedEdge> G =
                 ZooData.loadZooGraphJSON(this,
                         preferences.getString("zoo_graph", "fail"));
-        viewModel.generateOrder(G, vInfoMap, eInfoMap);
+        viewModel.generateDirections(G, vInfoMap, eInfoMap);
 
         Intent intent = new Intent(this, ViewPlanActivity.class);
         startActivity(intent);

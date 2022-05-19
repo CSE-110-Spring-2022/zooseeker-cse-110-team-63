@@ -53,9 +53,9 @@ public class PlanViewModel extends AndroidViewModel {
         return liveDirections;
     }
 
-    public void generateOrder(Graph<String, IdentifiedWeightedEdge> G,
-                              Map<String, ZooData.VertexInfo> vInfoMap,
-                              Map<String, ZooData.EdgeInfo> eInfoMap)
+    public void generateDirections(Graph<String, IdentifiedWeightedEdge> G,
+                                   Map<String, ZooData.VertexInfo> vInfoMap,
+                                   Map<String, ZooData.EdgeInfo> eInfoMap)
     {
         directionDao.deleteAllDirectionInfos();
         directionDao.deleteAllSteps();
@@ -64,13 +64,13 @@ public class PlanViewModel extends AndroidViewModel {
         List<GraphPath<String, IdentifiedWeightedEdge>> paths
                 = routeGen.getRoute(ENTRANCE_EXIT, nodeInfoDao.getSelectedExhibitIds());
         ArrayList<Direction> directions = new ArrayList<>();
-        for (int i = 0; i < paths.size(); i++) {
-            List<NodeInfo> targets = nodeInfoDao.getAnimalsById(paths.get(i).getStartVertex());
-            for (NodeInfo target : targets) {
-                target.orderInPlan = i;
-                nodeInfoDao.update(target);
-            }
+        for (GraphPath<String, IdentifiedWeightedEdge> path : paths) {
+            Direction direction = new Direction(path, vInfoMap, eInfoMap);
+            directions.add(direction);
         }
+        directionDao.insertDirections(directions);
+
+
     }
 
     public void selectItem(NodeInfo nodeInfo) {
