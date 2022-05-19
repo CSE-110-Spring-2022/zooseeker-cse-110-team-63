@@ -24,6 +24,9 @@ public interface NodeInfoDao {
     @Query("SELECT * FROM `node_info` WHERE `kind`='exhibit' AND `selected`")
     LiveData<List<NodeInfo>> getSelectedExhibits();
 
+    @Query("SELECT * FROM `node_info` WHERE `id`=:id AND `selected`")
+    List<NodeInfo> getAnimalsById(String id);
+
     @Update
     int update(NodeInfo nodeInfo);
 
