@@ -14,26 +14,33 @@ import java.util.Set;
 
 
 // TODO: Add PlannerBuilder class to hide defaults, perhaps
+// TODO: Unit-testing for Planner planExhibits and planDirections
 public class Planner {
     private List<Direction> directions;
     private Map<String, ZooData.VertexInfo> vInfoMap;
     private Map<String, ZooData.EdgeInfo> eInfoMap;
-    private RouteGenerator routeGen;
     private String entranceExit;
+    private RouteGenerator routeGen;
     private Graph <String, IdentifiedWeightedEdge> G;
 
-    public Planner(RouteGenerator routeGen, String entranceExit,
+    public Planner(RouteGenerator routeGen,
                 Map<String, ZooData.VertexInfo> vInfoMap,
                 Map<String, ZooData.EdgeInfo> eInfoMap,
-                   Graph<String, IdentifiedWeightedEdge> G) {
+                   Graph<String, IdentifiedWeightedEdge> G,
+                   List<Direction> directions) {
         this.routeGen = routeGen;
-        this.entranceExit = entranceExit;
         this.vInfoMap = vInfoMap;
         this.eInfoMap = eInfoMap;
+        for (Map.Entry<String, ZooData.VertexInfo> entry : vInfoMap.entrySet()) {
+            if (entry.getValue().kind == ZooData.VertexInfo.Kind.GATE) {
+                this.entranceExit = entry.getKey();
+            }
+        }
         this.G = G;
+        this.directions = directions;
     }
 
-    public Planner planExhibits(Collection<String> exhibits) {
+    public Planner planExhibits(Collection<String> exhibits, String entranceExit) {
         Set<String> ids = new HashSet(exhibits);
         List<GraphPath<String, IdentifiedWeightedEdge>> paths = routeGen
                 .setG(G)
@@ -59,7 +66,6 @@ public class Planner {
     }
 
     public Planner skip(int i) {
-        routeGen.clear();
         List<String> vertexSubset = new ArrayList<>(); // remaining vertex ids after skip
         for (Direction direction : directions) {
             if (direction.directionInfo.order > i) {

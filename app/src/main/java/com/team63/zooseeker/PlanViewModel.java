@@ -11,8 +11,6 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import org.jgrapht.Graph;
-import org.jgrapht.GraphPath;
-import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -70,29 +68,28 @@ public class PlanViewModel extends AndroidViewModel {
 
     public void generateDirections()
     {
-        RouteGenerator routeGen = new NNRouteGenerator();
-        String entranceExit = nodeInfoDao.getGates().get(0).id;
-        Set<String> ids = new HashSet(nodeInfoDao.getSelectedExhibitIds());
-        Planner planner = new Planner(routeGen, entranceExit, vInfoMap, eInfoMap, G);
-        directionDao.insertDirections(planner.planExhibits(ids).getDirections());
+        PlannerBuilder plannerBuilder = new PlannerBuilder();
+        Planner planner = plannerBuilder.setRouteGenerator(new NNRouteGenerator())
+                .setVInfoMap(vInfoMap).setEInfoMap(eInfoMap)
+                .setG(G)
+                .make();
+        directionDao.insertDirections(planner
+                .planExhibits(new HashSet(nodeInfoDao.getSelectedExhibitIds()),
+                        nodeInfoDao.getGates().get(0).id)
+                .getDirections());
     }
 
     public void recalculate(int directionInd) {
-        recalculate(directionInd, directionDao.getDirectionsSync()
-                .get(directionInd).directionInfo.startVertexId);
-    }
+        PlannerBuilder plannerBuilder = new PlannerBuilder();
 
-    // it recalculates the route, given the directionInd to SKIP, updates directions
-    public void recalculate(int directionInd, String currLocation) {
-        RouteGenerator subRouteGen = new NNRouteGenerator();
-        List<String> vertexSubset = new ArrayList<>(); // remaining vertex ids after skip
-        List<Direction> currDirections = directionDao.getDirectionsSync();
-        String entranceExit = nodeInfoDao.getGates().get(0).id;
+        Planner planner = plannerBuilder.setRouteGenerator(new NNRouteGenerator())
+                .setEInfoMap(eInfoMap)
+                .setVInfoMap(vInfoMap)
+                .setG(G)
+                .setDirections(directionDao.getDirectionsSync())
+                .make();
 
-        Planner planner = new Planner(subRouteGen, entranceExit, vInfoMap, eInfoMap, G);
-
-        directionDao.insertDirections(planner.setDirections(currDirections)
-                .skip(directionInd)
+        directionDao.insertDirections(planner.skip(directionInd)
                 .getDirections());
     }
 
