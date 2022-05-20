@@ -26,8 +26,7 @@ public class Planner {
     public Planner(RouteGenerator routeGen,
                 Map<String, ZooData.VertexInfo> vInfoMap,
                 Map<String, ZooData.EdgeInfo> eInfoMap,
-                   Graph<String, IdentifiedWeightedEdge> G,
-                   List<Direction> directions) {
+                   Graph<String, IdentifiedWeightedEdge> G) {
         this.routeGen = routeGen;
         this.vInfoMap = vInfoMap;
         this.eInfoMap = eInfoMap;
@@ -37,7 +36,6 @@ public class Planner {
             }
         }
         this.G = G;
-        this.directions = directions;
     }
 
     public Planner planExhibits(Collection<String> exhibits, String entranceExit) {

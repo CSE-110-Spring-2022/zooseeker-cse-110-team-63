@@ -86,10 +86,10 @@ public class PlanViewModel extends AndroidViewModel {
                 .setEInfoMap(eInfoMap)
                 .setVInfoMap(vInfoMap)
                 .setG(G)
-                .setDirections(directionDao.getDirectionsSync())
                 .make();
 
-        directionDao.insertDirections(planner.skip(directionInd)
+        directionDao.insertDirections(planner.setDirections(directionDao.getDirectionsSync())
+                .skip(directionInd)
                 .getDirections());
     }
 

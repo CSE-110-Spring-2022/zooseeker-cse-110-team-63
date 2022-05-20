@@ -17,13 +17,7 @@ public class PlannerBuilder {
     private Map<String, ZooData.VertexInfo> vInfoMap;
     private Map<String, ZooData.EdgeInfo> eInfoMap;
     private RouteGenerator routeGen;
-    private List<Direction> directions;
     private Graph <String, IdentifiedWeightedEdge> G;
-
-    public PlannerBuilder setDirections(List<Direction> directions) {
-        this.directions = directions;
-        return this;
-    }
 
     public PlannerBuilder setVInfoMap(Map<String, ZooData.VertexInfo> vInfoMap) {
         this.vInfoMap = vInfoMap;
@@ -49,11 +43,10 @@ public class PlannerBuilder {
         vInfoMap = new HashMap<>();
         eInfoMap = new HashMap<>();
         routeGen = new NNRouteGenerator();
-        directions = new ArrayList<>();
         G = new DefaultUndirectedWeightedGraph<>(IdentifiedWeightedEdge.class);
     }
     
     public Planner make() {
-        return (new Planner(routeGen, vInfoMap, eInfoMap, G, directions));
+        return (new Planner(routeGen, vInfoMap, eInfoMap, G));
     }
 }
