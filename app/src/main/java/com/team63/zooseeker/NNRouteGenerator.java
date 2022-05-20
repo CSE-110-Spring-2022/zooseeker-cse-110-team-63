@@ -59,6 +59,11 @@ public class NNRouteGenerator implements RouteGenerator {
         return route;
     }
 
+    public void clear() {
+        exhibits.clear();
+        route.clear();
+    }
+
     private void calculateRoute() {
         HashSet<String> exhibitSet = new HashSet<>(exhibits);
         route = new ArrayList<>();

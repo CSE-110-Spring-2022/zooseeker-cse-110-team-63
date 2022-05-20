@@ -20,4 +20,5 @@ public interface RouteGenerator {
     RouteGenerator setExit(String entrance);
     RouteGenerator addExhibit(String id);
     RouteGenerator addExhibits(Collection<String> ids);
+    void clear();
 }
