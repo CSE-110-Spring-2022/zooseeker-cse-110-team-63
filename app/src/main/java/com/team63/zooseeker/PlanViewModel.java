@@ -97,6 +97,7 @@ public class PlanViewModel extends AndroidViewModel {
                 vertexSubset.add(direction.directionInfo.endVertexId);
             }
         }
+        vertexSubset.remove(vertexSubset.size()-1); // remove the gate (off-by-one error)
         List<GraphPath<String, IdentifiedWeightedEdge>> recalculatedRouteSection = subRouteGen
                 .setG(G)
                 .setEntrance(currDirections.get(directionInd).directionInfo.startVertexId)
