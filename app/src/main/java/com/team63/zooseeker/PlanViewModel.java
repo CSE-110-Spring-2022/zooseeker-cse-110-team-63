@@ -73,18 +73,8 @@ public class PlanViewModel extends AndroidViewModel {
         RouteGenerator routeGen = new NNRouteGenerator();
         String entranceExit = nodeInfoDao.getGates().get(0).id;
         Set<String> ids = new HashSet(nodeInfoDao.getSelectedExhibitIds());
-        List<GraphPath<String, IdentifiedWeightedEdge>> paths = routeGen
-            .setG(G)
-            .setEntrance(entranceExit)
-            .setExit(entranceExit)
-            .addExhibits(ids)
-            .getRoute();
-        ArrayList<Direction> directions = new ArrayList<>();
-        for (GraphPath<String, IdentifiedWeightedEdge> path : paths) {
-            Direction direction = new Direction(path, vInfoMap, eInfoMap);
-            directions.add(direction);
-        }
-        directionDao.insertDirections(directions);
+        Planner planner = new Planner(routeGen, entranceExit, vInfoMap, eInfoMap, G);
+        directionDao.insertDirections(planner.planExhibits(ids).getDirections());
     }
 
     public void recalculate(int directionInd) {
@@ -97,25 +87,13 @@ public class PlanViewModel extends AndroidViewModel {
         RouteGenerator subRouteGen = new NNRouteGenerator();
         List<String> vertexSubset = new ArrayList<>(); // remaining vertex ids after skip
         List<Direction> currDirections = directionDao.getDirectionsSync();
-        for (Direction direction : currDirections) {
-            if (direction.directionInfo.order > directionInd) {
-                vertexSubset.add(direction.directionInfo.endVertexId);
-            }
-        }
-        vertexSubset.remove(vertexSubset.size()-1); // remove the gate (off-by-one error)
-        List<GraphPath<String, IdentifiedWeightedEdge>> recalculatedRouteSection = subRouteGen
-                .setG(G)
-                .setEntrance(currLocation)
-                .setExit(nodeInfoDao.getGates().get(0).id)
-                .addExhibits(vertexSubset)
-                .getRoute();
+        String entranceExit = nodeInfoDao.getGates().get(0).id;
 
-        List<Direction> newDirections = currDirections.subList(0, directionInd);
-        for (GraphPath<String, IdentifiedWeightedEdge> path : recalculatedRouteSection) {
-            Direction direction = new Direction(path, vInfoMap, eInfoMap);
-            newDirections.add(direction);
-        }
-        directionDao.insertDirections(newDirections);
+        Planner planner = new Planner(subRouteGen, entranceExit, vInfoMap, eInfoMap, G);
+
+        directionDao.insertDirections(planner.setDirections(currDirections)
+                .skip(directionInd)
+                .getDirections());
     }
 
     public void selectItem(NodeInfo nodeInfo) {

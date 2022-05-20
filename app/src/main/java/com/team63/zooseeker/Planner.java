@@ -12,31 +12,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-// TODO: Create Plan class for easier unit testing
-// TODO: Add constructor
-// TODO: Refactor recalculate method into here
-public class Plan {
-    public List<Direction> directions;
 
-    @Ignore
-    Map<String, ZooData.VertexInfo> vInfoMap;
+// TODO: Add PlannerBuilder class to hide defaults, perhaps
+public class Planner {
+    private List<Direction> directions;
+    private Map<String, ZooData.VertexInfo> vInfoMap;
+    private Map<String, ZooData.EdgeInfo> eInfoMap;
+    private RouteGenerator routeGen;
+    private String entranceExit;
+    private Graph <String, IdentifiedWeightedEdge> G;
 
-    @Ignore
-    Map<String, ZooData.EdgeInfo> eInfoMap;
-
-    @Ignore
-    RouteGenerator routeGen;
-
-    @Ignore
-    String entranceExit;
-
-    @Ignore
-    Graph<String, IdentifiedWeightedEdge> G;
-    public Plan(RouteGenerator routeGen, String entranceExit, Collection<String> exhibits,
+    public Planner(RouteGenerator routeGen, String entranceExit,
                 Map<String, ZooData.VertexInfo> vInfoMap,
-                Map<String, ZooData.EdgeInfo> eInfoMap) {
+                Map<String, ZooData.EdgeInfo> eInfoMap,
+                   Graph<String, IdentifiedWeightedEdge> G) {
         this.routeGen = routeGen;
         this.entranceExit = entranceExit;
+        this.vInfoMap = vInfoMap;
+        this.eInfoMap = eInfoMap;
+        this.G = G;
+    }
+
+    public Planner planExhibits(Collection<String> exhibits) {
         Set<String> ids = new HashSet(exhibits);
         List<GraphPath<String, IdentifiedWeightedEdge>> paths = routeGen
                 .setG(G)
@@ -49,14 +46,19 @@ public class Plan {
             Direction direction = new Direction(path, vInfoMap, eInfoMap);
             directions.add(direction);
         }
-
+        return this;
     }
 
-    public Direction getDirection(int i) {
-        return directions.get(i);
+    public List<Direction> getDirections() {
+        return directions;
     }
 
-    public void skip(int i) {
+    public Planner setDirections(List<Direction> directions) {
+        this.directions = directions;
+        return this;
+    }
+
+    public Planner skip(int i) {
         routeGen.clear();
         List<String> vertexSubset = new ArrayList<>(); // remaining vertex ids after skip
         for (Direction direction : directions) {
@@ -78,5 +80,6 @@ public class Plan {
             newDirections.add(direction);
         }
         directions = newDirections;
+        return this;
     }
 }
