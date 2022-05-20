@@ -80,7 +80,21 @@ public class DirectionActivity extends AppCompatActivity {
     }
 
     public void onSkipBtnClicked(View view) {
-        planViewModel.recalculate(directionInd);
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+
+        alertBuilder
+                .setTitle("Alert!")
+                .setMessage("Are you sure you want to skip this exhibit?")
+                .setPositiveButton("Yes", (dialog, id) -> {
+                    planViewModel.recalculate(directionInd);
+                })
+                .setNegativeButton("No", (dialog, id) -> {
+                    dialog.cancel();
+                })
+                .setCancelable(true);
+
+        AlertDialog alertDialog = alertBuilder.create();
+        alertDialog.show();
     }
 
     private void SetBtnVisibility() {
