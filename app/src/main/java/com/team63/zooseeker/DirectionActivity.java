@@ -14,7 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DirectionActivity extends AppCompatActivity {
+public class DirectionActivity extends AppCompatActivity implements LocationObserver {
     private List<Direction> directions;
     private List<Step> steps;
     private PlanViewModel planViewModel;
@@ -112,5 +112,9 @@ public class DirectionActivity extends AppCompatActivity {
 
         AlertDialog alertDialog = alertBuilder.create();
         alertDialog.show();
+    }
+
+    public void updateLocation(double latitude, double longitude) {
+        // TODO:
     }
 }
