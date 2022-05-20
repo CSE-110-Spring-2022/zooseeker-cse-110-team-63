@@ -99,7 +99,7 @@ public class PlanViewModel extends AndroidViewModel {
         List<Direction> currDirections = directionDao.getDirectionsSync();
         for (Direction direction : currDirections) {
             if (direction.directionInfo.order > directionInd) {
-                vertexSubset.add(currLocation);
+                vertexSubset.add(direction.directionInfo.endVertexId);
             }
         }
         vertexSubset.remove(vertexSubset.size()-1); // remove the gate (off-by-one error)
