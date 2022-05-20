@@ -61,39 +61,42 @@ public class DirectionActivity extends AppCompatActivity {
             cumDist += step.distance;
             count++;
         }
-//        String steps = direction.steps.get(0).toString();
+
         String destination = steps.get(steps.size() - 1).destination;
         directionsView.setText(dirStrings);
         exhibitView.setText(destination + "\n(" + cumDist + " ft)");
+
+        SetBtnVisibility();
     }
 
     public void onNextBtnClicked(View view) {
         directionInd++;
         updateDirections(directions);
-
-        if(directionInd == 0) prevBtn.setVisibility(View.GONE);
-        else prevBtn.setVisibility(View.VISIBLE);
-
-        if(directionInd == directions.size()-1) nextBtn.setVisibility(View.GONE);
-        else nextBtn.setVisibility(View.VISIBLE);
     }
 
     public void onPrevBtnClicked(View view) {
         directionInd--;
         updateDirections(directions);
-
-        if(directionInd == 0) prevBtn.setVisibility(View.GONE);
-        else prevBtn.setVisibility(View.VISIBLE);
-
-        if(directionInd == directions.size()-1) nextBtn.setVisibility(View.GONE);
-        else nextBtn.setVisibility(View.VISIBLE);
     }
 
     public void onSkipBtnClicked(View view) {
         planViewModel.recalculate(directionInd);
     }
 
+    private void SetBtnVisibility() {
+        if (directionInd == 0) prevBtn.setVisibility(View.GONE);
+        else prevBtn.setVisibility(View.VISIBLE);
+
+        if (directionInd == directions.size() - 1) nextBtn.setVisibility(View.GONE);
+        else nextBtn.setVisibility(View.VISIBLE);
+
+        if (directionInd == directions.size() - 1 || directions.size() == 2)
+            skipBtn.setVisibility(View.GONE);
+        else skipBtn.setVisibility(View.VISIBLE);
+    }
+
     public void onPlanBtnClicked(View view) {
+        planViewModel.generateDirections();
         finish();
     }
 }

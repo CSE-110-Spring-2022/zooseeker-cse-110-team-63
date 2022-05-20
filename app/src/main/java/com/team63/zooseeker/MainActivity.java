@@ -95,6 +95,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        if (adapter.getItemCount() == 0) findViewById(R.id.plan_btn).setVisibility(View.GONE);
+        else findViewById(R.id.plan_btn).setVisibility(View.VISIBLE);
 
     }
 
