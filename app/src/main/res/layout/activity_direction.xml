@@ -67,11 +67,24 @@
     <TextView
         android:id="@+id/directions_view"
         android:layout_width="347dp"
-        android:layout_height="379dp"
+        android:layout_height="348dp"
         android:layout_marginStart="33dp"
         android:layout_marginTop="234dp"
         android:text="Directions"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/skip_exhibit_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Skip Exhibit"
+        android:onClick="onSkipBtnClicked"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.85" />
 </androidx.constraintlayout.widget.ConstraintLayout>

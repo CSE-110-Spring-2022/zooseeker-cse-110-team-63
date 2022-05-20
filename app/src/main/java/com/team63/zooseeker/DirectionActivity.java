@@ -24,6 +24,7 @@ public class DirectionActivity extends AppCompatActivity {
     private TextView directionsView;
     private Button nextBtn;
     private Button prevBtn;
+    private Button skipBtn;
     private Button planBtn;
 
     @Override
@@ -35,6 +36,7 @@ public class DirectionActivity extends AppCompatActivity {
         directionsView = findViewById(R.id.directions_view);
         nextBtn = findViewById(R.id.next_exhibit_btn);
         prevBtn = findViewById(R.id.previous_exhibit_btn);
+        skipBtn = findViewById(R.id.skip_exhibit_btn);
         planBtn = findViewById(R.id.plan_btn);
 
         planViewModel = new ViewModelProvider(this).get(PlanViewModel.class);
@@ -85,6 +87,10 @@ public class DirectionActivity extends AppCompatActivity {
 
         if(directionInd == directions.size()-1) nextBtn.setVisibility(View.GONE);
         else nextBtn.setVisibility(View.VISIBLE);
+    }
+
+    public void onSkipBtnClicked(View view) {
+        planViewModel.recalculate(directionInd);
     }
 
     public void onPlanBtnClicked(View view) {
