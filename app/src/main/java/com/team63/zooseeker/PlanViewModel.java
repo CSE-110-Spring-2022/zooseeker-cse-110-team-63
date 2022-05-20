@@ -87,20 +87,25 @@ public class PlanViewModel extends AndroidViewModel {
         directionDao.insertDirections(directions);
     }
 
-    // it recalculates the route, given the directionInd to SKIP, updates directions
     public void recalculate(int directionInd) {
+        recalculate(directionInd, directionDao.getDirectionsSync()
+                .get(directionInd).directionInfo.startVertexId);
+    }
+
+    // it recalculates the route, given the directionInd to SKIP, updates directions
+    public void recalculate(int directionInd, String currLocation) {
         RouteGenerator subRouteGen = new NNRouteGenerator();
         List<String> vertexSubset = new ArrayList<>(); // remaining vertex ids after skip
         List<Direction> currDirections = directionDao.getDirectionsSync();
         for (Direction direction : currDirections) {
             if (direction.directionInfo.order > directionInd) {
-                vertexSubset.add(direction.directionInfo.endVertexId);
+                vertexSubset.add(currLocation);
             }
         }
         vertexSubset.remove(vertexSubset.size()-1); // remove the gate (off-by-one error)
         List<GraphPath<String, IdentifiedWeightedEdge>> recalculatedRouteSection = subRouteGen
                 .setG(G)
-                .setEntrance(currDirections.get(directionInd).directionInfo.startVertexId)
+                .setEntrance(currLocation)
                 .setExit(nodeInfoDao.getGates().get(0).id)
                 .addExhibits(vertexSubset)
                 .getRoute();
