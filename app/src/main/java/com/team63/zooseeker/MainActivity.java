@@ -32,6 +32,8 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
     private PlanViewModel viewModel;
+    private MainAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         // see credits for SearchActivity
         setSupportActionBar(fakeSearchBar);
 
-        MainAdapter adapter = new MainAdapter();
+        adapter = new MainAdapter();
         // adapter.setHasStableIds(true); do this later;
 
         recyclerView = findViewById(R.id.pre_plan_items);
@@ -94,10 +96,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, SearchActivity.class);
             startActivity(intent);
         });
-
-        if (adapter.getItemCount() == 0) findViewById(R.id.plan_btn).setVisibility(View.GONE);
-        else findViewById(R.id.plan_btn).setVisibility(View.VISIBLE);
-
     }
 
     public void onPlanBtnClick(View view) {
@@ -110,5 +108,8 @@ public class MainActivity extends AppCompatActivity {
     public void updateExhibitCount(List<NodeInfo> exhibits) {
         TextView exhibitCount = findViewById(R.id.exhibit_count);
         exhibitCount.setText(String.format(Locale.US, "Planned Exhibits (%d)", exhibits.size()));
+
+        if (adapter.getItemCount() == 0) findViewById(R.id.plan_btn).setVisibility(View.GONE);
+        else findViewById(R.id.plan_btn).setVisibility(View.VISIBLE);
     }
 }
