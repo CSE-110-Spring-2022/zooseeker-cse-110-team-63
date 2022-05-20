@@ -91,7 +91,7 @@ public class PlanViewModel extends AndroidViewModel {
     public void recalculate(int directionInd) {
         RouteGenerator subRouteGen = new NNRouteGenerator();
         List<String> vertexSubset = new ArrayList<>(); // remaining vertex ids after skip
-        List<Direction> currDirections = directionDao.getDirections().getValue();
+        List<Direction> currDirections = directionDao.getDirectionsSync();
         for (Direction direction : currDirections) {
             if (direction.directionInfo.order > directionInd) {
                 vertexSubset.add(direction.directionInfo.endVertexId);

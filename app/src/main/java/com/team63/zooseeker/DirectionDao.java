@@ -46,6 +46,10 @@ public abstract class DirectionDao {
     @Query("SELECT * from `direction_info` ORDER BY `order`")
     abstract LiveData<List<Direction>> getDirections();
 
+    @Transaction
+    @Query("SELECT * from `direction_info` ORDER BY `order`")
+    abstract List<Direction> getDirectionsSync();
+
     @Query("DELETE FROM `direction_info`")
     abstract void deleteAll();
 }
