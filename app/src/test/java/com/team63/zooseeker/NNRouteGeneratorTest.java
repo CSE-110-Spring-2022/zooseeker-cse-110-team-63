@@ -32,7 +32,7 @@ public class NNRouteGeneratorTest {
     @Test
     public void testNoExhibits() {
         ArrayList<String> exhibits = new ArrayList<>();
-        List<GraphPath<String, IdentifiedWeightedEdge>> plan = testPlanGenerator
+        List<GraphPath<String, IdentifiedWeightedEdge>> plan = testPlanGenerator.setG(G)
             .setEntrance(entranceExit)
             .setExit(entranceExit)
             .setExhibits(exhibits)
@@ -49,7 +49,7 @@ public class NNRouteGeneratorTest {
         String exhibit = "arctic_foxes";
         ArrayList<String> exhibits = new ArrayList<>();
         exhibits.add(exhibit);
-        List<GraphPath<String, IdentifiedWeightedEdge>> plan = testPlanGenerator
+        List<GraphPath<String, IdentifiedWeightedEdge>> plan = testPlanGenerator.setG(G)
                 .setEntrance(entranceExit)
                 .setExit(entranceExit)
                 .setExhibits(exhibits)
@@ -72,7 +72,7 @@ public class NNRouteGeneratorTest {
         exhibits.add("gorillas");
         exhibits.add("gators");
 
-        List<GraphPath<String, IdentifiedWeightedEdge>> plan = testPlanGenerator
+        List<GraphPath<String, IdentifiedWeightedEdge>> plan = testPlanGenerator.setG(G)
                 .setEntrance(entranceExit)
                 .setExit(entranceExit)
                 .setExhibits(exhibits)
