@@ -30,6 +30,13 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
         notifyDataSetChanged();
     }
 
+    public void clearPlan()
+    {
+        this.planItems.clear();
+        planItems = new ArrayList<>();
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
