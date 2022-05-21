@@ -42,15 +42,9 @@ public class NNRouteGenerator implements RouteGenerator {
         return this;
     }
 
-    public RouteGenerator addExhibit (String id) {
-        exhibits.add(id);
-        return this;
-    }
-
-    public RouteGenerator addExhibits (Collection<String> ids) {
-        for (String id : ids) {
-            exhibits.add(id);
-        }
+    public RouteGenerator setExhibits(Collection<String> ids) {
+        exhibits.clear();
+        exhibits.addAll(ids);
         return this;
     }
 
@@ -59,9 +53,10 @@ public class NNRouteGenerator implements RouteGenerator {
         return route;
     }
 
-    public void clear() {
+    public RouteGenerator clear() {
         exhibits.clear();
         route.clear();
+        return this;
     }
 
     private void calculateRoute() {

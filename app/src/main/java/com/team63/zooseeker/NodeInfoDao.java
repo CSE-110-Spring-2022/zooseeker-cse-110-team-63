@@ -24,18 +24,6 @@ public interface NodeInfoDao {
     @Query("SELECT * FROM `node_info` WHERE `kind`='exhibit' AND `selected`")
     LiveData<List<NodeInfo>> getSelectedExhibits();
 
-    @Query("SELECT * FROM `node_info` WHERE `kind`='gate'")
-    List<NodeInfo> getGates();
-
     @Update
     int update(NodeInfo nodeInfo);
-
-    @Delete
-    void delete(NodeInfo nodeInfo);
-
-    @Query("SELECT * FROM `node_info` WHERE `orderInPlan`=:i")
-    List<NodeInfo> getNodeInfosByOrder(int i);
-
-    @Query("DELETE FROM `node_info`")
-    void deleteAllNodeInfos();
 }

@@ -35,7 +35,7 @@ public class NNRouteGeneratorTest {
         List<GraphPath<String, IdentifiedWeightedEdge>> plan = testPlanGenerator
             .setEntrance(entranceExit)
             .setExit(entranceExit)
-            .addExhibits(exhibits)
+            .setExhibits(exhibits)
             .getRoute();
 
         assertEquals(plan.size(), 1);
@@ -52,7 +52,7 @@ public class NNRouteGeneratorTest {
         List<GraphPath<String, IdentifiedWeightedEdge>> plan = testPlanGenerator
                 .setEntrance(entranceExit)
                 .setExit(entranceExit)
-                .addExhibits(exhibits)
+                .setExhibits(exhibits)
                 .getRoute();
 
         assertEquals(plan.size(), 2);
@@ -75,7 +75,7 @@ public class NNRouteGeneratorTest {
         List<GraphPath<String, IdentifiedWeightedEdge>> plan = testPlanGenerator
                 .setEntrance(entranceExit)
                 .setExit(entranceExit)
-                .addExhibits(exhibits)
+                .setExhibits(exhibits)
                 .getRoute();
 
         assertEquals(plan.size(), exhibits.size() + 1);

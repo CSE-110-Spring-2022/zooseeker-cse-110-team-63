@@ -18,7 +18,5 @@ public interface RouteGenerator {
     RouteGenerator setG(Graph<String, IdentifiedWeightedEdge> G);
     RouteGenerator setEntrance(String entrance);
     RouteGenerator setExit(String entrance);
-    RouteGenerator addExhibit(String id);
-    RouteGenerator addExhibits(Collection<String> ids);
-    void clear();
+    RouteGenerator setExhibits(Collection<String> ids);
 }
