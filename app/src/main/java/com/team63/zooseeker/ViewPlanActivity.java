@@ -81,4 +81,8 @@ public class ViewPlanActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void onErasePlanClicked(View view) {
+        //Place holder for erase plan
+    }
 }
