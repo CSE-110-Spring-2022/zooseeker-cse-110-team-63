@@ -5,6 +5,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ManyToManyShortestPathsAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraManyToManyShortestPaths;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,17 +13,57 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class NNRouteGenerator extends RouteGenerator {
-    public NNRouteGenerator(Graph<String, IdentifiedWeightedEdge> G) {
-        super(G);
+public class NNRouteGenerator implements RouteGenerator {
+    private Graph<String, IdentifiedWeightedEdge> G;
+    private List<GraphPath<String, IdentifiedWeightedEdge>> route;
+    private String entrance;
+    private String exit;
+    private Collection<String> exhibits;
+
+    public NNRouteGenerator() {
+        this.G = new DefaultUndirectedWeightedGraph<>(IdentifiedWeightedEdge.class);
+        this.route = new ArrayList<>();
+        this.entrance = "entrance_exit_gate";
+        this.exit = this.entrance; // by default, map it
+        this.exhibits = new ArrayList<>();
     }
 
-    @Override
-    public List<GraphPath<String, IdentifiedWeightedEdge>> getRoute(String entranceExit, Collection<String> exhibits) {
+    public RouteGenerator setG(Graph<String, IdentifiedWeightedEdge> G) {
+        this.G = G;
+        return this;
+    }
+
+    public RouteGenerator setEntrance (String entrance) {
+        this.entrance = entrance;
+        return this;
+    }
+
+    public RouteGenerator setExit (String exit) {
+        this.exit = exit;
+        return this;
+    }
+
+    public RouteGenerator setExhibits(Collection<String> ids) {
+        exhibits.clear();
+        exhibits.addAll(ids);
+        return this;
+    }
+
+    public List<GraphPath<String, IdentifiedWeightedEdge>> getRoute() {
+        calculateRoute();
+        return route;
+    }
+
+    public RouteGenerator clear() {
+        exhibits.clear();
+        route.clear();
+        return this;
+    }
+
+    private void calculateRoute() {
         HashSet<String> exhibitSet = new HashSet<>(exhibits);
-        ArrayList<GraphPath<String, IdentifiedWeightedEdge>> plan =
-                new ArrayList<>();
-        String v = entranceExit;
+        route = new ArrayList<>();
+        String v = entrance;
         // from entrance to last exhibit
         while (true) { // we keep repeating until we break (which happens when set is empty_
             exhibitSet.remove(v);
@@ -30,11 +71,10 @@ public class NNRouteGenerator extends RouteGenerator {
             // keep getting nearest neighbor (the greedy approach)
             GraphPath<String, IdentifiedWeightedEdge> nextPath =
                     pathToClosestExhibit(v, exhibitSet);
-            plan.add(nextPath);
+            route.add(nextPath);
             v = nextPath.getEndVertex(); // move to next vertex
         }
-        plan.add(DijkstraShortestPath.findPathBetween(G, v, entranceExit)); // from last exhibit to exit
-        return plan;
+        route.add(DijkstraShortestPath.findPathBetween(G, v, exit)); // from last exhibit to exit
     }
 
     /* pathToClosestExhibit is a helper method that, given a source vertex and a list of targets,

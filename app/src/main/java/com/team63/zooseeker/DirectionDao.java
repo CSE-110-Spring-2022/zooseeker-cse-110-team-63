@@ -7,6 +7,7 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Transaction;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -31,11 +32,10 @@ public abstract class DirectionDao {
         insertSteps(steps);
     }
 
-
-    public void insertDirections(List<Direction> directions) {
-        for (int i = 0; i < directions.size(); i++) {
-            Direction direction = directions.get(i);
-            direction.directionInfo.order = i;
+    @Transaction
+    public void insertDirections (List<Direction> directions) {
+        deleteAll();
+        for (Direction direction : directions) {
             insertDirection(direction);
         }
     }
@@ -44,9 +44,10 @@ public abstract class DirectionDao {
     @Query("SELECT * from `direction_info` ORDER BY `order`")
     abstract LiveData<List<Direction>> getDirections();
 
-    @Query("DELETE FROM `direction_info`")
-    abstract void deleteAllDirectionInfos();
+    @Transaction
+    @Query("SELECT * from `direction_info` ORDER BY `order`")
+    abstract List<Direction> getDirectionsSync();
 
-    @Query("DELETE FROM `step`")
-    abstract void deleteAllSteps();
+    @Query("DELETE FROM `direction_info`")
+    abstract void deleteAll();
 }

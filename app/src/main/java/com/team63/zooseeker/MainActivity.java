@@ -32,14 +32,14 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
     private PlanViewModel viewModel;
-    SharedPreferences preferences;
+    private MainAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        preferences = getSharedPreferences("filenames", MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences("filenames", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         if (!preferences.contains("vertex_info")) {
             editor.putString("vertex_info", getString(R.string.vertex_info));
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         // see credits for SearchActivity
         setSupportActionBar(fakeSearchBar);
 
-        MainAdapter adapter = new MainAdapter();
+        adapter = new MainAdapter();
         // adapter.setHasStableIds(true); do this later;
 
         recyclerView = findViewById(R.id.pre_plan_items);
@@ -96,22 +96,10 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, SearchActivity.class);
             startActivity(intent);
         });
-
-
     }
 
     public void onPlanBtnClick(View view) {
-        Map<String, ZooData.VertexInfo> vInfoMap =
-                ZooData.loadVertexInfoJSON(this,
-                        preferences.getString("vertex_info", "fail"));
-        Log.d("Test", preferences.getString("edge_info", "fail"));
-        Map<String, ZooData.EdgeInfo> eInfoMap =
-                ZooData.loadEdgeInfoJSON(this,
-                        preferences.getString("edge_info", "fail"));
-        Graph<String, IdentifiedWeightedEdge> G =
-                ZooData.loadZooGraphJSON(this,
-                        preferences.getString("zoo_graph", "fail"));
-        viewModel.generateDirections(G, vInfoMap, eInfoMap);
+        viewModel.generateDirections();
 
         Intent intent = new Intent(this, ViewPlanActivity.class);
         startActivity(intent);
@@ -120,5 +108,8 @@ public class MainActivity extends AppCompatActivity {
     public void updateExhibitCount(List<NodeInfo> exhibits) {
         TextView exhibitCount = findViewById(R.id.exhibit_count);
         exhibitCount.setText(String.format(Locale.US, "Planned Exhibits (%d)", exhibits.size()));
+
+        if (adapter.getItemCount() == 0) findViewById(R.id.plan_btn).setVisibility(View.GONE);
+        else findViewById(R.id.plan_btn).setVisibility(View.VISIBLE);
     }
 }
