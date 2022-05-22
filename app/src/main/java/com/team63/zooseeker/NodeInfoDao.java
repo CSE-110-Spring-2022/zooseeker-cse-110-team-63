@@ -26,10 +26,4 @@ public interface NodeInfoDao {
 
     @Update
     int update(NodeInfo nodeInfo);
-
-    @Delete
-    void delete(NodeInfo nodeInfo);
-
-    @Query("DELETE FROM `node_info`")
-    void deleteAllNodeInfos();
 }

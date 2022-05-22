@@ -1,21 +1,27 @@
 package com.team63.zooseeker;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import org.jgrapht.Graph;
-import org.jgrapht.GraphPath;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class PlanViewModel extends AndroidViewModel {
-    private final String ENTRANCE_EXIT = "entrance_exit_gate";
+    private Graph<String, IdentifiedWeightedEdge> G;
+    private Map<String, ZooData.VertexInfo> vInfoMap;
+    private Map<String, ZooData.EdgeInfo> eInfoMap;
 
     private LiveData<List<NodeInfo>> liveExhibits;
     private LiveData<List<NodeInfo>> liveSelectedExhibits;
@@ -30,6 +36,13 @@ public class PlanViewModel extends AndroidViewModel {
         NodeDatabase db = NodeDatabase.getSingleton(context);
         nodeInfoDao = db.nodeInfoDao();
         directionDao = db.directionDao();
+        SharedPreferences preferences = application.getSharedPreferences("filenames", MODE_PRIVATE);
+        G = ZooData.loadZooGraphJSON(application.getApplicationContext(),
+                        preferences.getString("zoo_graph", "fail"));
+        vInfoMap = ZooData.loadVertexInfoJSON(application.getApplicationContext(),
+                preferences.getString("vertex_info", "fail"));
+        eInfoMap = ZooData.loadEdgeInfoJSON(application.getApplicationContext(),
+                preferences.getString("edge_info", "fail"));
     }
 
     public LiveData<List<NodeInfo>> getSelectedExhibits() {
@@ -53,22 +66,30 @@ public class PlanViewModel extends AndroidViewModel {
         return liveDirections;
     }
 
-    public void generateDirections(Graph<String, IdentifiedWeightedEdge> G,
-                                   Map<String, ZooData.VertexInfo> vInfoMap,
-                                   Map<String, ZooData.EdgeInfo> eInfoMap)
+    public void generateDirections()
     {
-        directionDao.deleteAllDirectionInfos();
-        directionDao.deleteAllSteps();
-        RouteGenerator routeGen = new NNRouteGenerator(G);
+        PlannerBuilder plannerBuilder = new PlannerBuilder();
+        Planner planner = plannerBuilder.setRouteGenerator(new NNRouteGenerator())
+                .setVInfoMap(vInfoMap).setEInfoMap(eInfoMap)
+                .setG(G)
+                .make();
+        directionDao.insertDirections(planner
+                .planExhibits(new HashSet(nodeInfoDao.getSelectedExhibitIds()))
+                .getDirections());
+    }
 
-        List<GraphPath<String, IdentifiedWeightedEdge>> paths
-                = routeGen.getRoute(ENTRANCE_EXIT, nodeInfoDao.getSelectedExhibitIds());
-        ArrayList<Direction> directions = new ArrayList<>();
-        for (GraphPath<String, IdentifiedWeightedEdge> path : paths) {
-            Direction direction = new Direction(path, vInfoMap, eInfoMap);
-            directions.add(direction);
-        }
-        directionDao.insertDirections(directions);
+    public void recalculate(int directionInd) {
+        PlannerBuilder plannerBuilder = new PlannerBuilder();
+
+        Planner planner = plannerBuilder.setRouteGenerator(new NNRouteGenerator())
+                .setEInfoMap(eInfoMap)
+                .setVInfoMap(vInfoMap)
+                .setG(G)
+                .make();
+
+        directionDao.insertDirections(planner.setDirections(directionDao.getDirectionsSync())
+                .skip(directionInd)
+                .getDirections());
     }
 
     public void selectItem(NodeInfo nodeInfo) {

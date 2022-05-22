@@ -24,6 +24,7 @@ public class DirectionActivity extends AppCompatActivity {
     private TextView directionsView;
     private Button nextBtn;
     private Button prevBtn;
+    private Button skipBtn;
     private Button planBtn;
 
     @Override
@@ -35,6 +36,7 @@ public class DirectionActivity extends AppCompatActivity {
         directionsView = findViewById(R.id.directions_view);
         nextBtn = findViewById(R.id.next_exhibit_btn);
         prevBtn = findViewById(R.id.previous_exhibit_btn);
+        skipBtn = findViewById(R.id.skip_exhibit_btn);
         planBtn = findViewById(R.id.plan_btn);
 
         planViewModel = new ViewModelProvider(this).get(PlanViewModel.class);
@@ -59,58 +61,56 @@ public class DirectionActivity extends AppCompatActivity {
             cumDist += step.distance;
             count++;
         }
-//        String steps = direction.steps.get(0).toString();
+
         String destination = steps.get(steps.size() - 1).destination;
         directionsView.setText(dirStrings);
         exhibitView.setText(destination + "\n(" + cumDist + " ft)");
+
+        SetBtnVisibility();
     }
 
     public void onNextBtnClicked(View view) {
-        if (directionInd >= directions.size() - 1) {
-            Alert("You have reached the end of the plan.");
-            return;
-        }
         directionInd++;
         updateDirections(directions);
-
-        if(directionInd == 0) prevBtn.setVisibility(View.GONE);
-        else prevBtn.setVisibility(View.VISIBLE);
-
-        if(directionInd == directions.size()-1) nextBtn.setVisibility(View.GONE);
-        else nextBtn.setVisibility(View.VISIBLE);
     }
 
     public void onPrevBtnClicked(View view) {
-        if (directionInd <= 0) {
-            Alert("This is the beginning of the plan.");
-            return;
-        }
         directionInd--;
         updateDirections(directions);
-
-        if(directionInd == 0) prevBtn.setVisibility(View.GONE);
-        else prevBtn.setVisibility(View.VISIBLE);
-
-        if(directionInd == directions.size()-1) nextBtn.setVisibility(View.GONE);
-        else nextBtn.setVisibility(View.VISIBLE);
     }
 
-    public void onPlanBtnClicked(View view) {
-        finish();
-    }
-
-    public void Alert(String msg) {
+    public void onSkipBtnClicked(View view) {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
 
         alertBuilder
                 .setTitle("Alert!")
-                .setMessage(msg)
-                .setPositiveButton("OK", (dialog, id) -> {
+                .setMessage("Are you sure you want to skip this exhibit?")
+                .setPositiveButton("Yes", (dialog, id) -> {
+                    planViewModel.recalculate(directionInd);
+                })
+                .setNegativeButton("No", (dialog, id) -> {
                     dialog.cancel();
                 })
                 .setCancelable(true);
 
         AlertDialog alertDialog = alertBuilder.create();
         alertDialog.show();
+    }
+
+    private void SetBtnVisibility() {
+        if (directionInd == 0) prevBtn.setVisibility(View.GONE);
+        else prevBtn.setVisibility(View.VISIBLE);
+
+        if (directionInd == directions.size() - 1) nextBtn.setVisibility(View.GONE);
+        else nextBtn.setVisibility(View.VISIBLE);
+
+        if (directionInd == directions.size() - 1 || directions.size() == 2)
+            skipBtn.setVisibility(View.GONE);
+        else skipBtn.setVisibility(View.VISIBLE);
+    }
+
+    public void onPlanBtnClicked(View view) {
+        planViewModel.generateDirections();
+        finish();
     }
 }

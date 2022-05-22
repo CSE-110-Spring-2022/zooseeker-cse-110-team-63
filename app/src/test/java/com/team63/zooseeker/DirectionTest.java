@@ -9,8 +9,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
-import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.GraphWalk;
 import org.junit.Before;
 import org.junit.Test;
@@ -72,16 +70,19 @@ public class DirectionTest {
 
     @Test
     public void testWithRealRoute() {
-        RouteGenerator routeGen = new NNRouteGenerator(G);
+        RouteGenerator routeGen = new NNRouteGenerator();
         List<String> exhibits = Arrays.asList(
                 "elephant_odyssey",
                 "arctic_foxes",
                 "gators",
                 "lions"
                 );
-        List<GraphPath<String, IdentifiedWeightedEdge>> paths = routeGen.getRoute(
-                "entrance_exit_gate",
-                exhibits);
+        List<GraphPath<String, IdentifiedWeightedEdge>> paths = routeGen
+                .setG(G)
+                .setEntrance("entrance_exit_gate")
+                .setExit("entrance_exit_gate")
+                .setExhibits(exhibits)
+                .getRoute();
         List<Direction> directions = new ArrayList<>();
 
         for (GraphPath<String, IdentifiedWeightedEdge> path : paths) {

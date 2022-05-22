@@ -17,6 +17,12 @@ public class DirectionInfo {
     public long id;
 
     @NonNull
+    public String startVertexId;
+
+    @NonNull
+    public String endVertexId;
+
+    @NonNull
     public String name; // name of destination
     public Double distance;
 
@@ -25,7 +31,9 @@ public class DirectionInfo {
 
     public int order;
 
-    public DirectionInfo(String name, Double distance) {
+    public DirectionInfo(String startVertexId, String endVertexId, String name, Double distance) {
+        this.startVertexId = startVertexId;
+        this.endVertexId = endVertexId;
         this.name = name;
         this.distance = distance;
     }
