@@ -1,20 +1,28 @@
 package com.team63.zooseeker;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class DirectionActivity extends AppCompatActivity implements LocationObserver {
+public class DirectionActivity extends AppCompatActivity implements LocationObserver, LocationListener {
     private List<Direction> directions;
     private List<Step> steps;
     private PlanViewModel planViewModel;
@@ -26,6 +34,8 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
     private Button prevBtn;
     private Button skipBtn;
     private Button planBtn;
+
+    private double latitude, longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +126,32 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
     }
 
     @Override
-    public void updateLocation(double latitude, double longitude) {
+    public void updateLocation() {
+        Log.d("ZooSeeker", "updateLocation");
+        var provider = LocationManager.GPS_PROVIDER;
+        var locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        var locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+                Log.d("ZooSeeker", String.format("latitude: %f longitude: %f", location));
+//                Log.d("LAB7", String.format("Location changed: %s", location));
+//
+//                var marker = new MarkerOptions()
+//                        .position(new LatLng(
+//                                location.getLatitude(),
+//                                location.getLongitude()
+//                        ))
+//                        .title("Navigation Step");
 
+//                map.addMarker(marker);
+            }
+        };
+    }
+
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        Log.d("ZooSeeker", "LocationChanged");
     }
 }

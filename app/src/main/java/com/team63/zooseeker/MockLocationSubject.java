@@ -26,7 +26,8 @@ public class MockLocationSubject implements LocationSubject {
     @Override
     public void notifyObservers() {
         for (LocationObserver o : observers) {
-            o.updateLocation(latitude, longitude);
+//            o.updateLocation(latitude, longitude);
+            o.updateLocation();
         }
     }
 }
