@@ -74,7 +74,7 @@ public class PlanViewModel extends AndroidViewModel {
                 .setG(G)
                 .make();
         directionDao.insertDirections(planner
-                .planExhibits(new HashSet(nodeInfoDao.getSelectedExhibitIds()))
+                .performOperation(new PlanExhibitsOperation(new HashSet(nodeInfoDao.getSelectedExhibitIds())))
                 .getDirections());
     }
 
@@ -88,7 +88,7 @@ public class PlanViewModel extends AndroidViewModel {
                 .make();
 
         directionDao.insertDirections(planner.setDirections(directionDao.getDirectionsSync())
-                .skip(directionInd)
+                .performOperation(new SkipOperation(directionInd))
                 .getDirections());
     }
 
