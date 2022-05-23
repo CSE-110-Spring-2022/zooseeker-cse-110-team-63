@@ -6,9 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
-// TODO: Add PlannerBuilder class to hide defaults, perhaps
-// TODO: Unit-testing for Planner planExhibits and planDirections
 public class Planner {
     private final Map<String, ZooData.VertexInfo> vInfoMap;
     private final Map<String, ZooData.EdgeInfo> eInfoMap;
