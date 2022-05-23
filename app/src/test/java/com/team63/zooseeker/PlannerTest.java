@@ -49,7 +49,9 @@ public class PlannerTest {
                 "gators",
                 "lions"
         );
-        List<Direction> directions = planner.planExhibits(exhibits).getDirections();
+        List<Direction> directions = planner
+                .performOperation(new PlanExhibitsOperation(exhibits))
+                .getDirections();
         Direction toGators = directions.get(0);
         assertEquals(10, toGators.steps.get(0).distance, doubleDelta);
         assertEquals("Entrance Way", toGators.steps.get(0).street);
@@ -101,8 +103,13 @@ public class PlannerTest {
                 "gators",
                 "lions"
         );
-        List<Direction> directions = planner.planExhibits(exhibits).getDirections();
-        List<Direction> newDirections = planner.setDirections(directions).skip(0).getDirections();
+        List<Direction> directions = planner
+                .performOperation(new PlanExhibitsOperation(exhibits))
+                .getDirections();
+        List<Direction> newDirections = planner
+                .setDirections(directions)
+                .performOperation(new SkipOperation(0))
+                .getDirections();
         Direction toLions = newDirections.get(0);
         assertEquals(10, toLions.steps.get(0).distance, doubleDelta);
         assertEquals("Entrance Way", toLions.steps.get(0).street);
@@ -151,8 +158,13 @@ public class PlannerTest {
                 "gators",
                 "lions"
         );
-        List<Direction> directions = planner.planExhibits(exhibits).getDirections();
-        List<Direction> newDirections = planner.setDirections(directions).skip(2).getDirections();
+        List<Direction> directions = planner
+                .performOperation(new PlanExhibitsOperation(exhibits))
+                .getDirections();
+        List<Direction> newDirections = planner
+                .setDirections(directions)
+                .performOperation(new SkipOperation(2))
+                .getDirections();
 
         Direction toFoxes = newDirections.get(2);
         assertEquals(200, toFoxes.steps.get(0).distance, doubleDelta);
@@ -172,5 +184,126 @@ public class PlannerTest {
         assertEquals(10, toExit.steps.get(1).distance, doubleDelta);
         assertEquals("Entrance Way", toExit.steps.get(1).street);
         assertEquals("Entrance and Exit Gate", toExit.steps.get(1).destination);
+    }
+
+    @Test
+    public void testRerouteNoChange() {
+        List<String> exhibits = Arrays.asList(
+                "elephant_odyssey",
+                "arctic_foxes",
+                "gators",
+                "lions"
+        );
+        List<Direction> directions = planner
+                .performOperation(new PlanExhibitsOperation(exhibits))
+                .getDirections();
+
+        List<Direction> newDirections = planner
+                .setDirections(directions)
+                .performOperation(new RerouteOperation(1, "gators"))
+                .getDirections();
+        Direction toGators = newDirections.get(0);
+        assertEquals(10, toGators.steps.get(0).distance, doubleDelta);
+        assertEquals("Entrance Way", toGators.steps.get(0).street);
+        assertEquals("Reptile Road", toGators.steps.get(0).destination);
+        assertEquals(100, toGators.steps.get(1).distance, doubleDelta);
+        assertEquals("Reptile Road", toGators.steps.get(1).street);
+        assertEquals("Alligators", toGators.steps.get(1).destination);
+
+        Direction toLions = newDirections.get(1);
+        assertEquals(200, toLions.steps.get(0).distance, doubleDelta);
+        assertEquals("Sharp Teeth Shortcut", toLions.steps.get(0).street);
+        assertEquals("Lions", toLions.steps.get(0).destination);
+
+        Direction toElephants = newDirections.get(2);
+        assertEquals(200, toElephants.steps.get(0).distance, doubleDelta);
+        assertEquals("Africa Rocks Street", toElephants.steps.get(0).street);
+        assertEquals("Elephant Odyssey", toElephants.steps.get(0).destination);
+
+        Direction toFoxes = newDirections.get(3);
+        assertEquals(200, toFoxes.steps.get(0).distance, doubleDelta);
+        assertEquals("Africa Rocks Street", toFoxes.steps.get(0).street);
+        assertEquals("Lions", toFoxes.steps.get(0).destination);
+        assertEquals(200, toFoxes.steps.get(1).distance, doubleDelta);
+        assertEquals("Sharp Teeth Shortcut", toFoxes.steps.get(1).street);
+        assertEquals("Alligators", toFoxes.steps.get(1).destination);
+        assertEquals(100, toFoxes.steps.get(2).distance, doubleDelta);
+        assertEquals("Reptile Road", toFoxes.steps.get(2).street);
+        assertEquals("Arctic Avenue", toFoxes.steps.get(2).destination);
+        assertEquals(300, toFoxes.steps.get(3).distance, doubleDelta);
+        assertEquals("Arctic Avenue", toFoxes.steps.get(3).street);
+        assertEquals("Arctic Foxes", toFoxes.steps.get(3).destination);
+
+        Direction toExit = newDirections.get(4);
+        assertEquals(300, toExit.steps.get(0).distance, doubleDelta);
+        assertEquals("Arctic Avenue", toExit.steps.get(0).street);
+        assertEquals("Entrance Way", toExit.steps.get(0).destination);
+        assertEquals(10, toExit.steps.get(1).distance, doubleDelta);
+        assertEquals("Entrance Way", toExit.steps.get(1).street);
+        assertEquals("Entrance and Exit Gate", toExit.steps.get(1).destination);
+    }
+
+    @Test
+    public void testRerouteWithChange() {
+        List<String> exhibits = Arrays.asList(
+                "elephant_odyssey",
+                "arctic_foxes",
+                "gators",
+                "lions"
+        );
+        List<Direction> directions = planner
+                .performOperation(new PlanExhibitsOperation(exhibits))
+                .getDirections();
+
+        List<Direction> newDirections = planner
+                .setDirections(directions)
+                .performOperation(new RerouteOperation(2, "entrance_plaza"))
+                .getDirections();
+
+        Direction toGators = newDirections.get(0);
+        assertEquals(10, toGators.steps.get(0).distance, doubleDelta);
+        assertEquals("Entrance Way", toGators.steps.get(0).street);
+        assertEquals("Reptile Road", toGators.steps.get(0).destination);
+        assertEquals(100, toGators.steps.get(1).distance, doubleDelta);
+        assertEquals("Reptile Road", toGators.steps.get(1).street);
+        assertEquals("Alligators", toGators.steps.get(1).destination);
+
+        Direction toLions = newDirections.get(1);
+        assertEquals(200, toLions.steps.get(0).distance, doubleDelta);
+        assertEquals("Sharp Teeth Shortcut", toLions.steps.get(0).street);
+        assertEquals("Lions", toLions.steps.get(0).destination);
+
+        Direction toFoxes = newDirections.get(2);
+        assertEquals(300, toFoxes.steps.get(0).distance, doubleDelta);
+        assertEquals("Arctic Avenue", toFoxes.steps.get(0).street);
+        assertEquals("Arctic Foxes", toFoxes.steps.get(0).destination);
+
+        Direction toElephants = newDirections.get(3);
+        assertEquals(300, toElephants.steps.get(0).distance, doubleDelta);
+        assertEquals("Arctic Avenue", toElephants.steps.get(0).street);
+        assertEquals("Reptile Road", toElephants.steps.get(0).destination);
+        assertEquals(100, toElephants.steps.get(1).distance, doubleDelta);
+        assertEquals("Reptile Road", toElephants.steps.get(1).street);
+        assertEquals("Alligators", toElephants.steps.get(1).destination);
+        assertEquals(200, toElephants.steps.get(2).distance, doubleDelta);
+        assertEquals("Sharp Teeth Shortcut", toElephants.steps.get(2).street);
+        assertEquals("Lions", toElephants.steps.get(2).destination);
+        assertEquals(200, toElephants.steps.get(3).distance, doubleDelta);
+        assertEquals("Africa Rocks Street", toElephants.steps.get(3).street);
+        assertEquals("Elephant Odyssey", toElephants.steps.get(3).destination);
+
+        Direction toExit = newDirections.get(4);
+        assertEquals(200, toExit.steps.get(0).distance, doubleDelta);
+        assertEquals("Africa Rocks Street", toExit.steps.get(0).street);
+        assertEquals("Lions", toExit.steps.get(0).destination);
+        assertEquals(200, toExit.steps.get(1).distance, doubleDelta);
+        assertEquals("Sharp Teeth Shortcut", toExit.steps.get(1).street);
+        assertEquals("Alligators", toExit.steps.get(1).destination);
+        assertEquals(100, toExit.steps.get(2).distance, doubleDelta);
+        assertEquals("Reptile Road", toExit.steps.get(2).street);
+        assertEquals("Entrance Way", toExit.steps.get(2).destination);
+        assertEquals(10, toExit.steps.get(3).distance, doubleDelta);
+        assertEquals("Entrance Way", toExit.steps.get(3).street);
+        assertEquals("Entrance and Exit Gate", toExit.steps.get(3).destination);
     }
 }
