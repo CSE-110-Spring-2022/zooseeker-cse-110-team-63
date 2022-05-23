@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class DirectionActivity extends AppCompatActivity implements LocationObserver, LocationListener {
+public class DirectionActivity extends AppCompatActivity implements LocationObserver {
     private List<Direction> directions;
     private List<Step> steps;
     private PlanViewModel planViewModel;
@@ -82,8 +82,15 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(@NonNull Location location) {
+                if(latitude != location.getLatitude() || longitude != location.getLongitude()) {
+                    Log.d("ZooSeeker", String.format("Location changed: %s", location));
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+                    // TODO: at this point, calculate new plan and prompt the user to switch plans if the new plan is better
+                }
             }
         };
+        locationManager.requestLocationUpdates(provider, 0, 0f, locationListener);
 
         exhibitView = findViewById(R.id.exhibit_view);
         directionsView = findViewById(R.id.directions_view);
@@ -171,49 +178,18 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
     // code in updateLocation is not doing anything. It is simply obeying the design pattern.
     @Override
     public void updateLocation() {
-        Log.d("ZooSeeker", "updateLocation");
-        var provider = LocationManager.GPS_PROVIDER;
-        var locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        var locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(@NonNull Location location) {
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
-                Log.d("ZooSeeker", String.format("latitude: %f longitude: %f", location));
-//                Log.d("LAB7", String.format("Location changed: %s", location));
-//
-//                var marker = new MarkerOptions()
-//                        .position(new LatLng(
-//                                location.getLatitude(),
-//                                location.getLongitude()
-//                        ))
-//                        .title("Navigation Step");
-
-//                map.addMarker(marker);
-            }
-        };
-    }
-
-    @Override
-    public void onLocationChanged(@NonNull Location location) {
-        Log.d("ZooSeeker", "LocationChanged");
-
-        Context context = getApplicationContext();
-        new AlertDialog.Builder(context)
-                .setTitle("Delete entry")
-                .setMessage("Are you sure you want to delete this entry?")
-
-                // Specifying a listener allows you to take an action before dismissing the dialog.
-                // The dialog is automatically dismissed when a dialog button is clicked.
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Continue with delete operation
-                    }
-                })
-
-                // A null listener allows the button to dismiss the dialog and take no further action.
-                .setNegativeButton(android.R.string.no, null)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
+//        Log.d("ZooSeeker", "updateLocation");
+//        var provider = LocationManager.GPS_PROVIDER;
+//        var locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+//        var locationListener = new LocationListener() {
+//            @Override
+//            public void onLocationChanged(@NonNull Location location) {
+//                if(latitude != location.getLatitude() || longitude != location.getLongitude()) {
+//                    latitude = location.getLatitude();
+//                    longitude = location.getLongitude();
+//                    Log.d("ZooSeeker", String.format("latitude: %f longitude: %f", location));
+//                }
+//            }
+//        };
     }
 }
