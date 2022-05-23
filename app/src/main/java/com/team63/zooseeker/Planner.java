@@ -1,14 +1,10 @@
 package com.team63.zooseeker;
 
 import org.jgrapht.Graph;
-import org.jgrapht.GraphPath;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 
 // TODO: Add PlannerBuilder class to hide defaults, perhaps
@@ -38,22 +34,6 @@ public class Planner {
         this.directions = new ArrayList<>();
     }
 
-    public Planner planExhibits(Collection<String> exhibits) {
-        Set<String> ids = new HashSet(exhibits);
-        List<GraphPath<String, IdentifiedWeightedEdge>> paths = routeGen
-                .setG(G)
-                .setEntrance(entranceExit)
-                .setExit(entranceExit)
-                .setExhibits(ids)
-                .getRoute();
-        directions.clear();
-        for (GraphPath<String, IdentifiedWeightedEdge> path : paths) {
-            Direction direction = new Direction(path, vInfoMap, eInfoMap);
-            directions.add(direction);
-        }
-        return this;
-    }
-
     public List<Direction> getDirections() {
         for (int i = 0; i < directions.size(); i++) {
             directions.get(i).directionInfo.order = i;
@@ -67,25 +47,11 @@ public class Planner {
         return this;
     }
 
-    public Planner skip(int i) {
-        List<String> vertexSubset = new ArrayList<>(); // remaining vertex ids after skip
-        for (int j = i+1; j < directions.size(); j++) {
-            vertexSubset.add(directions.get(j).directionInfo.endVertexId);
-        }
-        vertexSubset.remove(vertexSubset.size()-1); // remove the gate (off-by-one error)
-        List<GraphPath<String, IdentifiedWeightedEdge>> recalculatedRouteSection = routeGen
-                .setG(G)
-                .setEntrance(directions.get(i).directionInfo.startVertexId)
-                .setExit(entranceExit)
-                .setExhibits(vertexSubset)
-                .getRoute();
-
-        List<Direction> newDirections = directions.subList(0, i);
-        for (GraphPath<String, IdentifiedWeightedEdge> path : recalculatedRouteSection) {
-            Direction direction = new Direction(path, vInfoMap, eInfoMap);
-            newDirections.add(direction);
-        }
-        directions = newDirections;
+    public Planner performOperation(DirectionsOperation op) {
+        List<Direction> directionsCopy = new ArrayList<> (directions); // prevent co-modification
+        List<Direction> newDirections = op.operate(directionsCopy, vInfoMap, eInfoMap,
+                routeGen, G, entranceExit);
+        setDirections(newDirections);
         return this;
     }
 }

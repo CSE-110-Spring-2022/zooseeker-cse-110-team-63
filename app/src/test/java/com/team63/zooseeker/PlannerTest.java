@@ -49,7 +49,9 @@ public class PlannerTest {
                 "gators",
                 "lions"
         );
-        List<Direction> directions = planner.planExhibits(exhibits).getDirections();
+        List<Direction> directions = planner
+                .performOperation(new PlanExhibitsOperation(exhibits))
+                .getDirections();
         Direction toGators = directions.get(0);
         assertEquals(10, toGators.steps.get(0).distance, doubleDelta);
         assertEquals("Entrance Way", toGators.steps.get(0).street);
@@ -101,8 +103,13 @@ public class PlannerTest {
                 "gators",
                 "lions"
         );
-        List<Direction> directions = planner.planExhibits(exhibits).getDirections();
-        List<Direction> newDirections = planner.setDirections(directions).skip(0).getDirections();
+        List<Direction> directions = planner
+                .performOperation(new PlanExhibitsOperation(exhibits))
+                .getDirections();
+        List<Direction> newDirections = planner
+                .setDirections(directions)
+                .performOperation(new SkipOperation(0))
+                .getDirections();
         Direction toLions = newDirections.get(0);
         assertEquals(10, toLions.steps.get(0).distance, doubleDelta);
         assertEquals("Entrance Way", toLions.steps.get(0).street);
@@ -151,8 +158,13 @@ public class PlannerTest {
                 "gators",
                 "lions"
         );
-        List<Direction> directions = planner.planExhibits(exhibits).getDirections();
-        List<Direction> newDirections = planner.setDirections(directions).skip(2).getDirections();
+        List<Direction> directions = planner
+                .performOperation(new PlanExhibitsOperation(exhibits))
+                .getDirections();
+        List<Direction> newDirections = planner
+                .setDirections(directions)
+                .performOperation(new SkipOperation(2))
+                .getDirections();
 
         Direction toFoxes = newDirections.get(2);
         assertEquals(200, toFoxes.steps.get(0).distance, doubleDelta);
