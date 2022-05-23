@@ -1,12 +1,20 @@
 package com.team63.zooseeker;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -20,6 +28,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DirectionActivity extends AppCompatActivity implements LocationObserver, LocationListener {
@@ -35,12 +44,46 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
     private Button skipBtn;
     private Button planBtn;
 
+    private LocationManager locationManager;
+    private LocationListener locationListener;
     private double latitude, longitude;
+
+    private final ActivityResultLauncher<String[]> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), perms -> {
+                perms.forEach((perm, isGranted) -> {
+                    Log.i("ZooSeeker", String.format("Permission %s granted: %s", perm, isGranted));
+                });
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_direction);
+
+        Log.d("ZooSeeker", "onCreate1");
+
+        {
+            var requiredPermissions = new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+            };
+
+            var hasNoLocationParams = Arrays.stream(requiredPermissions)
+                    .map(perm -> ContextCompat.checkSelfPermission(this, perm))
+                    .allMatch(status -> status == PackageManager.PERMISSION_DENIED);
+
+            if(hasNoLocationParams) {
+                requestPermissionLauncher.launch(requiredPermissions);
+//                return;
+            }
+        }
+        var provider = LocationManager.GPS_PROVIDER;
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
+            }
+        };
 
         exhibitView = findViewById(R.id.exhibit_view);
         directionsView = findViewById(R.id.directions_view);
@@ -125,6 +168,7 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
         finish();
     }
 
+    // code in updateLocation is not doing anything. It is simply obeying the design pattern.
     @Override
     public void updateLocation() {
         Log.d("ZooSeeker", "updateLocation");
@@ -153,5 +197,23 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
     @Override
     public void onLocationChanged(@NonNull Location location) {
         Log.d("ZooSeeker", "LocationChanged");
+
+        Context context = getApplicationContext();
+        new AlertDialog.Builder(context)
+                .setTitle("Delete entry")
+                .setMessage("Are you sure you want to delete this entry?")
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Continue with delete operation
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 }
