@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,7 @@ import org.jgrapht.GraphPath;
 
 import java.io.Console;
 import java.io.Serializable;
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import android.view.MenuItem;
@@ -80,5 +82,24 @@ public class ViewPlanActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onErasePlanClicked(View view) {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+
+        alertBuilder
+                .setTitle("Alert!")
+                .setMessage("Are you sure you want to erase the route plan?")
+                .setPositiveButton("Yes", (dialog, id) -> {
+                    viewModel.resetId();
+                    finish();
+                })
+                .setNegativeButton("No", (dialog, id) -> {
+                    dialog.cancel();
+                })
+                .setCancelable(true);
+
+        AlertDialog alertDialog = alertBuilder.create();
+        alertDialog.show();
     }
 }
