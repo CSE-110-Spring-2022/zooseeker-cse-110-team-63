@@ -92,10 +92,8 @@ public class ViewPlanActivity extends AppCompatActivity {
                 .setTitle("Alert!")
                 .setMessage("Are you sure you want to erase the route plan?")
                 .setPositiveButton("Yes", (dialog, id) -> {
-                    adapter.clearPlan();
-                    viewModel.getDirections().observe(this, this::setDirectionCount);
-                    //planItemView.setText("No exhibits are planned yet.");
-                    //place holder for real erase plan method;
+                    viewModel.resetId();
+                    finish();
                 })
                 .setNegativeButton("No", (dialog, id) -> {
                     dialog.cancel();

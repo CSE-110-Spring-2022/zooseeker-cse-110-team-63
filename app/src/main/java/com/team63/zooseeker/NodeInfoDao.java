@@ -30,6 +30,9 @@ public interface NodeInfoDao {
     @Update
     int update(NodeInfo nodeInfo);
 
+    @Query ("UPDATE `node_info` SET `orderInPlan`=-1, `selected`=0")
+    void resetOrderAndSelect();
+
     @Delete
     void delete(NodeInfo nodeInfo);
 

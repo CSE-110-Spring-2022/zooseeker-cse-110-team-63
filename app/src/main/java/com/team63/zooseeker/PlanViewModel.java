@@ -5,6 +5,7 @@ import static android.content.Context.MODE_PRIVATE;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -96,5 +97,9 @@ public class PlanViewModel extends AndroidViewModel {
     public void selectItem(NodeInfo nodeInfo) {
         nodeInfo.selected = true;
         nodeInfoDao.update(nodeInfo);
+    }
+
+    public void resetId() {
+        nodeInfoDao.resetOrderAndSelect();
     }
 }
