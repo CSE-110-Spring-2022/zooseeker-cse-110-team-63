@@ -23,15 +23,12 @@ public interface NodeInfoDao {
 
     @Query("SELECT * FROM `node_info` WHERE `kind`='exhibit' AND `selected`")
     LiveData<List<NodeInfo>> getSelectedExhibits();
-
+  
     @Query("SELECT * FROM `node_info` WHERE `kind`='gate'")
     List<NodeInfo> getGates();
 
     @Update
     int update(NodeInfo nodeInfo);
-
-    @Query ("UPDATE `node_info` SET `orderInPlan`=-1, `selected`=0")
-    void resetOrderAndSelect();
 
     @Delete
     void delete(NodeInfo nodeInfo);
@@ -41,4 +38,8 @@ public interface NodeInfoDao {
 
     @Query("DELETE FROM `node_info`")
     void deleteAllNodeInfos();
+  
+    @Query ("UPDATE `node_info` SET `orderInPlan`=-1, `selected`=0")
+    void resetOrderAndSelect();
+
 }

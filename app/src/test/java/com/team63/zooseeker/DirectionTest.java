@@ -9,8 +9,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
-import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.GraphWalk;
 import org.junit.Before;
 import org.junit.Test;
@@ -83,7 +81,7 @@ public class DirectionTest {
                 .setG(G)
                 .setEntrance("entrance_exit_gate")
                 .setExit("entrance_exit_gate")
-                .addExhibits(exhibits)
+                .setExhibits(exhibits)
                 .getRoute();
         List<Direction> directions = new ArrayList<>();
 

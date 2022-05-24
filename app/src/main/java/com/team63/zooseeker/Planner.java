@@ -1,27 +1,18 @@
 package com.team63.zooseeker;
 
-import androidx.room.Ignore;
-
 import org.jgrapht.Graph;
-import org.jgrapht.GraphPath;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-
-// TODO: Add PlannerBuilder class to hide defaults, perhaps
-// TODO: Unit-testing for Planner planExhibits and planDirections
 public class Planner {
-    private List<Direction> directions;
-    private Map<String, ZooData.VertexInfo> vInfoMap;
-    private Map<String, ZooData.EdgeInfo> eInfoMap;
+    private final Map<String, ZooData.VertexInfo> vInfoMap;
+    private final Map<String, ZooData.EdgeInfo> eInfoMap;
+    private final RouteGenerator routeGen;
+    private final Graph <String, IdentifiedWeightedEdge> G;
     private String entranceExit;
-    private RouteGenerator routeGen;
-    private Graph <String, IdentifiedWeightedEdge> G;
+    private List<Direction> directions;
 
     public Planner(RouteGenerator routeGen,
                 Map<String, ZooData.VertexInfo> vInfoMap,
@@ -33,57 +24,31 @@ public class Planner {
         for (Map.Entry<String, ZooData.VertexInfo> entry : vInfoMap.entrySet()) {
             if (entry.getValue().kind == ZooData.VertexInfo.Kind.GATE) {
                 this.entranceExit = entry.getKey();
+                break;
             }
         }
         this.G = G;
-    }
-
-    public Planner planExhibits(Collection<String> exhibits, String entranceExit) {
-        Set<String> ids = new HashSet(exhibits);
-        List<GraphPath<String, IdentifiedWeightedEdge>> paths = routeGen
-                .setG(G)
-                .setEntrance(entranceExit)
-                .setExit(entranceExit)
-                .addExhibits(ids)
-                .getRoute();
-        directions = new ArrayList<>();
-        for (GraphPath<String, IdentifiedWeightedEdge> path : paths) {
-            Direction direction = new Direction(path, vInfoMap, eInfoMap);
-            directions.add(direction);
-        }
-        return this;
+        this.directions = new ArrayList<>();
     }
 
     public List<Direction> getDirections() {
-        return directions;
+        for (int i = 0; i < directions.size(); i++) {
+            directions.get(i).directionInfo.order = i;
+        }
+        return new ArrayList<>(directions);
     }
 
     public Planner setDirections(List<Direction> directions) {
-        this.directions = directions;
+        this.directions.clear();
+        this.directions.addAll(directions);
         return this;
     }
 
-    public Planner skip(int i) {
-        List<String> vertexSubset = new ArrayList<>(); // remaining vertex ids after skip
-        for (Direction direction : directions) {
-            if (direction.directionInfo.order > i) {
-                vertexSubset.add(direction.directionInfo.endVertexId);
-            }
-        }
-        vertexSubset.remove(vertexSubset.size()-1); // remove the gate (off-by-one error)
-        List<GraphPath<String, IdentifiedWeightedEdge>> recalculatedRouteSection = routeGen
-                .setG(G)
-                .setEntrance(directions.get(i).directionInfo.startVertexId)
-                .setExit(entranceExit)
-                .addExhibits(vertexSubset)
-                .getRoute();
-
-        List<Direction> newDirections = directions.subList(0, i);
-        for (GraphPath<String, IdentifiedWeightedEdge> path : recalculatedRouteSection) {
-            Direction direction = new Direction(path, vInfoMap, eInfoMap);
-            newDirections.add(direction);
-        }
-        directions = newDirections;
+    public Planner performOperation(DirectionsOperation op) {
+        List<Direction> directionsCopy = new ArrayList<> (directions); // prevent co-modification
+        List<Direction> newDirections = op.operate(directionsCopy, vInfoMap, eInfoMap,
+                routeGen, G, entranceExit);
+        setDirections(newDirections);
         return this;
     }
 }

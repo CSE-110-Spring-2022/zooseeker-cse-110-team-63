@@ -32,10 +32,10 @@ public class NNRouteGeneratorTest {
     @Test
     public void testNoExhibits() {
         ArrayList<String> exhibits = new ArrayList<>();
-        List<GraphPath<String, IdentifiedWeightedEdge>> plan = testPlanGenerator
+        List<GraphPath<String, IdentifiedWeightedEdge>> plan = testPlanGenerator.setG(G)
             .setEntrance(entranceExit)
             .setExit(entranceExit)
-            .addExhibits(exhibits)
+            .setExhibits(exhibits)
             .getRoute();
 
         assertEquals(plan.size(), 1);
@@ -49,10 +49,10 @@ public class NNRouteGeneratorTest {
         String exhibit = "arctic_foxes";
         ArrayList<String> exhibits = new ArrayList<>();
         exhibits.add(exhibit);
-        List<GraphPath<String, IdentifiedWeightedEdge>> plan = testPlanGenerator
+        List<GraphPath<String, IdentifiedWeightedEdge>> plan = testPlanGenerator.setG(G)
                 .setEntrance(entranceExit)
                 .setExit(entranceExit)
-                .addExhibits(exhibits)
+                .setExhibits(exhibits)
                 .getRoute();
 
         assertEquals(plan.size(), 2);
@@ -72,10 +72,10 @@ public class NNRouteGeneratorTest {
         exhibits.add("gorillas");
         exhibits.add("gators");
 
-        List<GraphPath<String, IdentifiedWeightedEdge>> plan = testPlanGenerator
+        List<GraphPath<String, IdentifiedWeightedEdge>> plan = testPlanGenerator.setG(G)
                 .setEntrance(entranceExit)
                 .setExit(entranceExit)
-                .addExhibits(exhibits)
+                .setExhibits(exhibits)
                 .getRoute();
 
         assertEquals(plan.size(), exhibits.size() + 1);

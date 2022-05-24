@@ -5,6 +5,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ManyToManyShortestPathsAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraManyToManyShortestPaths;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,7 +21,7 @@ public class NNRouteGenerator implements RouteGenerator {
     private Collection<String> exhibits;
 
     public NNRouteGenerator() {
-        this.G = null;
+        this.G = new DefaultUndirectedWeightedGraph<>(IdentifiedWeightedEdge.class);
         this.route = new ArrayList<>();
         this.entrance = "entrance_exit_gate";
         this.exit = this.entrance; // by default, map it
@@ -42,15 +43,9 @@ public class NNRouteGenerator implements RouteGenerator {
         return this;
     }
 
-    public RouteGenerator addExhibit (String id) {
-        exhibits.add(id);
-        return this;
-    }
-
-    public RouteGenerator addExhibits (Collection<String> ids) {
-        for (String id : ids) {
-            exhibits.add(id);
-        }
+    public RouteGenerator setExhibits(Collection<String> ids) {
+        exhibits.clear();
+        exhibits.addAll(ids);
         return this;
     }
 
@@ -59,9 +54,10 @@ public class NNRouteGenerator implements RouteGenerator {
         return route;
     }
 
-    public void clear() {
+    public RouteGenerator clear() {
         exhibits.clear();
         route.clear();
+        return this;
     }
 
     private void calculateRoute() {

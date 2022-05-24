@@ -35,9 +35,7 @@ public abstract class DirectionDao {
     @Transaction
     public void insertDirections (List<Direction> directions) {
         deleteAll();
-        for (int i = 0; i < directions.size(); i++) {
-            Direction direction = directions.get(i);
-            direction.directionInfo.order = i;
+        for (Direction direction : directions) {
             insertDirection(direction);
         }
     }
