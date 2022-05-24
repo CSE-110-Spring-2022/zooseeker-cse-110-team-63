@@ -86,7 +86,6 @@ public class ViewPlanActivity extends AppCompatActivity {
 
     public void onErasePlanClicked(View view) {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-        //TextView planItemView = findViewById(R.id.plan_items);
 
         alertBuilder
                 .setTitle("Alert!")
