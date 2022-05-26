@@ -41,7 +41,7 @@ public class DirectionTest {
         GraphPath<String, IdentifiedWeightedEdge> path =
                 new GraphWalk<>
                         (G, Arrays.asList("entrance_exit_gate", "entrance_plaza", "gorillas", "lions"), 410);
-        Direction testPD = new Direction(path, vInfo, eInfo);
+        Direction testPD = new Direction(path, vInfo, eInfo, new BigStepRenderer());
         assertEquals("Lions", testPD.directionInfo.name);
         List<Step> stepList = testPD.steps;
         assertEquals(2, stepList.size());
@@ -59,7 +59,7 @@ public class DirectionTest {
         GraphPath<String, IdentifiedWeightedEdge> path =
                 new GraphWalk<>
                         (G, Arrays.asList("elephant_odyssey", "lions", "gorillas"), 400);
-        Direction testPD = new Direction(path, vInfo, eInfo);
+        Direction testPD = new Direction(path, vInfo, eInfo, new BigStepRenderer());
         assertEquals("Gorillas", testPD.directionInfo.name);
         List<Step> stepList = testPD.steps;
         assertEquals(1, stepList.size());
@@ -86,7 +86,7 @@ public class DirectionTest {
         List<Direction> directions = new ArrayList<>();
 
         for (GraphPath<String, IdentifiedWeightedEdge> path : paths) {
-            directions.add(new Direction(path, vInfo, eInfo));
+            directions.add(new Direction(path, vInfo, eInfo, new BigStepRenderer()));
         }
 
         Direction toGators = directions.get(0);
