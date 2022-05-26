@@ -78,7 +78,7 @@ public class Direction {
     }
 
     private List<Step> computeSteps(StepRenderer stepRenderer) {
-        return stepRenderer.getSteps(path, vInfo, eInfo, G);
+        return stepRenderer.getSteps(path, vInfo, eInfo);
     }
 
     // helper method that rounds distance to 1 sig fig

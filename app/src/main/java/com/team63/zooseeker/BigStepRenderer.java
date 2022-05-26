@@ -14,13 +14,13 @@ public class BigStepRenderer implements StepRenderer {
     @Override
     public List<Step> getSteps(GraphPath<String, IdentifiedWeightedEdge> path,
                                Map<String, ZooData.VertexInfo> vInfoMap,
-                               Map<String, ZooData.EdgeInfo> eInfoMap,
-                               Graph<String, IdentifiedWeightedEdge> G) {
+                               Map<String, ZooData.EdgeInfo> eInfoMap) {
         ArrayList<Step> stepList = new ArrayList<>();
         Step step = new Step();
         List<IdentifiedWeightedEdge> pathEdges = path.getEdgeList();
         List<String> pathVertices = path.getVertexList();
         int stepCount = 0;
+        Graph<String, IdentifiedWeightedEdge> G = path.getGraph();
         // TODO: refactor the logic in here
         for (int i = 0; i < pathEdges.size(); i++) {
             IdentifiedWeightedEdge currEdge = pathEdges.get(i);

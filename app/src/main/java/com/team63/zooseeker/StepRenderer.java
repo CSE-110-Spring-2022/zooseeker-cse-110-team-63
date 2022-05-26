@@ -9,6 +9,5 @@ import java.util.Map;
 public interface StepRenderer {
     public List<Step> getSteps(GraphPath<String, IdentifiedWeightedEdge> path,
                                Map<String, ZooData.VertexInfo> vInfoMap,
-                               Map<String, ZooData.EdgeInfo> eInfoMap,
-                               Graph<String, IdentifiedWeightedEdge> G);
+                               Map<String, ZooData.EdgeInfo> eInfoMap);
 }
