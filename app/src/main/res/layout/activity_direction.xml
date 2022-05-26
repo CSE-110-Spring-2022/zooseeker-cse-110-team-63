@@ -32,8 +32,8 @@
         android:id="@+id/directions_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
-        android:layout_marginEnd="44dp"
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="220dp"
         android:text="Directions"
         android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,8 +43,8 @@
         android:id="@+id/plan_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginStart="204dp"
+        android:layout_marginTop="56dp"
         android:onClick="onPlanBtnClicked"
         android:text="Plan"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,17 +52,17 @@
 
     <TextView
         android:id="@+id/exhibit_view"
-        android:layout_width="239dp"
-        android:layout_height="88dp"
+        android:layout_width="349dp"
+        android:layout_height="81dp"
         android:text="Exhibit name and dist"
-        android:textAlignment="textStart"
+        android:textAlignment="center"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.191"
+        app:layout_constraintHorizontal_bias="0.516"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.188" />
+        app:layout_constraintVertical_bias="0.198" />
 
     <TextView
         android:id="@+id/directions_view"
@@ -90,16 +90,16 @@
 
     <ImageView
         android:id="@+id/imageButton2"
-        android:layout_width="51dp"
-        android:layout_height="52dp"
+        android:layout_width="49dp"
+        android:layout_height="46dp"
         android:clickable="true"
         android:onClick="onSettingsBtnClicked"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.877"
+        app:layout_constraintHorizontal_bias="0.889"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.203"
+        app:layout_constraintVertical_bias="0.077"
         app:srcCompat="@android:drawable/ic_menu_manage" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
