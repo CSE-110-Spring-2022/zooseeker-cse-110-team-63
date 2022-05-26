@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -112,5 +113,10 @@ public class DirectionActivity extends AppCompatActivity {
     public void onPlanBtnClicked(View view) {
         planViewModel.generateDirections();
         finish();
+    }
+
+    public void onSettingsBtnClicked(View view) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 }
