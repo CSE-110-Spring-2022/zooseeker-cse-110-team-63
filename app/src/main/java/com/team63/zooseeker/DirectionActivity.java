@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -43,6 +44,7 @@ public class DirectionActivity extends AppCompatActivity {
         planViewModel = new ViewModelProvider(this).get(PlanViewModel.class);
 
         directionInd = 0;
+        directionsView.setMovementMethod(new ScrollingMovementMethod());
 
         LiveData<List<Direction>> liveData = planViewModel.getDirections();
         liveData.observe(this, this::updateDirections);

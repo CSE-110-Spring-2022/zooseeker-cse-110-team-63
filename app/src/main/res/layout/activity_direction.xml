@@ -72,6 +72,7 @@
         android:layout_marginTop="234dp"
         android:text="Directions"
         android:textSize="20sp"
+        android:scrollbars = "vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
