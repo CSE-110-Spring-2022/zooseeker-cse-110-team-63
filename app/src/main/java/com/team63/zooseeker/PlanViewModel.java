@@ -5,7 +5,6 @@ import static android.content.Context.MODE_PRIVATE;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -13,11 +12,9 @@ import androidx.lifecycle.LiveData;
 
 import org.jgrapht.Graph;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class PlanViewModel extends AndroidViewModel {
     private Graph<String, IdentifiedWeightedEdge> G;
@@ -74,7 +71,7 @@ public class PlanViewModel extends AndroidViewModel {
                 .setVInfoMap(vInfoMap).setEInfoMap(eInfoMap)
                 .setG(G)
                 .make();
-        directionDao.insertDirections(planner
+        directionDao.setDirections(planner
                 .performOperation(new PlanExhibitsOperation(new HashSet(nodeInfoDao.getSelectedExhibitIds())))
                 .getDirections());
     }
@@ -88,7 +85,7 @@ public class PlanViewModel extends AndroidViewModel {
                 .setG(G)
                 .make();
 
-        directionDao.insertDirections(planner.setDirections(directionDao.getDirectionsSync())
+        directionDao.setDirections(planner.setDirections(directionDao.getDirectionsSync())
                 .performOperation(new SkipOperation(directionInd))
                 .getDirections());
     }
@@ -100,5 +97,24 @@ public class PlanViewModel extends AndroidViewModel {
 
     public void resetId() {
         nodeInfoDao.resetOrderAndSelect();
+    }
+
+    public void setDetailedDir(boolean isChecked){
+        PlannerBuilder plannerBuilder = new PlannerBuilder();
+        StepRenderer stepRenderer;
+
+        Planner planner = plannerBuilder.setRouteGenerator(new NNRouteGenerator())
+                .setEInfoMap(eInfoMap)
+                .setVInfoMap(vInfoMap)
+                .setG(G)
+                .make();
+
+        if (isChecked) {stepRenderer = new DetailedStepRenderer();}
+        else {stepRenderer = new BigStepRenderer();}
+        List<Direction> newDirections = planner.setDirections(directionDao.getDirectionsSync())
+                .setStepRenderer(stepRenderer)
+                .performOperation(new ReloadStepsOperation())
+                .getDirections();
+        directionDao.setDirections(newDirections);
     }
 }

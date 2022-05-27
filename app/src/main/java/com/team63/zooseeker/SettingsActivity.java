@@ -2,6 +2,7 @@ package com.team63.zooseeker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
@@ -13,12 +14,15 @@ import android.widget.TextView;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    public PlanViewModel viewModel;
     public Switch detailedSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        viewModel = new ViewModelProvider(this)
+                .get(PlanViewModel.class);
 
         detailedSwitch = findViewById(R.id.detailed_switch);
         loadProfile();
@@ -58,6 +62,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void onDetailedDirBtnClicked(View view) {
+        viewModel.setDetailedDir(detailedSwitch.isChecked());
+
         {   // alert for testing functionality, will be deleted later.
             AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
 
