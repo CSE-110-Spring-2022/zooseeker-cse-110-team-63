@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
@@ -37,10 +38,12 @@ public class SettingsActivity extends AppCompatActivity {
 
     public void loadProfile() {
 
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences("filenames", MODE_PRIVATE);
 
         boolean detailedDir = preferences.getBoolean("detailedDir",false);
         detailedSwitch.setChecked(detailedDir);
+
+        Log.d("TEST", String.valueOf(detailedDir));
     }
 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -63,19 +66,5 @@ public class SettingsActivity extends AppCompatActivity {
 
     public void onDetailedDirBtnClicked(View view) {
         viewModel.setDetailedDir(detailedSwitch.isChecked());
-
-        {   // alert for testing functionality, will be deleted later.
-            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-
-            alertBuilder
-                    .setTitle("Alert!")
-                    .setMessage(String.format("Detailed directions is %b", detailedSwitch.isChecked()))
-                    .setPositiveButton("OK", (dialog, id) -> {
-                    })
-                    .setCancelable(true);
-
-            AlertDialog alertDialog = alertBuilder.create();
-            alertDialog.show();
-        }
     }
 }

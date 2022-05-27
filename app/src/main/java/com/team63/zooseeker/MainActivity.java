@@ -53,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("zoo_graph", getString(R.string.zoo_graph));
         }
 
+        editor.putBoolean("detailedDir", false);
+        Log.d("TEST", "detailedDir set in sharedPreferences");
+
         editor.commit();
 
         // important to set the sharedPref values before calling viewModel
