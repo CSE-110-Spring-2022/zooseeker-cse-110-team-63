@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+// looks like IDirection no longer exists
 /* this implementation of IDirection takes in a GraphPath in the List returned by
  * PlanGenerator.getPath in the constructor, and uses it to construct the pathVie
  */

@@ -79,6 +79,8 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
         }
         var provider = LocationManager.GPS_PROVIDER;
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+        // we are setting up a listener (but are still in onCreate()!)
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(@NonNull Location location) {
@@ -87,6 +89,31 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
                     latitude = location.getLatitude();
                     longitude = location.getLongitude();
                     // TODO: at this point, calculate new plan and prompt the user to switch plans if the new plan is better
+                    // 1. we CHECK if we are close to later exhibits in the plan. If so and we need a replan,
+                    // 2. we START directions from " the current location, which for TSP purposes
+                    // would be the graph node closest to the actual lat/long location." @831
+
+                    // to check if we are close to later exhibits in the plan, we must
+                    // 1. get those exhibits and their locations
+                    //   a. this includes the immediate next exhibit
+                    //   b. and the set of exhibits after that
+                    // 2. check our distance from each of those
+                    // 3. check to see if any in the planned set are closer than immediate.
+                    List<Direction> locationListenerDirections =
+                            planViewModel.getDirections().getValue();
+
+                    Direction immediateExhibit = locationListenerDirections.get(directionInd);
+                    List<Direction> restOfExhibits =
+                            locationListenerDirections.subList(directionInd + 1, locationListenerDirections.size());
+
+                    // this should have to compute distance with latitude and longitude
+                    //double currentDistanceFromImmediate = immediateExhibit.directionInfo.distance;
+
+
+                    // assuming the check has passed and we need to replan, TODO
+
+
+
                 }
             }
         };
@@ -102,6 +129,7 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
         planViewModel = new ViewModelProvider(this).get(PlanViewModel.class);
 
         directionInd = 0;
+        Log.d("ZooSeeker", String.format("directionInd is: %d", directionInd));
 
         LiveData<List<Direction>> liveData = planViewModel.getDirections();
         liveData.observe(this, this::updateDirections);
@@ -131,11 +159,13 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
 
     public void onNextBtnClicked(View view) {
         directionInd++;
+        Log.d("ZooSeeker", String.format("directionInd is: %d", directionInd));
         updateDirections(directions);
     }
 
     public void onPrevBtnClicked(View view) {
         directionInd--;
+        Log.d("ZooSeeker", String.format("directionInd is: %d", directionInd));
         updateDirections(directions);
     }
 

@@ -1,6 +1,7 @@
 package com.team63.zooseeker;
 
 import android.content.Context;
+import android.location.Location;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,7 +38,8 @@ public class ZooData {
         public String id;
         public Kind kind;
         public String name;
-        public List<String> tags;   
+        public List<String> tags;
+        public Location location;
     }
 
     public static class EdgeInfo {
@@ -45,6 +47,9 @@ public class ZooData {
         public String street;
     }
 
+    /**
+     * updating to load from new JSON with lat/long information?
+     */
     public static Map<String, ZooData.VertexInfo> loadVertexInfoJSON(Context context, String path) {
         try {
             InputStream inputStream = context.getAssets().open(path);
