@@ -33,7 +33,7 @@ public abstract class DirectionDao {
     }
 
     @Transaction
-    public void insertDirections (List<Direction> directions) {
+    public void setDirections(List<Direction> directions) {
         deleteAll();
         for (Direction direction : directions) {
             insertDirection(direction);

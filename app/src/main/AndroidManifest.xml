@@ -11,6 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ZooSeeker">
         <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ViewPlanActivity"
             android:exported="false" />
         <activity
@@ -18,12 +21,12 @@
             android:exported="false" />
         <activity
             android:name=".SearchActivity"
-            android:theme="@style/Theme.ZooSeeker.NoActionBar"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.ZooSeeker.NoActionBar" />
         <activity
             android:name=".MainActivity"
-            android:theme="@style/Theme.ZooSeeker.NoActionBar"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.ZooSeeker.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

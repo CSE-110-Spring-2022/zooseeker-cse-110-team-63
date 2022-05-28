@@ -13,6 +13,7 @@ public class Planner {
     private final Graph <String, IdentifiedWeightedEdge> G;
     private String entranceExit;
     private List<Direction> directions;
+    private StepRenderer stepRenderer;
 
     public Planner(RouteGenerator routeGen,
                 Map<String, ZooData.VertexInfo> vInfoMap,
@@ -29,6 +30,7 @@ public class Planner {
         }
         this.G = G;
         this.directions = new ArrayList<>();
+        this.stepRenderer = new BigStepRenderer();
     }
 
     public List<Direction> getDirections() {
@@ -44,10 +46,15 @@ public class Planner {
         return this;
     }
 
+    public Planner setStepRenderer(StepRenderer stepRenderer) {
+        this.stepRenderer = stepRenderer;
+        return this;
+    }
+
     public Planner performOperation(DirectionsOperation op) {
         List<Direction> directionsCopy = new ArrayList<> (directions); // prevent co-modification
         List<Direction> newDirections = op.operate(directionsCopy, vInfoMap, eInfoMap,
-                routeGen, G, entranceExit);
+                routeGen, G, entranceExit, stepRenderer);
         setDirections(newDirections);
         return this;
     }

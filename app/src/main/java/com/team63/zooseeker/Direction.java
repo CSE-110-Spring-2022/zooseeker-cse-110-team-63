@@ -49,26 +49,20 @@ public class Direction {
 
     public Direction() {}
 
-    /* path is the path from one exhibit to another.
-     * vInfo is a Map of strings to ZooData.VertexInfo objects, that can be obtained by calling
-     * the static ZooData.loadVertexInfoJSON method
-     * eInfo is a Map of strings to ZooData.VertexInfo objects, that can be obtained by calling
-     * the static ZooData.loadEdgeInfoJSON method
-     */
-    public Direction(GraphPath<String, IdentifiedWeightedEdge> path, Map<String, ZooData.VertexInfo> vInfo, Map<String, ZooData.EdgeInfo> eInfo) {
+    public Direction(GraphPath<String, IdentifiedWeightedEdge> path, Map<String, ZooData.VertexInfo> vInfo,
+                     Map<String, ZooData.EdgeInfo> eInfo, StepRenderer stepRenderer) {
         // code for setting fields adapted from App.java in the ZooSeeker assets
         this.vInfo = vInfo;
         this.eInfo = eInfo;
         this.path = path;
-        this.G = path.getGraph();
         this.directionInfo = new DirectionInfo(
                 path.getStartVertex(),
                 path.getEndVertex(),
                 Objects.requireNonNull(vInfo.get(path.getEndVertex())).name,
                 path.getWeight()
                 );
-        this.steps = computeSteps();
-        // this.stepStrings = getTextDirection();
+        this.G = path.getGraph();
+        this.steps = computeSteps(stepRenderer);
     }
 
     /*
@@ -84,67 +78,8 @@ public class Direction {
         return steps;
     }
 
-
-    private List<Step> computeSteps() {
-        ArrayList<Step> stepList = new ArrayList<>();
-        Step step = new Step();
-        List<IdentifiedWeightedEdge> pathEdges = path.getEdgeList();
-        List<String> pathVertices = path.getVertexList();
-        int stepCount = 0;
-        // TODO: refactor the logic in here
-        for (int i = 0; i < pathEdges.size(); i++) {
-            IdentifiedWeightedEdge currEdge = pathEdges.get(i);
-            if (step.street.equals("")) { // if step is fresh, we provide a street for it
-                step.street = eInfo.get(currEdge.getId()).street;
-            }
-            step.distance += G.getEdgeWeight(currEdge); // add edge distance to total step dist
-            // if we reach the end of the GraphPath
-            if (i == pathEdges.size() - 1
-                    // or if the edge ahead of us changes street, we end the step.
-                    || (!step.street.equals(eInfo.get(pathEdges.get(i+1).getId()).street))) {
-                // if we ended the step because we reached the end of the GraphPath
-                if (i == pathEdges.size() - 1) {
-                    // we mark the end destination of the step
-                    step.destination = vInfo.get(path.getEndVertex()).name;
-                }
-                else {
-                    // find the real target (necessary bc of how JGraphT stores unordered edges)
-                    String realTarget = "";
-                    Set<String> currEdgeEnds = new HashSet<>(Arrays.asList(
-                            G.getEdgeTarget(pathEdges.get(i)),
-                            G.getEdgeSource(pathEdges.get(i))
-                    ));
-                    Set<String> nextEdgeEnds = new HashSet<>(Arrays.asList(
-                            G.getEdgeTarget(pathEdges.get(i+1)),
-                            G.getEdgeSource(pathEdges.get(i+1))
-                    ));
-                    // find the vertex in common with the current edge and
-                    // next edge to find the "true" destination of this edge
-                    for (String currEdgeEnd : currEdgeEnds) {
-                        if (nextEdgeEnds.contains(currEdgeEnd)) {
-                            realTarget = currEdgeEnd;
-                            break;
-                        }
-                    }
-
-                    // if we ended the step because we have to change street next on an intersection
-                    if (vInfo.get(realTarget).kind == ZooData.VertexInfo.Kind.INTERSECTION) {
-                        // set the destination to the next street
-                        step.destination = eInfo.get(pathEdges.get(i+1).getId()).street;
-                    }
-                    // if we ended the step because we have to change street next on an exhibit
-                    else {
-                        // we set destination to the "real" target vertex of this edge
-                        step.destination = vInfo.get(realTarget).name;
-                    }
-                }
-
-                stepList.add(step); // we "cut off" the step and put it in the list
-                step = new Step(); // make step point to a new Step object
-                stepCount++;
-            }
-        }
-        return stepList;
+    private List<Step> computeSteps(StepRenderer stepRenderer) {
+        return stepRenderer.getSteps(path, vInfo, eInfo);
     }
 
     // helper method that rounds distance to 1 sig fig

@@ -22,7 +22,7 @@ public class RerouteOperation implements DirectionsOperation {
                                    Map<String, ZooData.EdgeInfo> eInfoMap,
                                    RouteGenerator routeGen,
                                    Graph<String, IdentifiedWeightedEdge> G,
-                                   String entranceExit) {
+                                   String entranceExit, StepRenderer stepRenderer) {
         List<String> vertexSubset = new ArrayList<>(); // set of exhibits that need rerouting
         for (int j = directionInd; j < directions.size(); j++) {
             vertexSubset.add(directions.get(j).directionInfo.endVertexId);
@@ -37,7 +37,7 @@ public class RerouteOperation implements DirectionsOperation {
 
         List<Direction> newDirections = directions.subList(0, directionInd);
         for (GraphPath<String, IdentifiedWeightedEdge> path : recalculatedRouteSection) {
-            Direction direction = new Direction(path, vInfoMap, eInfoMap);
+            Direction direction = new Direction(path, vInfoMap, eInfoMap, stepRenderer);
             newDirections.add(direction);
         }
 

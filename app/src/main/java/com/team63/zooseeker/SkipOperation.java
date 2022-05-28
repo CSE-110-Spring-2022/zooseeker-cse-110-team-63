@@ -20,7 +20,7 @@ public class SkipOperation implements DirectionsOperation {
                                    Map<String, ZooData.EdgeInfo> eInfoMap,
                                    RouteGenerator routeGen,
                                    Graph<String, IdentifiedWeightedEdge> G,
-                                   String entranceExit) {
+                                   String entranceExit, StepRenderer stepRenderer) {
         List<String> vertexSubset = new ArrayList<>(); // remaining vertex ids after skip
         for (int j = directionInd + 1; j < directions.size(); j++) {
             vertexSubset.add(directions.get(j).directionInfo.endVertexId);
@@ -35,7 +35,7 @@ public class SkipOperation implements DirectionsOperation {
 
         List<Direction> newDirections = directions.subList(0, directionInd);
         for (GraphPath<String, IdentifiedWeightedEdge> path : recalculatedRouteSection) {
-            Direction direction = new Direction(path, vInfoMap, eInfoMap);
+            Direction direction = new Direction(path, vInfoMap, eInfoMap, stepRenderer);
             newDirections.add(direction);
         }
 

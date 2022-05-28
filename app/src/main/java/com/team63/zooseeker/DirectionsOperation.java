@@ -10,6 +10,6 @@ public interface DirectionsOperation {
                             Map<String, ZooData.VertexInfo> vInfoMap,
                             Map<String, ZooData.EdgeInfo> eInfoMap,
                             RouteGenerator routeGen,
-                            Graph <String, IdentifiedWeightedEdge> G,
-                            String entranceExit);
+                            Graph<String, IdentifiedWeightedEdge> G,
+                            String entranceExit, StepRenderer stepRenderer);
 }
