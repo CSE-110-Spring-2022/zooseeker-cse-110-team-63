@@ -102,16 +102,7 @@ public class Direction {
 
     // helper method that rounds distance to 1 sig fig
     static int roundDistance(double d) {
-        int exponent = 0;
-        while (d >= 10) {
-            exponent++;
-            d /= 10;
-        }
-        int roundedD = (int) d;
-        for (int i = 0; i < exponent; i++) {
-            roundedD *= 10;
-        }
-        return roundedD;
+        return (int) Math.round(d);
     }
 
     static String getReadableList(List<String> stringList) {
