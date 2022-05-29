@@ -160,7 +160,7 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
             count++;
         }
 
-        String destination = steps.get(steps.size() - 1).destination;
+        String destination = directions.get(directionInd).directionInfo.name;
         directionsView.setText(dirStrings);
         exhibitView.setText(destination + "\n(" + cumDist + " ft)");
 
