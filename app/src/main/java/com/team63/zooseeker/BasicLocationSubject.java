@@ -15,6 +15,7 @@ import java.util.Map;
 public class BasicLocationSubject implements LocationSubject {
     private double latitude, longitude;
     private Map<String, ZooData.VertexInfo> zooMap;
+    private String nearestExhibit;
 
     public BasicLocationSubject(Map<String, ZooData.VertexInfo> zooMap) {
         this.zooMap = zooMap;
@@ -48,7 +49,8 @@ public class BasicLocationSubject implements LocationSubject {
                 nearestExhibit = vertex.id;
             }
         }
-        notifyObservers(nearestExhibit);
+        this.nearestExhibit = nearestExhibit;
+        notifyObservers();
 
         // this should have to compute distance with latitude and longitude
         //double currentDistanceFromImmediate = immediateExhibit.directionInfo.distance;
@@ -72,10 +74,10 @@ public class BasicLocationSubject implements LocationSubject {
     }
 
     @Override
-    public void notifyObservers(String s) {
+    public void notifyObservers() {
         Log.d("Test", String.format("Number of observers notified: %d", observers.size()));
         for (LocationObserver o : observers) {
-            o.updateLocation(s);
+            o.updateLocation(nearestExhibit);
         }
     }
 }

@@ -24,7 +24,6 @@ public class DirectionInfo {
 
     @NonNull
     public String name; // name of destination
-    public String startName; // name of location tourist is starting from
     public Double distance;
 
     @Ignore
@@ -32,10 +31,9 @@ public class DirectionInfo {
 
     public int order;
 
-    public DirectionInfo(String startVertexId, String endVertexId, String startName, String name, Double distance) {
+    public DirectionInfo(String startVertexId, String endVertexId, String name, Double distance) {
         this.startVertexId = startVertexId;
         this.endVertexId = endVertexId;
-        this.startName = startName;
         this.name = name;
         this.distance = distance;
     }

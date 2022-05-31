@@ -246,7 +246,7 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
                 .setMessage(
                         String.format(
                                 "We have detected you have went off-route. Would you like to reroute, starting from %s?",
-                                directions.get(directionInd).directionInfo.startName
+                                planViewModel.getLocationNameById(nearestExhibit)
                         )
                 )
                 .setPositiveButton("Yes", (dialog, id) -> {

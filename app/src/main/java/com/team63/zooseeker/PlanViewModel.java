@@ -133,6 +133,10 @@ public class PlanViewModel extends AndroidViewModel {
         directionDao.setDirections(newDirections);
     }
 
+    public String getLocationNameById(String id) {
+        return vInfoMap.get(id).name;
+    }
+
     public BasicLocationSubject getManualLocationSubject(){
         return new BasicLocationSubject(vInfoMap);
     }

@@ -26,9 +26,11 @@ public class ReloadStepsOperation implements DirectionsOperation {
                     .setExhibits(new ArrayList<>())
                     .getRoute()
                     .get(0);
+            String destination = direction.steps.get(direction.steps.size() - 1).destination;
             List<Step> newSteps = stepRenderer.getSteps(path, vInfoMap, eInfoMap);
             direction.steps.clear();
             direction.steps.addAll(newSteps);
+            direction.steps.get(direction.steps.size() - 1).destination = destination;
             newDirections.add(direction);
         }
         return newDirections;

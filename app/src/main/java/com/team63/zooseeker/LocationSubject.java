@@ -3,5 +3,5 @@ package com.team63.zooseeker;
 public interface LocationSubject {
     void registerObserver(LocationObserver o);
     void removeObserver(LocationObserver o);
-    void notifyObservers(String s);
+    void notifyObservers();
 }

@@ -41,7 +41,7 @@ public class PlanExhibitsOperation implements DirectionsOperation {
                     groups.put(vInfoMap.get(exhibit).groupId, newBucket);
                 }
                 // put the group ID of the exhibit, not the exhibit itself
-                // (since thta's how it's represented in the graph JSON file)
+                // (since that's how it's represented in the graph JSON file)
                 groups.get(vInfoMap.get(exhibit).groupId).add(exhibit);
                 ids.add(vInfoMap.get(exhibit).groupId);
             }
