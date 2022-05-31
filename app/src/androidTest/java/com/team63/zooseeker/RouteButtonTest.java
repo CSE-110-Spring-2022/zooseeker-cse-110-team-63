@@ -48,9 +48,11 @@ public class RouteButtonTest {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         SharedPreferences preferences = context.getSharedPreferences("filenames", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("vertex_info", context.getString(R.string.test_vertex_info));
-        editor.putString("edge_info", context.getString(R.string.test_edge_info));
-        editor.putString("zoo_graph", context.getString(R.string.test_zoo_graph));
+        editor.putString("vertex_info", context.getString(R.string.vertex_info_v1));
+        editor.putString("edge_info", context.getString(R.string.edge_info_v1));
+        editor.putString("zoo_graph", context.getString(R.string.zoo_graph_v1));
+        editor.putBoolean("detailedDir", false);
+        editor.putBoolean("gpsActive", false);
         editor.commit();
         NodeDatabase.resetDatabase(context);
     }

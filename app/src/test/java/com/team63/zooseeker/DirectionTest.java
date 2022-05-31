@@ -30,9 +30,9 @@ public class DirectionTest {
     @Before
     public void initializeFields() {
         context = ApplicationProvider.getApplicationContext();
-        G = ZooData.loadZooGraphJSON(context, context.getString(R.string.test_zoo_graph));
-        vInfo = ZooData.loadVertexInfoJSON(context, context.getString(R.string.test_vertex_info));
-        eInfo = ZooData.loadEdgeInfoJSON(context, context.getString(R.string.test_edge_info));
+        G = ZooData.loadZooGraphJSON(context, context.getString(R.string.zoo_graph_v1));
+        vInfo = ZooData.loadVertexInfoJSON(context, context.getString(R.string.vertex_info_v1));
+        eInfo = ZooData.loadEdgeInfoJSON(context, context.getString(R.string.edge_info_v1));
     }
 
     // Test case: The street changes at some point at intersection
