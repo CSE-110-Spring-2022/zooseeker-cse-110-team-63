@@ -1,12 +1,17 @@
 package com.team63.zooseeker;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -25,7 +30,6 @@ public class DirectionActivity extends AppCompatActivity {
     private Button nextBtn;
     private Button prevBtn;
     private Button skipBtn;
-    private Button planBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,16 +41,22 @@ public class DirectionActivity extends AppCompatActivity {
         nextBtn = findViewById(R.id.next_exhibit_btn);
         prevBtn = findViewById(R.id.previous_exhibit_btn);
         skipBtn = findViewById(R.id.skip_exhibit_btn);
-        planBtn = findViewById(R.id.plan_btn);
 
         planViewModel = new ViewModelProvider(this).get(PlanViewModel.class);
 
         directionInd = 0;
+        directionsView.setMovementMethod(new ScrollingMovementMethod());
 
         LiveData<List<Direction>> liveData = planViewModel.getDirections();
         liveData.observe(this, this::updateDirections);
 
         prevBtn.setVisibility(View.GONE);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.settings_menu, menu);
+        return true;
     }
 
     public void updateDirections(List<Direction> directions){
@@ -67,6 +77,17 @@ public class DirectionActivity extends AppCompatActivity {
         exhibitView.setText(destination + "\n(" + cumDist + " ft)");
 
         SetBtnVisibility();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.settings_btn:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void onNextBtnClicked(View view) {
