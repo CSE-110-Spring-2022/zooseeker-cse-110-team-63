@@ -68,12 +68,14 @@
     <TextView
         android:id="@+id/directions_view"
         android:layout_width="347dp"
-        android:layout_height="350dp"
+        android:layout_height="0dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="10dp"
         android:scrollbars="vertical"
         android:text="Directions"
         android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/skip_exhibit_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/longitude_input" />
 
