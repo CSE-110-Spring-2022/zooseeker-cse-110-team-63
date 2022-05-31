@@ -116,7 +116,7 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
         directionInd = 0;
 
 //        Log.d("ZooSeeker", String.format("directionInd is: %d", directionInd));
-        directionsView.setMovementMethod(new ScrollingMovementMethod());
+        //directionsView.setMovementMethod(new ScrollingMovementMethod());
 
         LiveData<List<Direction>> liveData = planViewModel.getDirections();
         liveData.observe(this, this::updateDirections);

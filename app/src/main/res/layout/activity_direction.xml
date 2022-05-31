@@ -10,23 +10,23 @@
         android:id="@+id/next_exhibit_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="28dp"
-        android:layout_marginBottom="36dp"
         android:onClick="onNextBtnClicked"
         android:text="Next Exhibit"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/skip_exhibit_btn" />
 
     <Button
         android:id="@+id/previous_exhibit_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginBottom="36dp"
+        android:layout_marginTop="10dp"
         android:onClick="onPrevBtnClicked"
         android:text="Previous Exhibit"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/skip_exhibit_btn" />
 
     <TextView
         android:id="@+id/directions_text"
@@ -56,40 +56,39 @@
         android:id="@+id/exhibit_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Exhibit name and dist"
         android:textAlignment="center"
         android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.186" />
+        app:layout_constraintTop_toBottomOf="@+id/directions_text" />
 
     <TextView
         android:id="@+id/directions_view"
         android:layout_width="347dp"
         android:layout_height="348dp"
-        android:layout_marginStart="33dp"
-        android:layout_marginTop="234dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
         android:scrollbars="vertical"
         android:text="Directions"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/longitude_input" />
 
     <Button
         android:id="@+id/skip_exhibit_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:onClick="onSkipBtnClicked"
         android:text="Skip Exhibit"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.85" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/directions_view" />
 
     <EditText
         android:id="@+id/latitude_input"
@@ -108,24 +107,24 @@
         android:id="@+id/longitude_input"
         android:layout_width="108dp"
         android:layout_height="36dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="12dp"
         android:ems="10"
         android:hint="longitude"
         android:inputType="numberDecimal|numberSigned"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="@+id/latitude_input"
-        app:layout_constraintStart_toEndOf="@+id/latitude_input"
-        app:layout_constraintTop_toTopOf="@+id/latitude_input" />
+        app:layout_constraintStart_toEndOf="@+id/latitude_input" />
 
     <Button
         android:id="@+id/apply_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="9dp"
         android:layout_marginEnd="52dp"
         android:onClick="onApplyBtnClicked"
         android:text="Apply"
+        app:layout_constraintBottom_toBottomOf="@+id/longitude_input"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/exhibit_view" />
+        app:layout_constraintStart_toEndOf="@+id/longitude_input"
+        app:layout_constraintTop_toTopOf="@+id/longitude_input" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
