@@ -133,9 +133,11 @@ public class PlanViewModel extends AndroidViewModel {
         directionDao.setDirections(newDirections);
     }
 
-    public RealLocationSubject getRealLocationSubject(){
-        LocationManager locationManager = (LocationManager) getApplication().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        // RealLocationSubject
-        return new RealLocationSubject(locationManager, vInfoMap);
+    public BasicLocationSubject getManualLocationSubject(){
+        return new BasicLocationSubject(vInfoMap);
+    }
+
+    public GPSLocationSubject getGPSLocationSubject(LocationManager locationManager){
+        return new GPSLocationSubject(locationManager, vInfoMap);
     }
 }
