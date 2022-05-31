@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -33,6 +34,7 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
     private List<Step> steps;
     private PlanViewModel planViewModel;
     private int directionInd;
+    private LocationManager locationManager;
 
     private TextView exhibitView;
     private TextView directionsView;
@@ -42,8 +44,12 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
     private EditText latitudeInput;
     private EditText longitudeInput;
     private Button applyBtn;
+    private String closestExhibit = "";
+    private boolean needAlert = true; // whether or not we need to ask user to reroute.
+    // This is reset whenever we click next, or our exhibit changes, or we come back from settings
 
-    private LocationSubject locationSubject;
+    private LocationSubject manualLocationSubject;
+    private LocationSubject gpsLocationSubject;
 
     private final ActivityResultLauncher<String[]> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), perms -> {
@@ -51,6 +57,21 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
                     Log.i("ZooSeeker", String.format("Permission %s granted: %s", perm, isGranted));
                 });
             });
+
+    private void updateFromPreferences() {
+        needAlert = true;
+        Log.d("Test", "calling updateFromPreferences now");
+        SharedPreferences preferences = getSharedPreferences("filenames", MODE_PRIVATE);
+        planViewModel.setDetailedDir(preferences.getBoolean("detailedDir", false));
+        if (preferences.getBoolean("gpsActive", false)) {
+            gpsLocationSubject.registerObserver(this);
+            manualLocationSubject.removeObserver(this);
+        }
+        else {
+            gpsLocationSubject.removeObserver(this);
+            manualLocationSubject.registerObserver(this);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +96,7 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
             }
         }
 
+        locationManager = (LocationManager) getApplication().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         exhibitView = findViewById(R.id.exhibit_view);
         directionsView = findViewById(R.id.directions_view);
         nextBtn = findViewById(R.id.next_exhibit_btn);
@@ -86,8 +108,10 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
 
 
         planViewModel = new ViewModelProvider(this).get(PlanViewModel.class);
-        locationSubject = planViewModel.getRealLocationSubject();
-        locationSubject.registerObserver(this);
+
+        manualLocationSubject = planViewModel.getManualLocationSubject();
+        gpsLocationSubject = planViewModel.getGPSLocationSubject(locationManager);
+
 
         directionInd = 0;
 
@@ -98,6 +122,13 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
         liveData.observe(this, this::updateDirections);
 
         prevBtn.setVisibility(View.GONE);
+        updateFromPreferences();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        updateFromPreferences();
     }
 
     @Override
@@ -121,7 +152,7 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
 
         String destination = directions.get(directionInd).directionInfo.name;
         directionsView.setText(dirStrings);
-        exhibitView.setText(destination + "\n(" + cumDist + " ft)");
+        exhibitView.setText(destination + "\n(" + Direction.roundDistance(cumDist) + " ft)");
 
         SetBtnVisibility();
     }
@@ -141,12 +172,14 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
         directionInd++;
         Log.d("ZooSeeker", String.format("directionInd is: %d", directionInd));
         updateDirections(directions);
+        needAlert = true;
     }
 
     public void onPrevBtnClicked(View view) {
         directionInd--;
         Log.d("ZooSeeker", String.format("directionInd is: %d", directionInd));
         updateDirections(directions);
+        needAlert = true;
     }
 
     public void onSkipBtnClicked(View view) {
@@ -157,6 +190,7 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
                 .setMessage("Are you sure you want to skip this exhibit?")
                 .setPositiveButton("Yes", (dialog, id) -> {
                     planViewModel.skip(directionInd);
+                    needAlert = true;
                 })
                 .setNegativeButton("No", (dialog, id) -> {
                     dialog.cancel();
@@ -187,13 +221,27 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
 
     @Override
     public void updateLocation(String nearestExhibit) {
-        if(!nearestExhibit.equals(directions.get(directionInd).directionInfo.startVertexId)){
-            planViewModel.replan(directionInd, nearestExhibit);
-        }
+        needAlert = needAlert && !nearestExhibit.equals(directions.get(directionInd).directionInfo.startVertexId);
+        if (!needAlert) return;
+        Log.d("Test", "updateLocation in DirectionActivity called");
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+        alertBuilder
+                .setTitle("Detected off-route")
+                .setMessage("We have detected that your location is off-route. Would you like to replan?")
+                .setPositiveButton("Yes", (dialog, id) -> {
+                    planViewModel.replan(directionInd, nearestExhibit);
+                })
+                .setNegativeButton("No", (dialog, id) -> {
+                    dialog.cancel();
+                })
+                .setCancelable(true);
+        AlertDialog alertDialog = alertBuilder.create();
+        needAlert = false;
+        alertDialog.show();
     }
 
     public void onApplyBtnClicked(View view) {
-        ((RealLocationSubject) locationSubject).changeLocation(
+        ((BasicLocationSubject) manualLocationSubject).changeLocation(
                 Double.parseDouble(latitudeInput.getText().toString()),
                 Double.parseDouble(longitudeInput.getText().toString())
         );

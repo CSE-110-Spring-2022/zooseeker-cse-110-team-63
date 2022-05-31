@@ -53,8 +53,14 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("zoo_graph", getString(R.string.zoo_graph));
         }
 
-        editor.putBoolean("detailedDir", false);
-        Log.d("TEST", "detailedDir set in sharedPreferences");
+        if (!preferences.contains("detailedDir")) {
+            editor.putBoolean("detailedDir", false);
+            Log.d("TEST", "detailedDir set in sharedPreferences");
+        }
+
+        if (!preferences.contains("gpsActive")) {
+            editor.putBoolean("gpsActive", true);
+        }
 
         editor.commit();
 
