@@ -45,7 +45,6 @@ public class ZooData {
 
         @SerializedName("group_id")
         public String groupId;
-        public Location location;
     }
 
     public static class EdgeInfo {
