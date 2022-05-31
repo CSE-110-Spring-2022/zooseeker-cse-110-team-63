@@ -5,13 +5,6 @@ import java.util.List;
 
 public class MockLocationSubject implements LocationSubject {
     private List<LocationObserver> observers = new ArrayList<>();
-    private final double latitude;
-    private final double longitude;
-
-    MockLocationSubject(double latitude, double longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-    }
 
     @Override
     public void registerObserver(LocationObserver o) {
@@ -24,10 +17,10 @@ public class MockLocationSubject implements LocationSubject {
     }
 
     @Override
-    public void notifyObservers() {
+    public void notifyObservers(String s) {
         for (LocationObserver o : observers) {
 //            o.updateLocation(latitude, longitude);
-            o.updateLocation();
+            o.updateLocation(s);
         }
     }
 }
