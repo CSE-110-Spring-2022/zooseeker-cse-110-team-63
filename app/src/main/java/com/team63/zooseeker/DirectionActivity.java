@@ -43,6 +43,7 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
     private Button skipBtn;
     private EditText latitudeInput;
     private EditText longitudeInput;
+    private boolean hasPermissions = false;
     private Button applyBtn;
     private String closestExhibit = "";
     private boolean needAlert = true; // whether or not we need to ask user to reroute.
@@ -59,6 +60,7 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
             });
 
     private void updateFromPreferences() {
+        if (!hasPermissions) return;
         needAlert = true;
         Log.d("Test", "calling updateFromPreferences now");
         SharedPreferences preferences = getSharedPreferences("filenames", MODE_PRIVATE);
@@ -86,16 +88,30 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
                     Manifest.permission.ACCESS_COARSE_LOCATION
             };
 
-            var hasNoLocationParams = Arrays.stream(requiredPermissions)
+            hasPermissions = !(Arrays.stream(requiredPermissions)
                     .map(perm -> ContextCompat.checkSelfPermission(this, perm))
-                    .allMatch(status -> status == PackageManager.PERMISSION_DENIED);
+                    .allMatch(status -> status == PackageManager.PERMISSION_DENIED));
 
-            if(hasNoLocationParams) {
+            if(!hasPermissions) {
                 requestPermissionLauncher.launch(requiredPermissions);
 //                return;
             }
+            else {
+                withPermissions();
+            }
         }
 
+        Log.d("DirectionActivity", "finished asking for permissions");
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        withPermissions();
+    }
+
+    public void withPermissions() {
+        hasPermissions = true;
         locationManager = (LocationManager) getApplication().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         exhibitView = findViewById(R.id.exhibit_view);
         directionsView = findViewById(R.id.directions_view);
@@ -116,7 +132,7 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
         directionInd = 0;
 
 //        Log.d("ZooSeeker", String.format("directionInd is: %d", directionInd));
-        //directionsView.setMovementMethod(new ScrollingMovementMethod());
+        directionsView.setMovementMethod(new ScrollingMovementMethod());
 
         LiveData<List<Direction>> liveData = planViewModel.getDirections();
         liveData.observe(this, this::updateDirections);
@@ -227,7 +243,12 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
         alertBuilder
                 .setTitle("Detected off-route")
-                .setMessage("We have detected that your location is off-route. Would you like to replan?")
+                .setMessage(
+                        String.format(
+                                "We have detected you have went off-route. Would you like to reroute, starting from %s?",
+                                directions.get(directionInd).directionInfo.startName
+                        )
+                )
                 .setPositiveButton("Yes", (dialog, id) -> {
                     planViewModel.replan(directionInd, nearestExhibit);
                 })

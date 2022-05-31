@@ -62,6 +62,7 @@ public class Direction {
         this.directionInfo = new DirectionInfo(
                 path.getStartVertex(),
                 path.getEndVertex(),
+                vInfo.get(path.getStartVertex()).name,
                 vInfo.get(path.getEndVertex()).name,
                 path.getWeight()
                 );

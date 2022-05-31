@@ -10,23 +10,23 @@
         android:id="@+id/next_exhibit_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="48dp"
         android:onClick="onNextBtnClicked"
         android:text="Next Exhibit"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/skip_exhibit_btn" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/previous_exhibit_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="48dp"
         android:onClick="onPrevBtnClicked"
         android:text="Previous Exhibit"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/skip_exhibit_btn" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/directions_text"
@@ -68,7 +68,7 @@
     <TextView
         android:id="@+id/directions_view"
         android:layout_width="347dp"
-        android:layout_height="348dp"
+        android:layout_height="350dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:scrollbars="vertical"
@@ -81,14 +81,14 @@
         android:id="@+id/skip_exhibit_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginBottom="10dp"
         android:onClick="onSkipBtnClicked"
         android:text="Skip Exhibit"
+        app:layout_constraintBottom_toTopOf="@+id/next_exhibit_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/directions_view" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/latitude_input"
