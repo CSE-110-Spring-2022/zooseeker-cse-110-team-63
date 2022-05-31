@@ -62,7 +62,7 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
     private void updateFromPreferences() {
         if (!hasPermissions) return;
         needAlert = true;
-        Log.d("Test", "calling updateFromPreferences now");
+        Log.d("ZooSeeker,DirectionActivity", "calling updateFromPreferences now");
         SharedPreferences preferences = getSharedPreferences("filenames", MODE_PRIVATE);
         planViewModel.setDetailedDir(preferences.getBoolean("detailedDir", false));
         if (preferences.getBoolean("gpsActive", false)) {
@@ -80,7 +80,7 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_direction);
 
-        Log.d("ZooSeeker", "onCreate1");
+        Log.d("ZooSeeker,DirectionActivity", "onCreate1");
 
         {
             var requiredPermissions = new String[]{
@@ -101,7 +101,7 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
             }
         }
 
-        Log.d("DirectionActivity", "finished asking for permissions");
+        Log.d("ZooSeeker,DirectionActivity", "finished asking for permissions");
     }
 
     @Override
@@ -186,14 +186,14 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
 
     public void onNextBtnClicked(View view) {
         directionInd++;
-        Log.d("ZooSeeker", String.format("directionInd is: %d", directionInd));
+        Log.d("ZooSeeker,DirectionActivity", String.format("directionInd is: %d", directionInd));
         updateDirections(directions);
         needAlert = true;
     }
 
     public void onPrevBtnClicked(View view) {
         directionInd--;
-        Log.d("ZooSeeker", String.format("directionInd is: %d", directionInd));
+        Log.d("ZooSeeker,DirectionActivity", String.format("directionInd is: %d", directionInd));
         updateDirections(directions);
         needAlert = true;
     }
@@ -239,7 +239,7 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
     public void updateLocation(String nearestExhibit) {
         needAlert = needAlert && !nearestExhibit.equals(directions.get(directionInd).directionInfo.startVertexId);
         if (!needAlert) return;
-        Log.d("Test", "updateLocation in DirectionActivity called");
+        Log.d("ZooSeeker,DirectionActivity", "updateLocation in DirectionActivity called");
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
         alertBuilder
                 .setTitle("Detected off-route")

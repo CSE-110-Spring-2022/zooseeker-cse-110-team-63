@@ -45,8 +45,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         gpsActive = preferences.getBoolean("gpsActive",false);
         gpsSwitch.setChecked(gpsActive);
-
-        Log.d("TEST", String.valueOf(detailedDir));
     }
 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

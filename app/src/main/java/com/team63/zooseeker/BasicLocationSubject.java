@@ -75,7 +75,7 @@ public class BasicLocationSubject implements LocationSubject {
 
     @Override
     public void notifyObservers() {
-        Log.d("Test", String.format("Number of observers notified: %d", observers.size()));
+        Log.d("ZooSeeker,BasicLocationSubject", String.format("Number of observers notified: %d", observers.size()));
         for (LocationObserver o : observers) {
             o.updateLocation(nearestExhibit);
         }

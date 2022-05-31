@@ -49,7 +49,7 @@ public class RerouteOperation implements DirectionsOperation {
             // make destination of final step match the destination of old directions list
             for (int j = directionInd; j < directions.size(); j++) {
                 if (directions.get(j).directionInfo.endVertexId.equals(path.getEndVertex())) {
-                    Log.d("Test", "Matching endVertexId found in old directions");
+                    Log.d("ZooSeeker,RerouteOperation", "Matching endVertexId found in old directions");
                     String destination = directions.get(j).steps.get(
                             directions.get(j).steps.size() - 1).destination;
                     direction.steps.get(direction.steps.size() - 1).destination = destination;

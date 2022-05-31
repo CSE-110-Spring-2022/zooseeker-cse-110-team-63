@@ -20,7 +20,7 @@ public class GPSLocationSubject extends BasicLocationSubject implements Location
         LocationListener locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(@NonNull Location location) {
-                Log.d("ZooSeeker", String.format("GPS Location updated: %s", location));
+                Log.d("ZooSeeker,GPSLocationSubject", String.format("GPS Location updated: %s", location));
                 changeLocation(location.getLatitude(), location.getLongitude());
             }// 32.7337949159672, -117.1769866067953
         };

@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (!preferences.contains("detailedDir")) {
             editor.putBoolean("detailedDir", false);
-            Log.d("TEST", "detailedDir set in sharedPreferences");
+            Log.d("ZooSeeker,MainActivity", "detailedDir set in sharedPreferences");
         }
 
         if (!preferences.contains("gpsActive")) {

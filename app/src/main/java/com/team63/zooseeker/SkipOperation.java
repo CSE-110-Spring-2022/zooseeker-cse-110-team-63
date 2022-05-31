@@ -47,7 +47,6 @@ public class SkipOperation implements DirectionsOperation {
             }
             newDirections.add(direction);
         }
-
         return newDirections;
     }
 }
