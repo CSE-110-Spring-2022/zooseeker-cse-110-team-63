@@ -22,8 +22,6 @@ import java.util.Map;
 
 @RunWith(AndroidJUnit4.class)
 public class RerouteTest {
-
-
     static final Double doubleDelta = 0.001; // tolerance for Double precision error
     Context context;
     Graph<String, IdentifiedWeightedEdge> G;
@@ -57,18 +55,9 @@ public class RerouteTest {
                 "capuchin",
                 "gorilla"
         );
-        List<GraphPath<String, IdentifiedWeightedEdge>> paths = routeGen
-                .setG(G)
-                .setEntrance("entrance_exit_gate")
-                .setExit("entrance_exit_gate")
-                .setExhibits(exhibits)
-                .getRoute();
-
-        List<Direction> directions = new ArrayList<>();
-
-        for (GraphPath<String, IdentifiedWeightedEdge> path : paths) {
-            directions.add(new Direction(path, vInfo, eInfo, new BigStepRenderer()));
-        }
+        List<Direction> directions = planner
+                .performOperation(new PlanExhibitsOperation(exhibits))
+                .getDirections();
 
         // confirm new directions work as intended
         {
@@ -83,7 +72,7 @@ public class RerouteTest {
             assertEquals("Monkey Trail", toFlamingo.steps.get(2).street);
             assertEquals("Flamingos", toFlamingo.steps.get(2).destination);
         }
-
+        // (entrance_exit_gate)
         // flamingo first
         // capuchin
         // gorilla
@@ -99,7 +88,12 @@ public class RerouteTest {
 
         mockLocationSubject.setNearestLocation("crocodile");
 
-        assertNotEquals(mockLocationObserver.getDirectionsList(), directions);
+        List<Direction> newDirections = mockLocationObserver.getDirectionsList();
+        assertEquals(newDirections.get(0).directionInfo.name, "Capuchin Monkeys");
+        assertEquals(newDirections.get(1).directionInfo.name, "Flamingos");
+        assertEquals(newDirections.get(2).directionInfo.name, "Gorillas");
+        assertEquals(newDirections.get(3).directionInfo.name, "Koi Fish");
+        assertEquals(newDirections.get(4).directionInfo.name, "Entrance and Exit Gate");
     }
 
     @Test
@@ -111,56 +105,47 @@ public class RerouteTest {
                 "capuchin",
                 "gorilla"
         );
-        List<GraphPath<String, IdentifiedWeightedEdge>> paths = routeGen
-                .setG(G)
-                .setEntrance("entrance_exit_gate")
-                .setExit("entrance_exit_gate")
-                .setExhibits(exhibits)
-                .getRoute();
-
-        List<Direction> directions = new ArrayList<>();
-
-        for (GraphPath<String, IdentifiedWeightedEdge> path : paths) {
-            directions.add(new Direction(path, vInfo, eInfo, new BigStepRenderer()));
-        }
+        // flamingo, capuchin, gorilla, koi
+        List<Direction> directions = planner
+                .performOperation(new PlanExhibitsOperation(exhibits))
+                .getDirections();
 
         MockLocationObserver mockLocationObserver =
-                new MockLocationObserver(directions, G, vInfo, eInfo, 0);
+                new MockLocationObserver(directions, G, vInfo, eInfo, 1);
 
         BasicLocationSubject basicLocationSubject =
                 new BasicLocationSubject(vInfo);
 
         basicLocationSubject.registerObserver(mockLocationObserver);
 
-        // this time set location with latitude and longitude
-        basicLocationSubject.changeLocation(32.745293428608484,-117.16976102878033);
+        // this time set location with latitude and longitude, to the south intersection near koi
+        basicLocationSubject.changeLocation(32.72624997716322,-117.15599314253906);
 
-        assertNotEquals(mockLocationObserver.getDirectionsList(), directions);
+        List<Direction> newDirections = mockLocationObserver.getDirectionsList();
+        assertEquals(newDirections.get(0).directionInfo.name, "Flamingos");
+        assertEquals(newDirections.get(1).directionInfo.name, "Koi Fish");
+        assertEquals(newDirections.get(2).directionInfo.name, "Capuchin Monkeys");
+        assertEquals(newDirections.get(3).directionInfo.name, "Gorillas");
+        assertEquals(newDirections.get(4).directionInfo.name, "Entrance and Exit Gate");
     }
 
     // Second test of the original two - last step is a group
     // in at least one (here: one) of the directions
     @Test
     public void testGroupReroute() {
-        RouteGenerator routeGen = new NNRouteGenerator();
         List<String> exhibits = Arrays.asList(
-                "flamingo",
-                "koi",
-                "capuchin",
-                "gorilla"
+                "crocodile",
+                "gorilla",
+                "mynah",
+                "dove"
         );
-        List<GraphPath<String, IdentifiedWeightedEdge>> paths = routeGen
-                .setG(G)
-                .setEntrance("entrance_exit_gate")
-                .setExit("entrance_exit_gate")
-                .setExhibits(exhibits)
-                .getRoute();
-
-        List<Direction> directions = new ArrayList<>();
-
-        for (GraphPath<String, IdentifiedWeightedEdge> path : paths) {
-            directions.add(new Direction(path, vInfo, eInfo, new BigStepRenderer()));
-        }
+        // crocodile
+        // gorilla
+        // owens_aviary (Owens Aviary and find Bali Mynah and Emerald Dove inside)
+        // entrance_exit_gate
+        List<Direction> directions = planner
+                .performOperation(new PlanExhibitsOperation(exhibits))
+                .getDirections();
 
         MockLocationObserver mockLocationObserver =
                 new MockLocationObserver(directions, G, vInfo, eInfo, 0);
@@ -170,10 +155,17 @@ public class RerouteTest {
 
         basicLocationSubject.registerObserver(mockLocationObserver);
 
-        // this time set location with latitude and longitude
-        basicLocationSubject.changeLocation(32.745293428608484,-117.16976102878033);
+        // this time set location with latitude and longitude, this case @ orangutans
+        basicLocationSubject.changeLocation(32.735851415117665,-117.16626781198586);
+        List<Direction> newDirections = mockLocationObserver.getDirectionsList();
+        assertEquals(newDirections.get(0).directionInfo.name, "Owens Aviary");
+        // check if last step in group direction is properly rendered
+        assertEquals(newDirections.get(0).steps.get(1).destination,
+                "Owens Aviary and find Bali Mynah and Emerald Dove inside");
+        assertEquals(newDirections.get(1).directionInfo.name, "Crocodiles");
+        assertEquals(newDirections.get(2).directionInfo.name, "Gorillas");
+        assertEquals(newDirections.get(3).directionInfo.name, "Entrance and Exit Gate");
 
-        assertNotEquals(mockLocationObserver.getDirectionsList(), directions);
     }
 
 
