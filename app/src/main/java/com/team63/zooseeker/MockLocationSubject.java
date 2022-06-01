@@ -7,12 +7,13 @@ public class MockLocationSubject implements LocationSubject {
     private List<LocationObserver> observers = new ArrayList<>();
     private String nearestLocation;
 
-    public MockLocationSubject(String nearestLocation) {
-        setNearestLocation(nearestLocation);
-    }
+//    public MockLocationSubject(String nearestLocation) {
+//        setNearestLocation(nearestLocation);
+//    }
 
     public void setNearestLocation(String nearestLocation) {
         this.nearestLocation = nearestLocation;
+        notifyObservers();
     }
 
     @Override

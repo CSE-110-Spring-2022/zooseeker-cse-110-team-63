@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-public class BasicLocationSubject implements LocationSubject {
+class BasicLocationSubject implements LocationSubject {
     private double latitude, longitude;
     private Map<String, ZooData.VertexInfo> zooMap;
     private String nearestExhibit;
