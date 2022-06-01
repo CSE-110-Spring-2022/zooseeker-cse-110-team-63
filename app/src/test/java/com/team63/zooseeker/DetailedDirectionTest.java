@@ -34,7 +34,6 @@ public class DetailedDirectionTest {
         vInfo = ZooData.loadVertexInfoJSON(context, context.getString(R.string.vertex_info_v2));
         eInfo = ZooData.loadEdgeInfoJSON(context, context.getString(R.string.edge_info_v2));
     }
-
     // Test case: The street changes at some point at intersection
     // also street has no real options at another intersection
     @Test
