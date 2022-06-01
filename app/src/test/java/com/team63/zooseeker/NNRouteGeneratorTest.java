@@ -25,7 +25,7 @@ public class NNRouteGeneratorTest {
     @Before
     public void initializeFields() {
         Context context = ApplicationProvider.getApplicationContext();
-        G = ZooData.loadZooGraphJSON(context,context.getString(R.string.test_zoo_graph));
+        G = ZooData.loadZooGraphJSON(context,context.getString(R.string.zoo_graph_v1));
         testPlanGenerator = new NNRouteGenerator();
     }
 

@@ -23,6 +23,7 @@ public class NNRouteGenerator implements RouteGenerator {
     public NNRouteGenerator() {
         this.G = new DefaultUndirectedWeightedGraph<>(IdentifiedWeightedEdge.class);
         this.route = new ArrayList<>();
+        // defined by ID instead of tags
         this.entrance = "entrance_exit_gate";
         this.exit = this.entrance; // by default, map it
         this.exhibits = new ArrayList<>();
@@ -63,7 +64,9 @@ public class NNRouteGenerator implements RouteGenerator {
     private void calculateRoute() {
         HashSet<String> exhibitSet = new HashSet<>(exhibits);
         route = new ArrayList<>();
+        // v is defined in the constructor, uses ID instead of tags
         String v = entrance;
+
         // from entrance to last exhibit
         while (true) { // we keep repeating until we break (which happens when set is empty_
             exhibitSet.remove(v);
@@ -88,6 +91,15 @@ public class NNRouteGenerator implements RouteGenerator {
         HashSet<String> sourceSet = new HashSet<>();
         sourceSet.add(source);
 
+        // we give our DijkstraManyToManyShortestPaths (from jGraphT) 2 parameters:
+        // 1: sourceSet, which is a HashSet<String> of JUST THE SOURCE VERTEX
+        // 2: targets, which is a Set<String> of all the other potential targets.
+        // Then, jGraphT "Computes shortest paths from all vertices in sources
+        // to all vertices in targets."
+        // Remember, there is only one vertex in sources, the source.
+        // jGraphT returns the computed shortest paths as
+        // MTMSPA.MTMSP<String, IdentifiedWeightedEdge>
+        // This we can use later to greedily select the best IdentifiedWeightedEdge.
         ManyToManyShortestPathsAlgorithm.ManyToManyShortestPaths<String, IdentifiedWeightedEdge>
                 paths = shortestPathFinder.getManyToManyPaths(sourceSet, targets);
 
@@ -101,6 +113,7 @@ public class NNRouteGenerator implements RouteGenerator {
                 minDistance = path.getWeight();
             }
         }
+        // Now we can greedily select the best IdentifiedWeightedEdge.
         return minPath;
     }
 }

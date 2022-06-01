@@ -34,136 +34,57 @@ public class DetailedDirectionTest {
         vInfo = ZooData.loadVertexInfoJSON(context, context.getString(R.string.vertex_info_v2));
         eInfo = ZooData.loadEdgeInfoJSON(context, context.getString(R.string.edge_info_v2));
     }
-
+    // Test case: The street changes at some point at intersection
+    // also street has no real options at another intersection
     @Test
-    public void detailedDirectionsTest ()
-    {
-        RouteGenerator routeGen = new NNRouteGenerator();
-        List<String> exhibits = Arrays.asList(
-                "hippo",
-                "capuchin"
-        );
-        List<GraphPath<String, IdentifiedWeightedEdge>> paths = routeGen
-                .setG(G)
-                .setEntrance("entrance_exit_gate")
-                .setExit("entrance_exit_gate")
-                .setExhibits(exhibits)
-                .getRoute();
-        List<Direction> directions = new ArrayList<>();
+    public void testStreetChangeIntersection() {
+        GraphPath<String, IdentifiedWeightedEdge> path =
+                new GraphWalk<>
+                        (G, Arrays.asList("entrance_exit_gate", "intxn_front_treetops", "intxn_front_monkey", "flamingo"), 5300);
+        Direction testPD = new Direction(path, vInfo, eInfo, new DetailedStepRenderer());
 
-        for (GraphPath<String, IdentifiedWeightedEdge> path : paths) {
-            directions.add(new Direction(path, vInfo, eInfo, new DetailedStepRenderer()));
-        }
+        List<Step> stepList = testPD.steps;
+        assertEquals(3, stepList.size());
+        Step toIntersection1 = stepList.get(0);
+        assertEquals(1100, toIntersection1.distance,doubleDelta);
+        assertEquals("Front Street", toIntersection1.destination);
+        assertEquals("Gate Path", toIntersection1.street);
 
-        Direction toHippos = directions.get(0);
-        assertEquals(10, toHippos.steps.get(0).distance, doubleDelta);
-        assertEquals("Gate Path", toHippos.steps.get(0).street);
-        assertEquals("Front Street", toHippos.steps.get(0).destination);
+        Step toIntersection2 = stepList.get(1);
+        assertEquals(2700, toIntersection2.distance, doubleDelta);
+        assertEquals("Monkey Trail", toIntersection2.destination);
+        assertEquals("Front Street", toIntersection2.street);
 
-        assertEquals(30, toHippos.steps.get(1).distance, doubleDelta);
-        assertEquals("Treetops Way", toHippos.steps.get(1).street);
-        assertEquals("Fern Canyon Trail", toHippos.steps.get(1).destination);
-
-        assertEquals(30, toHippos.steps.get(2).distance, doubleDelta);
-        assertEquals("Treetops Way", toHippos.steps.get(2).street);
-        assertEquals("Orangutan Trail", toHippos.steps.get(2).destination);
-
-        assertEquals(100, toHippos.steps.get(3).distance, doubleDelta);
-        assertEquals("Treetops Way", toHippos.steps.get(3).street);
-        assertEquals("Hippo Trail", toHippos.steps.get(3).destination);
-
-        assertEquals(30, toHippos.steps.get(4).distance, doubleDelta);
-        assertEquals("Hippo Trail", toHippos.steps.get(4).street);
-        assertEquals("Hippos", toHippos.steps.get(4).destination);
-
-        Direction toMonke = directions.get(1);
-        assertEquals(10, toMonke.steps.get(0).distance, doubleDelta);
-        assertEquals("Hippo Trail", toMonke.steps.get(0).street);
-        assertEquals("Crocodiles", toMonke.steps.get(0).destination);
-
-        assertEquals(30, toMonke.steps.get(1).distance, doubleDelta);
-        assertEquals("Hippo Trail", toMonke.steps.get(1).street);
-        assertEquals("Monkey Trail", toMonke.steps.get(1).destination);
-
-        assertEquals(50, toMonke.steps.get(2).distance, doubleDelta);
-        assertEquals("Monkey Trail", toMonke.steps.get(2).street);
-        assertEquals("Capuchin Monkeys", toMonke.steps.get(2).destination);
-
-        Direction toExit = directions.get(2);
-        assertEquals(150, toExit.steps.get(0).distance, doubleDelta);
-        assertEquals("Monkey Trail", toExit.steps.get(0).street);
-        assertEquals("Flamingos", toExit.steps.get(0).destination);
-
-        assertEquals(30, toExit.steps.get(1).distance, doubleDelta);
-        assertEquals("Monkey Trail", toExit.steps.get(1).street);
-        assertEquals("Front Street", toExit.steps.get(1).destination);
-
-        assertEquals(50, toExit.steps.get(2).distance, doubleDelta);
-        assertEquals("Front Street", toExit.steps.get(2).street);
-        assertEquals("Gate Path", toExit.steps.get(2).destination);
-
-        assertEquals(10, toExit.steps.get(3).distance, doubleDelta);
-        assertEquals("Gate Path", toExit.steps.get(3).street);
-        assertEquals("Entrance and Exit Gate", toExit.steps.get(3).destination);
-
-
-
-
+        Step toFlamingos = stepList.get(2);
+        assertEquals(1500, toFlamingos.distance, doubleDelta);
+        assertEquals("Flamingos", toFlamingos.destination);
+        assertEquals("Monkey Trail", toFlamingos.street);
     }
 
+    // Test case: The street does not change, even though at a intersection
     @Test
-    public void singleTest ()
-    {
-        RouteGenerator routeGen = new NNRouteGenerator();
-        List<String> exhibits = Arrays.asList(
-                "siamang"
-        );
-        List<GraphPath<String, IdentifiedWeightedEdge>> paths = routeGen
-                .setG(G)
-                .setEntrance("entrance_exit_gate")
-                .setExit("entrance_exit_gate")
-                .setExhibits(exhibits)
-                .getRoute();
-        List<Direction> directions = new ArrayList<>();
+    public void testStreetNoChangeIntersection() {
+        GraphPath<String, IdentifiedWeightedEdge> path =
+                new GraphWalk<>
+                        (G, Arrays.asList("intxn_front_treetops", "intxn_treetops_fern_trail",
+                                "intxn_treetops_orangutan_trail", "siamang"),
+                                3700);
+        Direction testPD = new Direction(path, vInfo, eInfo, new DetailedStepRenderer());
+        List<Step> stepList = testPD.steps;
 
-        for (GraphPath<String, IdentifiedWeightedEdge> path : paths) {
-            directions.add(new Direction(path, vInfo, eInfo, new DetailedStepRenderer()));
-        }
+        Step toFernTrail = stepList.get(0);
+        assertEquals(1100, toFernTrail.distance,doubleDelta);
+        assertEquals("Fern Canyon Trail", toFernTrail.destination);
+        assertEquals("Treetops Way", toFernTrail.street);
 
-        Direction toMonke = directions.get(0);
-        assertEquals(10, toMonke.steps.get(0).distance, doubleDelta);
-        assertEquals("Gate Path", toMonke.steps.get(0).street);
-        assertEquals("Front Street", toMonke.steps.get(0).destination);
+        Step toOrangutanTrail = stepList.get(1);
+        assertEquals(1400, toOrangutanTrail.distance,doubleDelta);
+        assertEquals("Orangutan Trail", toOrangutanTrail.destination);
+        assertEquals("Treetops Way", toOrangutanTrail.street);
 
-        assertEquals(30, toMonke.steps.get(1).distance, doubleDelta);
-        assertEquals("Treetops Way", toMonke.steps.get(1).street);
-        assertEquals("Fern Canyon Trail", toMonke.steps.get(1).destination);
-
-        assertEquals(30, toMonke.steps.get(2).distance, doubleDelta);
-        assertEquals("Treetops Way", toMonke.steps.get(2).street);
-        assertEquals("Orangutan Trail", toMonke.steps.get(2).destination);
-
-        assertEquals(60, toMonke.steps.get(3).distance, doubleDelta);
-        assertEquals("Orangutan Trail", toMonke.steps.get(3).street);
-        assertEquals("Siamangs", toMonke.steps.get(3).destination);
-
-        Direction toExit = directions.get(1);
-        assertEquals(60, toExit.steps.get(0).distance, doubleDelta);
-        assertEquals("Orangutan Trail", toExit.steps.get(0).street);
-        assertEquals("Treetops Way", toExit.steps.get(0).destination);
-
-        assertEquals(30,toExit.steps.get(1).distance,doubleDelta);
-        assertEquals("Treetops Way",toExit.steps.get(1).street);
-        assertEquals("Fern Canyon Trail",toExit.steps.get(1).destination);
-
-        assertEquals(30,toExit.steps.get(2).distance,doubleDelta);
-        assertEquals("Treetops Way",toExit.steps.get(2).street);
-        assertEquals("Gate Path",toExit.steps.get(2).destination);
-
-        assertEquals(10,toExit.steps.get(3).distance,doubleDelta);
-        assertEquals("Gate Path",toExit.steps.get(3).street);
-        assertEquals("Entrance and Exit Gate",toExit.steps.get(3).destination);
-
+        Step toSiamangTrail = stepList.get(2);
+        assertEquals(1200, toSiamangTrail.distance,doubleDelta);
+        assertEquals("Siamangs", toSiamangTrail.destination);
+        assertEquals("Orangutan Trail", toSiamangTrail.street);
     }
-
 }

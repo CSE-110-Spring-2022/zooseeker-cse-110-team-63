@@ -10,6 +10,7 @@ import androidx.room.TypeConverter;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
@@ -36,8 +37,13 @@ public class NodeInfo {
     public String kind;
     public String name;
     public String concatTags;
+
+    @SerializedName("group_id")
+    public String groupId;
     public boolean selected = false;
     public int orderInPlan;
+    public double lat;
+    public double lng;
 
     @Ignore
     public String[] tags;

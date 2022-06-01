@@ -1,6 +1,7 @@
 package com.team63.zooseeker;
 
 import android.content.Context;
+import android.location.Location;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,13 +32,19 @@ public class ZooData {
             // from the strings in our JSON to this Enum.
             @SerializedName("gate") GATE,
             @SerializedName("exhibit") EXHIBIT, 
-            @SerializedName("intersection") INTERSECTION
+            @SerializedName("intersection") INTERSECTION,
+            @SerializedName("exhibit_group") EXHIBIT_GROUP
         }
 
         public String id;
         public Kind kind;
         public String name;
-        public List<String> tags;   
+        public List<String> tags;
+        public double lat;
+        public double lng;
+
+        @SerializedName("group_id")
+        public String groupId;
     }
 
     public static class EdgeInfo {
@@ -45,6 +52,9 @@ public class ZooData {
         public String street;
     }
 
+    /**
+     * updating to load from new JSON with lat/long information?
+     */
     public static Map<String, ZooData.VertexInfo> loadVertexInfoJSON(Context context, String path) {
         try {
             InputStream inputStream = context.getAssets().open(path);

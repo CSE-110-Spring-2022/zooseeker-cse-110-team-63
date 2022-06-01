@@ -15,35 +15,36 @@ import android.widget.TextView;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    public PlanViewModel viewModel;
     public Switch detailedSwitch;
+    public Switch gpsSwitch;
+    public boolean detailedDir;
+    public boolean gpsActive;
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        preferences = getSharedPreferences("filenames", MODE_PRIVATE);
+        editor = preferences.edit();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        viewModel = new ViewModelProvider(this)
-                .get(PlanViewModel.class);
-
         detailedSwitch = findViewById(R.id.detailed_switch);
+        gpsSwitch = findViewById(R.id.gps_active_switch);
+
         loadProfile();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        saveProfile();
     }
 
     public void loadProfile() {
 
         SharedPreferences preferences = getSharedPreferences("filenames", MODE_PRIVATE);
 
-        boolean detailedDir = preferences.getBoolean("detailedDir",false);
+        detailedDir = preferences.getBoolean("detailedDir",false);
         detailedSwitch.setChecked(detailedDir);
 
-        Log.d("TEST", String.valueOf(detailedDir));
+        gpsActive = preferences.getBoolean("gpsActive",false);
+        gpsSwitch.setChecked(gpsActive);
     }
 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -55,16 +56,17 @@ public class SettingsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void saveProfile() {
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-
-        editor.putBoolean("detailedDir",detailedSwitch.isChecked());
-
-        editor.apply();
+    public void onGpsSwitchClicked(View view) {
+        gpsActive = ((Switch) view).isChecked();
+        editor.putBoolean("gpsActive", gpsActive);
+        editor.commit();
+        Log.d("Test", String.format("gpsActive field set to %b", gpsActive));
     }
 
-    public void onDetailedDirBtnClicked(View view) {
-        viewModel.setDetailedDir(detailedSwitch.isChecked());
+    public void onDetailedSwitchClicked(View view) {
+        detailedDir = ((Switch) view).isChecked();
+        editor.putBoolean("detailedDir", detailedDir);
+        editor.commit();
+        Log.d("Test", String.format("detailedDir field set to %b", detailedDir));
     }
 }

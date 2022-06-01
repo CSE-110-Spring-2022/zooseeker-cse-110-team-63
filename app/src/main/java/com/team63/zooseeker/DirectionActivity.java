@@ -1,11 +1,20 @@
 package com.team63.zooseeker;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -14,43 +23,128 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class DirectionActivity extends AppCompatActivity {
+public class DirectionActivity extends AppCompatActivity implements LocationObserver{
     private List<Direction> directions;
     private List<Step> steps;
     private PlanViewModel planViewModel;
     private int directionInd;
+    private LocationManager locationManager;
 
     private TextView exhibitView;
     private TextView directionsView;
     private Button nextBtn;
     private Button prevBtn;
     private Button skipBtn;
+    private EditText latitudeInput;
+    private EditText longitudeInput;
+    private boolean hasPermissions = false;
+    private Button applyBtn;
+    private String closestExhibit = "";
+    private boolean needAlert = true; // whether or not we need to ask user to reroute.
+    // This is reset whenever we click next, or our exhibit changes, or we come back from settings
+
+    private LocationSubject manualLocationSubject;
+    private LocationSubject gpsLocationSubject;
+
+    private final ActivityResultLauncher<String[]> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), perms -> {
+                perms.forEach((perm, isGranted) -> {
+                    Log.i("ZooSeeker", String.format("Permission %s granted: %s", perm, isGranted));
+                });
+            });
+
+    private void updateFromPreferences() {
+        if (!hasPermissions) return;
+        needAlert = true;
+        Log.d("ZooSeeker,DirectionActivity", "calling updateFromPreferences now");
+        SharedPreferences preferences = getSharedPreferences("filenames", MODE_PRIVATE);
+        planViewModel.setDetailedDir(preferences.getBoolean("detailedDir", false));
+        if (preferences.getBoolean("gpsActive", false)) {
+            gpsLocationSubject.registerObserver(this);
+            manualLocationSubject.removeObserver(this);
+        }
+        else {
+            gpsLocationSubject.removeObserver(this);
+            manualLocationSubject.registerObserver(this);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_direction);
 
+        Log.d("ZooSeeker,DirectionActivity", "onCreate1");
+
+        {
+            var requiredPermissions = new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+            };
+
+            hasPermissions = !(Arrays.stream(requiredPermissions)
+                    .map(perm -> ContextCompat.checkSelfPermission(this, perm))
+                    .allMatch(status -> status == PackageManager.PERMISSION_DENIED));
+
+            if(!hasPermissions) {
+                requestPermissionLauncher.launch(requiredPermissions);
+//                return;
+            }
+            else {
+                withPermissions();
+            }
+        }
+
+        Log.d("ZooSeeker,DirectionActivity", "finished asking for permissions");
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        withPermissions();
+    }
+
+    public void withPermissions() {
+        hasPermissions = true;
+        locationManager = (LocationManager) getApplication().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         exhibitView = findViewById(R.id.exhibit_view);
         directionsView = findViewById(R.id.directions_view);
         nextBtn = findViewById(R.id.next_exhibit_btn);
         prevBtn = findViewById(R.id.previous_exhibit_btn);
         skipBtn = findViewById(R.id.skip_exhibit_btn);
+        latitudeInput = findViewById(R.id.latitude_input);
+        longitudeInput = findViewById(R.id.longitude_input);
+        applyBtn = findViewById(R.id.apply_btn);
+
 
         planViewModel = new ViewModelProvider(this).get(PlanViewModel.class);
 
+        manualLocationSubject = planViewModel.getManualLocationSubject();
+        gpsLocationSubject = planViewModel.getGPSLocationSubject(locationManager);
+
+
         directionInd = 0;
+
+//        Log.d("ZooSeeker", String.format("directionInd is: %d", directionInd));
         directionsView.setMovementMethod(new ScrollingMovementMethod());
 
         LiveData<List<Direction>> liveData = planViewModel.getDirections();
         liveData.observe(this, this::updateDirections);
 
         prevBtn.setVisibility(View.GONE);
+        updateFromPreferences();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        updateFromPreferences();
     }
 
     @Override
@@ -72,9 +166,9 @@ public class DirectionActivity extends AppCompatActivity {
             count++;
         }
 
-        String destination = steps.get(steps.size() - 1).destination;
+        String destination = directions.get(directionInd).directionInfo.name;
         directionsView.setText(dirStrings);
-        exhibitView.setText(destination + "\n(" + cumDist + " ft)");
+        exhibitView.setText(destination + "\n(" + Direction.roundDistance(cumDist) + " ft)");
 
         SetBtnVisibility();
     }
@@ -92,12 +186,16 @@ public class DirectionActivity extends AppCompatActivity {
 
     public void onNextBtnClicked(View view) {
         directionInd++;
+        Log.d("ZooSeeker,DirectionActivity", String.format("directionInd is: %d", directionInd));
         updateDirections(directions);
+        needAlert = true;
     }
 
     public void onPrevBtnClicked(View view) {
         directionInd--;
+        Log.d("ZooSeeker,DirectionActivity", String.format("directionInd is: %d", directionInd));
         updateDirections(directions);
+        needAlert = true;
     }
 
     public void onSkipBtnClicked(View view) {
@@ -107,7 +205,8 @@ public class DirectionActivity extends AppCompatActivity {
                 .setTitle("Alert!")
                 .setMessage("Are you sure you want to skip this exhibit?")
                 .setPositiveButton("Yes", (dialog, id) -> {
-                    planViewModel.recalculate(directionInd);
+                    planViewModel.skip(directionInd);
+                    needAlert = true;
                 })
                 .setNegativeButton("No", (dialog, id) -> {
                     dialog.cancel();
@@ -117,6 +216,7 @@ public class DirectionActivity extends AppCompatActivity {
         AlertDialog alertDialog = alertBuilder.create();
         alertDialog.show();
     }
+
 
     private void SetBtnVisibility() {
         if (directionInd == 0) prevBtn.setVisibility(View.GONE);
@@ -133,5 +233,38 @@ public class DirectionActivity extends AppCompatActivity {
     public void onPlanBtnClicked(View view) {
         planViewModel.generateDirections();
         finish();
+    }
+
+    @Override
+    public void updateLocation(String nearestExhibit) {
+        needAlert = needAlert && !nearestExhibit.equals(directions.get(directionInd).directionInfo.startVertexId);
+        if (!needAlert) return;
+        Log.d("ZooSeeker,DirectionActivity", "updateLocation in DirectionActivity called");
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+        alertBuilder
+                .setTitle("Detected off-route")
+                .setMessage(
+                        String.format(
+                                "We have detected you have went off-route. Would you like to reroute, starting from %s?",
+                                planViewModel.getLocationNameById(nearestExhibit)
+                        )
+                )
+                .setPositiveButton("Yes", (dialog, id) -> {
+                    planViewModel.replan(directionInd, nearestExhibit);
+                })
+                .setNegativeButton("No", (dialog, id) -> {
+                    dialog.cancel();
+                })
+                .setCancelable(true);
+        AlertDialog alertDialog = alertBuilder.create();
+        needAlert = false;
+        alertDialog.show();
+    }
+
+    public void onApplyBtnClicked(View view) {
+        ((BasicLocationSubject) manualLocationSubject).changeLocation(
+                Double.parseDouble(latitudeInput.getText().toString()),
+                Double.parseDouble(longitudeInput.getText().toString())
+        );
     }
 }

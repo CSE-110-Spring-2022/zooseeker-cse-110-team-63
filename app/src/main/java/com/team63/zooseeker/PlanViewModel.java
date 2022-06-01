@@ -5,6 +5,7 @@ import static android.content.Context.MODE_PRIVATE;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.LocationManager;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -76,7 +77,7 @@ public class PlanViewModel extends AndroidViewModel {
                 .getDirections());
     }
 
-    public void recalculate(int directionInd) {
+    public void skip(int directionInd) {
         PlannerBuilder plannerBuilder = new PlannerBuilder();
 
         Planner planner = plannerBuilder.setRouteGenerator(new NNRouteGenerator())
@@ -87,6 +88,20 @@ public class PlanViewModel extends AndroidViewModel {
 
         directionDao.setDirections(planner.setDirections(directionDao.getDirectionsSync())
                 .performOperation(new SkipOperation(directionInd))
+                .getDirections());
+    }
+
+    public void replan(int directionInd, String exhibitId){
+        PlannerBuilder plannerBuilder = new PlannerBuilder();
+
+        Planner planner = plannerBuilder.setRouteGenerator(new NNRouteGenerator())
+                .setEInfoMap(eInfoMap)
+                .setVInfoMap(vInfoMap)
+                .setG(G)
+                .make();
+
+        directionDao.setDirections(planner.setDirections(directionDao.getDirectionsSync())
+                .performOperation(new RerouteOperation(directionInd, exhibitId))
                 .getDirections());
     }
 
@@ -116,5 +131,17 @@ public class PlanViewModel extends AndroidViewModel {
                 .performOperation(new ReloadStepsOperation())
                 .getDirections();
         directionDao.setDirections(newDirections);
+    }
+
+    public String getLocationNameById(String id) {
+        return vInfoMap.get(id).name;
+    }
+
+    public BasicLocationSubject getManualLocationSubject(){
+        return new BasicLocationSubject(vInfoMap);
+    }
+
+    public GPSLocationSubject getGPSLocationSubject(LocationManager locationManager){
+        return new GPSLocationSubject(locationManager, vInfoMap);
     }
 }
