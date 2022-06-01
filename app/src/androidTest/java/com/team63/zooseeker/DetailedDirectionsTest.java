@@ -52,6 +52,8 @@ public class DetailedDirectionsTest {
         editor.putString("vertex_info", context.getString(R.string.vertex_info_v2));
         editor.putString("edge_info", context.getString(R.string.edge_info_v2));
         editor.putString("zoo_graph", context.getString(R.string.zoo_graph_v2));
+        editor.putBoolean("detailedDir", true);
+        editor.putBoolean("gpsActive", false);
         editor.commit();
         NodeDatabase.resetDatabase(context);
     }
@@ -160,17 +162,17 @@ public class DetailedDirectionsTest {
         materialButton2.perform(click());
 
         ViewInteraction textView = onView(
-                allOf(withId(R.id.exhibit_view), withText("Flamingos\n(90.0 ft)"),
+                allOf(withId(R.id.exhibit_view), withText("Flamingos\n(5300 ft)"),
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
-        textView.check(matches(withText("Flamingos\n(90.0 ft)")));
+        textView.check(matches(withText("Flamingos\n(5300 ft)")));
 
 
         ViewInteraction textView3 = onView(
-                allOf(withId(R.id.directions_view), withText("1: Proceed on Gate Path 10 ft towards Front Street.\n\n2: Proceed on Front Street 50 ft towards Monkey Trail.\n\n3: Proceed on Monkey Trail 30 ft towards Flamingos.\n\n"),
+                allOf(withId(R.id.directions_view), withText("1: Proceed on Gate Path 1100 ft towards Front Street.\n\n2: Proceed on Front Street 2700 ft towards Monkey Trail.\n\n3: Proceed on Monkey Trail 1500 ft towards Flamingos.\n\n"),
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
-        textView3.check(matches(withText("1: Proceed on Gate Path 10 ft towards Front Street.\n\n2: Proceed on Front Street 50 ft towards Monkey Trail.\n\n3: Proceed on Monkey Trail 30 ft towards Flamingos.\n\n")));
+        textView3.check(matches(withText("1: Proceed on Gate Path 1100 ft towards Front Street.\n\n2: Proceed on Front Street 2700 ft towards Monkey Trail.\n\n3: Proceed on Monkey Trail 1500 ft towards Flamingos.\n\n")));
 
 
         ViewInteraction materialButton3 = onView(
@@ -184,16 +186,16 @@ public class DetailedDirectionsTest {
         materialButton3.perform(click());
 
         ViewInteraction textView5 = onView(
-                allOf(withId(R.id.exhibit_view), withText("Bali Mynah\n(205.0 ft)"),
+                allOf(withId(R.id.exhibit_view), withText("Crocodiles\n(6900 ft)"),
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
-        textView5.check(matches(withText("Bali Mynah\n(205.0 ft)")));
+        textView5.check(matches(withText("Crocodiles\n(6900 ft)")));
 
         ViewInteraction textView6 = onView(
-                allOf(withId(R.id.directions_view), withText("1: Proceed on Monkey Trail 30 ft towards Front Street.\n\n2: Proceed on Front Street 50 ft towards Treetops Way.\n\n3: Proceed on Treetops Way 30 ft towards Fern Canyon Trail.\n\n4: Proceed on Fern Canyon Trail 60 ft towards Fern Canyon.\n\n5: Proceed on Aviary Trail 30 ft towards Owens Aviary Walkway.\n\n6: Proceed on Owens Aviary Walkway 5 ft towards Bali Mynah.\n\n"),
+                allOf(withId(R.id.directions_view), withText("1: Proceed on Monkey Trail 3100 ft towards Capuchin Monkeys.\n\n2: Proceed on Monkey Trail 2300 ft towards Hippo Trail.\n\n3: Proceed on Hippo Trail 1500 ft towards Crocodiles.\n\n"),
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
-        textView6.check(matches(withText("1: Proceed on Monkey Trail 30 ft towards Front Street.\n\n2: Proceed on Front Street 50 ft towards Treetops Way.\n\n3: Proceed on Treetops Way 30 ft towards Fern Canyon Trail.\n\n4: Proceed on Fern Canyon Trail 60 ft towards Fern Canyon.\n\n5: Proceed on Aviary Trail 30 ft towards Owens Aviary Walkway.\n\n6: Proceed on Owens Aviary Walkway 5 ft towards Bali Mynah.\n\n")));
+        textView6.check(matches(withText("1: Proceed on Monkey Trail 3100 ft towards Capuchin Monkeys.\n\n2: Proceed on Monkey Trail 2300 ft towards Hippo Trail.\n\n3: Proceed on Hippo Trail 1500 ft towards Crocodiles.\n\n")));
         ViewInteraction materialButton4 = onView(
                 allOf(withId(R.id.next_exhibit_btn), withText("Next Exhibit"),
                         childAtPosition(
@@ -205,16 +207,16 @@ public class DetailedDirectionsTest {
         materialButton4.perform(click());
 
         ViewInteraction textView7 = onView(
-                allOf(withId(R.id.exhibit_view), withText("Crocodiles\n(155.0 ft)"),
+                allOf(withId(R.id.exhibit_view), withText("Owens Aviary\n(6600 ft)"),
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
-        textView7.check(matches(withText("Crocodiles\n(155.0 ft)")));
+        textView7.check(matches(withText("Owens Aviary\n(6600 ft)")));
 
         ViewInteraction textView8 = onView(
-                allOf(withId(R.id.directions_view), withText("1: Proceed on Owens Aviary Walkway 5 ft towards Aviary Trail.\n\n2: Proceed on Aviary Trail 50 ft towards Treetops Way.\n\n3: Proceed on Treetops Way 60 ft towards Hippo Trail.\n\n4: Proceed on Hippo Trail 40 ft towards Crocodiles.\n\n"),
+                allOf(withId(R.id.directions_view), withText("1: Proceed on Hippo Trail 1100 ft towards Hippos.\n\n2: Proceed on Hippo Trail 1900 ft towards Treetops Way.\n\n3: Proceed on Treetops Way 2300 ft towards Parker Aviary.\n\n4: Proceed on Aviary Trail 1300 ft towards Owens Aviary and find Bali Mynah inside.\n\n"),
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
-        textView8.check(matches(withText("1: Proceed on Owens Aviary Walkway 5 ft towards Aviary Trail.\n\n2: Proceed on Aviary Trail 50 ft towards Treetops Way.\n\n3: Proceed on Treetops Way 60 ft towards Hippo Trail.\n\n4: Proceed on Hippo Trail 40 ft towards Crocodiles.\n\n")));
+        textView8.check(matches(withText("1: Proceed on Hippo Trail 1100 ft towards Hippos.\n\n2: Proceed on Hippo Trail 1900 ft towards Treetops Way.\n\n3: Proceed on Treetops Way 2300 ft towards Parker Aviary.\n\n4: Proceed on Aviary Trail 1300 ft towards Owens Aviary and find Bali Mynah inside.\n\n")));
 
         ViewInteraction materialButton5 = onView(
                 allOf(withId(R.id.next_exhibit_btn), withText("Next Exhibit"),
@@ -227,16 +229,16 @@ public class DetailedDirectionsTest {
         materialButton5.perform(click());
 
         ViewInteraction textView9 = onView(
-                allOf(withId(R.id.exhibit_view), withText("Entrance and Exit Gate\n(210.0 ft)"),
+                allOf(withId(R.id.exhibit_view), withText("Entrance and Exit Gate\n(8700 ft)"),
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
-        textView9.check(matches(withText("Entrance and Exit Gate\n(210.0 ft)")));
+        textView9.check(matches(withText("Entrance and Exit Gate\n(8700 ft)")));
 
         ViewInteraction textView10 = onView(
-                allOf(withId(R.id.directions_view), withText("1: Proceed on Hippo Trail 40 ft towards Treetops Way.\n\n2: Proceed on Treetops Way 100 ft towards Gate Path.\n\n3: Proceed on Gate Path 10 ft towards Entrance and Exit Gate.\n\n"),
+                allOf(withId(R.id.directions_view), withText("1: Proceed on Aviary Trail 1300 ft towards Parker Aviary.\n\n2: Proceed on Orangutan Trail 1500 ft towards Orangutans.\n\n3: Proceed on Orangutan Trail 1100 ft towards Siamangs.\n\n4: Proceed on Orangutan Trail 1200 ft towards Treetops Way.\n\n5: Proceed on Treetops Way 1400 ft towards Fern Canyon Trail.\n\n6: Proceed on Treetops Way 1100 ft towards Gate Path.\n\n7: Proceed on Gate Path 1100 ft towards Entrance and Exit Gate.\n\n"),
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
-        textView10.check(matches(withText("1: Proceed on Hippo Trail 40 ft towards Treetops Way.\n\n2: Proceed on Treetops Way 100 ft towards Gate Path.\n\n3: Proceed on Gate Path 10 ft towards Entrance and Exit Gate.\n\n")));
+        textView10.check(matches(withText("1: Proceed on Aviary Trail 1300 ft towards Parker Aviary.\n\n2: Proceed on Orangutan Trail 1500 ft towards Orangutans.\n\n3: Proceed on Orangutan Trail 1100 ft towards Siamangs.\n\n4: Proceed on Orangutan Trail 1200 ft towards Treetops Way.\n\n5: Proceed on Treetops Way 1400 ft towards Fern Canyon Trail.\n\n6: Proceed on Treetops Way 1100 ft towards Gate Path.\n\n7: Proceed on Gate Path 1100 ft towards Entrance and Exit Gate.\n\n")));
     }
 
     private static Matcher<View> childAtPosition(
