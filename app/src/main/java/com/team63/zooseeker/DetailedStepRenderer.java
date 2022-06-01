@@ -54,15 +54,28 @@ public class DetailedStepRenderer implements StepRenderer {
 
                 // if we ended the step because we have to change street next on an intersection
                 if (vInfoMap.get(realTarget).kind == ZooData.VertexInfo.Kind.INTERSECTION) {
-                    // set the destination to the next street
+                    // if next street is the same, our destination is the street that is NOT
+                    // the current street we're on
+                    // if the next street is different, our destination is the next street
+                    // if neither set of conditions is satisfiable for any candidate,
+                    // we just pick an arbitrary one
+                    String nextStreet = eInfoMap.get(pathEdges.get(i + 1).getId()).street;
+                    String currStreet = eInfoMap.get(currEdge.getId()).street;
                     Set<IdentifiedWeightedEdge> intersectingEdges = G.edgesOf(realTarget);
-                    for (IdentifiedWeightedEdge edge : intersectingEdges) {
-                        String candidateDestination = eInfoMap.get(edge.getId()).street;
-                        if (!(candidateDestination.equals(step.street))) {
-                            step.destination = candidateDestination;
-                            break;
+
+                    String candidateDestination = "";
+                    if (currStreet.equals(nextStreet)) {
+                        for (IdentifiedWeightedEdge edge : intersectingEdges) {
+                            candidateDestination = eInfoMap.get(edge.getId()).street;
+                            if (!candidateDestination.equals(step.street)) {
+                                break;
+                            }
                         }
                     }
+                    else {
+                        candidateDestination = nextStreet;
+                    }
+                    step.destination = candidateDestination;
                 }
                 // if we ended the step because we have to change street next on an exhibit
                 else {
