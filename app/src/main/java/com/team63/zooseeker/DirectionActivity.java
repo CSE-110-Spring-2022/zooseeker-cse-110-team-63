@@ -222,11 +222,11 @@ public class DirectionActivity extends AppCompatActivity implements LocationObse
         if (directionInd == 0) prevBtn.setVisibility(View.GONE);
         else prevBtn.setVisibility(View.VISIBLE);
 
-        if (directionInd == directions.size() - 1) nextBtn.setVisibility(View.GONE);
+        if (directionInd == directions.size() - 1) nextBtn.setVisibility(View.INVISIBLE);
         else nextBtn.setVisibility(View.VISIBLE);
 
         if (directionInd == directions.size() - 1 || directions.size() == 2)
-            skipBtn.setVisibility(View.GONE);
+            skipBtn.setVisibility(View.INVISIBLE);
         else skipBtn.setVisibility(View.VISIBLE);
     }
 
