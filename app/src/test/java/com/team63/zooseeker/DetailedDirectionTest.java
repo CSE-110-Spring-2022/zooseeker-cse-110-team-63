@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @RunWith(AndroidJUnit4.class)
-public class DetailedDirectionsTest {
+public class DetailedDirectionTest {
     static final Double doubleDelta = 0.001; // tolerance for Double precision error
     Context context;
     Graph<String, IdentifiedWeightedEdge> G;
